@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.cenpro.cbppag.mapper.IConsultaExamenMedicoOdontologicoMapper">
+	
+	<select id="buscarPorCriterioBusquedaAdministrativa" resultType="ConsultaOdontologicoAdministrativo">
+		SELECT 	* 
+		FROM 	consultaodontologicoadministrativa consultaOdontologico
+		<where>
+			<if test="codigoAlumno != null and codigoAlumno != ''">
+				    consultaOdontologico.codigoAlumno = #{codigoAlumno}
+			</if>
+			<if test="tipoAlumno != null and tipoAlumno != ''">
+				AND consultaOdontologico.tipoAlumno = #{tipoAlumno}
+			</if>
+			<if test="idCampania != null and idCampania > -1">
+				AND consultaOdontologico.idCampania = #{idCampania}
+			</if>
+			<if test="codigoFacultad != null and codigoFacultad > -1">
+				AND consultaOdontologico.codigoFacultad = #{codigoFacultad}
+			</if>
+			<if test="codigoEscuela != null and codigoEscuela > -1">
+				AND consultaOdontologico.codigoEscuela = #{codigoEscuela}
+			</if>
+			<if test="fechaInicio != null and fechaFin != null">
+				AND consultaOdontologico.soloFechaRegistro BETWEEN #{fechaInicio} AND #{fechaFin}
+			</if>
+		</where>
+		ORDER BY fechaRegistro DESC
+	</select>
+	
+</mapper>

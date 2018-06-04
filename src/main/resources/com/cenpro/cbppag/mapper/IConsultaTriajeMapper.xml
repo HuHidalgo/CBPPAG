@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.cenpro.cbppag.mapper.IConsultaTriajeMapper">
+	
+	<select id="buscarPorCriterioBusquedaAdministrativa" resultType="ConsultaTriajeAdministrativo">
+		SELECT 	* 
+		FROM 	consultatriajeadministrativa consultaTriaje
+		<where>
+			<if test="codigoAlumno != null and codigoAlumno != ''">
+				    consultaTriaje.codigoAlumno = #{codigoAlumno}
+			</if>
+			<if test="tipoAlumno != null and tipoAlumno != ''">
+				AND consultaTriaje.tipoAlumno = #{tipoAlumno}
+			</if>
+			<if test="idCampania != null and idCampania > -1">
+				AND consultaTriaje.idCampania = #{idCampania}
+			</if>
+			<if test="codigoFacultad != null and codigoFacultad > -1">
+				AND consultaTriaje.codigoFacultad = #{codigoFacultad}
+			</if>
+			<if test="codigoEscuela != null and codigoEscuela > -1">
+				AND consultaTriaje.codigoEscuela = #{codigoEscuela}
+			</if>
+			<if test="fechaInicio != null and fechaFin != null">
+				AND consultaTriaje.soloFechaRegistro BETWEEN #{fechaInicio} AND #{fechaFin}
+			</if>
+			<if test="idRangoPeso != null and idRangoPeso > -1">
+				<if test="idRangoPeso == 1">
+					<![CDATA[AND consultaTriaje.peso < 50]]>
+				</if>
+				<if test="idRangoPeso == 2">
+					AND consultaTriaje.peso BETWEEN 50 AND 70
+				</if>
+				<if test="idRangoPeso == 3">
+					AND consultaTriaje.peso BETWEEN 70 AND 90
+				</if>
+				<if test="idRangoPeso == 4">
+					<![CDATA[AND consultaTriaje.peso > 90]]>
+				</if>
+			</if>
+			<if test="idRangoTalla != null and idRangoTalla > -1">
+				<if test="idRangoTalla == 1">
+					<![CDATA[AND consultaTriaje.talla < 150]]>
+				</if>
+				<if test="idRangoTalla == 2">
+					AND consultaTriaje.talla BETWEEN 150 AND 170
+				</if>
+				<if test="idRangoTalla == 3">
+					AND consultaTriaje.talla BETWEEN 170 AND 190
+				</if>
+				<if test="idRangoTalla == 4">
+					<![CDATA[AND consultaTriaje.talla > 190]]>
+				</if>
+			</if>
+			<if test="idRangoPulso != null and idRangoPulso > -1">
+				<if test="idRangoPulso == 1">
+					<![CDATA[AND consultaTriaje.pulso < 60]]>
+				</if>
+				<if test="idRangoPulso == 2">
+					AND consultaTriaje.pulso BETWEEN 60 AND 100
+				</if>
+				<if test="idRangoPulso == 3">
+					<![CDATA[AND consultaTriaje.pulso > 100]]>
+				</if>
+			</if>
+			<if test="idPresionSistolica != null and idPresionSistolica > -1">
+				<if test="idPresionSistolica == 1">
+					<![CDATA[AND consultaTriaje.presionSistolica < 120]]>
+				</if>
+				<if test="idPresionSistolica == 2">
+					AND consultaTriaje.presionSistolica BETWEEN 120 AND 139
+				</if>
+				<if test="idPresionSistolica == 3">
+					<![CDATA[AND consultaTriaje.presionSistolica > 139]]>
+				</if>
+			</if>
+			<if test="idPresionDiastolica != null and idPresionDiastolica > -1">
+				<if test="idPresionDiastolica == 1">
+					<![CDATA[AND consultaTriaje.presionDiastolica < 80]]>
+				</if>
+				<if test="idPresionDiastolica == 2">
+					AND consultaTriaje.presionDiastolica BETWEEN 80 AND 89
+				</if>
+				<if test="idPresionDiastolica == 3">
+					<![CDATA[AND consultaTriaje.presionDiastolica > 89]]>
+				</if>
+			</if>
+		</where>
+		ORDER BY numeroRegistro DESC
+	</select>
+	
+</mapper>
