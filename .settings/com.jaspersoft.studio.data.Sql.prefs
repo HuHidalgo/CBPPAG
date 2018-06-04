@@ -1,0 +1,4 @@
+com.jaspersoft.studio.data.Sql.syntaxColorer.tokenStyles=
+com.jaspersoft.studio.data.Sql.syntaxColorer.tokenStyles.comment.bgColor=0,128,192
+com.jaspersoft.studio.data.Sql.syntaxColorer.useProjectSettings=true
+eclipse.preferences.version=1

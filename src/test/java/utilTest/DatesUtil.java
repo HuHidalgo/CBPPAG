@@ -47,13 +47,7 @@ public class DatesUtil
     @Test
     public void generarAnio()
     {
-        String celdaEscuelaFacultad = "21";
-        System.out.println(celdaEscuelaFacultad);
-        int codigoEscuela = Integer.parseInt(celdaEscuelaFacultad
-                .substring(celdaEscuelaFacultad.length() - 1, celdaEscuelaFacultad.length()));
-        System.out.println(celdaEscuelaFacultad);
-        System.out.println(codigoEscuela);
-        int codigoFacultad = Integer.parseInt(celdaEscuelaFacultad.substring(0, celdaEscuelaFacultad.length() - 1));
-        System.out.println(codigoFacultad);
+        String anioInicio = "HOY EZ %tF";
+        System.out.println(String.format(anioInicio, new Date()));
     }
 }

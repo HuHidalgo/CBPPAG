@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
-	layout:decorator="layout">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" layout:decorator="layout">
 <head>
 <title th:text="|Consulta #{__${seguridad}__}|"></title>
 </head>
@@ -26,7 +26,8 @@
 								th:replace="~{template/fragments/seguridad/criterioBusquedaAuditoria :: criterioBusquedaAuditoria(tipo=${seguridad})}?:~{}">
 							</th:block>
 							<div id="tabla" class="col-xs-12">
-								<table id="tablaAuditoria" class="table table-bordered dt-responsive table-condensed nowrap display table-hover">
+								<table id="tablaAuditoria" width="100%"
+									class="table table-bordered dt-responsive table-condensed nowrap display table-hover">
 								</table>
 							</div>
 						</div>
@@ -52,8 +53,9 @@
 		<script type="text/javascript" th:src="@{/resources/js/jquery/moment.min.js}"></script>
 		<script type="text/javascript" th:src="@{/resources/js/jquery/daterangepicker.js}"></script>
 		<script th:src="@{/resources/js/util/formularioUtil.js}"></script>
-		<script th:src="@{/resources/js/pagina/seguridad/{seguridad}/{seguridad}.js(seguridad = ${seguridad})}"></script>
-
+		<script
+			th:src="@{/resources/js/pagina/seguridad/{seguridad}/{seguridad}.js(seguridad = ${seguridad})}"></script>
+		
 	</th:block>
 </body>
 </html>

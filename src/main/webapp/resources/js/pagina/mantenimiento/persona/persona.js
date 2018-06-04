@@ -10,7 +10,6 @@ $(document).ready(function() {
 		$actualizarMantenimiento : $("#actualizarMantenimiento"),
 		idTipoDocumento : "",
 		numeroDocumento : "",
-		$sexos : $("#sexos"),
 		$tiposDocumento : $("#tiposDocumento"),
 		filtrosSeleccionables : {}
 	};
@@ -18,7 +17,6 @@ $(document).ready(function() {
 	$formMantenimiento = $("#formMantenimiento");
 
 	$funcionUtil.crearSelect2($local.$tiposDocumento, "Seleccione un Tipo de Documento");
-	$funcionUtil.crearSelect2($local.$sexos, "Seleccione un Sexo");
 
 	$.fn.dataTable.ext.errMode = 'none';
 
@@ -43,10 +41,10 @@ $(document).ready(function() {
 			$tablaFuncion.aniadirFiltroDeBusquedaEnEncabezado(this, $local.$tablaMantenimiento);
 		},
 		"columnDefs" : [ {
-			"targets" : [ 0, 1, 2, 3, 4],
+			"targets" : [ 0, 1, 2, 3 ],
 			"className" : "all filtrable",
 		}, {
-			"targets" : 5,
+			"targets" : 4,
 			"className" : "all dt-center",
 			"defaultContent" : $variableUtil.botonActualizar + " " + $variableUtil.botonEliminar
 		} ],
@@ -68,11 +66,6 @@ $(document).ready(function() {
 				return row.nombres;
 			},
 			"title" : "Nombres"
-		}, {
-			"data" : function(row) {
-				return $funcionUtil.unirCodigoDescripcion(row.idSexo, row.descripcionSexo);
-			},
-			"title" : "Sexo"
 		}, {
 			"data" : null,
 			"title" : 'Acción'

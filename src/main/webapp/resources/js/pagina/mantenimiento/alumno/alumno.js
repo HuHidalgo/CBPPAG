@@ -10,6 +10,7 @@ $(document).ready(function() {
 		$actualizarMantenimiento : $("#actualizarMantenimiento"),
 		$tiposDocumento : $("#tiposDocumento"),
 		$sexos : $("#sexos"),
+		$tiposAlumno : $("#tiposAlumno"),
 		$facultades : $("#facultades"),
 		$escuelas : $("#escuelas"),
 		$discapacidades : $("#discapacidades"),
@@ -20,13 +21,12 @@ $(document).ready(function() {
 	};
 
 	$formMantenimiento = $("#formMantenimiento");
-	$tiposAlumno = $("#tiposAlumno");
 
 	$funcionUtil.crearDatePickerSimple($local.$fechaNacimiento, "DD/MM/YYYY");
 
 	$funcionUtil.crearSelect2($local.$tiposDocumento, "Seleccione un Tipo de Documento");
 	$funcionUtil.crearSelect2($local.$sexos, "Seleccione un Sexo");
-	$funcionUtil.crearSelect2($tiposAlumno, "Seleccione un Tipo");
+	$funcionUtil.crearSelect2($local.$tiposAlumno, "Seleccione un Tipo");
 	$funcionUtil.crearSelect2($local.$facultades, "Seleccione una Facultad");
 	$funcionUtil.crearSelect2($local.$escuelas, "Seleccione una Escuela");
 	$funcionUtil.crearSelect2($local.$discapacidades, "Seleccione una Discapacidad");
@@ -234,8 +234,9 @@ $(document).ready(function() {
 					$funcionUtil.mostrarMensajeDeError(response.responseJSON, $formMantenimiento);
 				}
 			},
-			success : function(alumno) {
+			success : function(alumnos) {
 				$funcionUtil.notificarException($variableUtil.registroExitoso, "fa-check", "Aviso", "success");
+				var alumno = alumnos[0];
 				var row = $local.tablaMantenimiento.row.add(alumno).draw();
 				row.show().draw(false);
 				$(row.node()).animateHighlight();
@@ -288,9 +289,9 @@ $(document).ready(function() {
 					$funcionUtil.mostrarMensajeDeError(response.responseJSON, $formMantenimiento);
 				}
 			},
-			success : function(alumno) {
+			success : function(alumnos) {
 				$funcionUtil.notificarException($variableUtil.actualizacionExitosa, "fa-check", "Aviso", "success");
-				var row = $local.tablaMantenimiento.row($local.$filaSeleccionada).data(alumno).draw();
+				var row = $local.tablaMantenimiento.row($local.$filaSeleccionada).data(alumnos[0]).draw();
 				row.show().draw(false);
 				$(row.node()).animateHighlight();
 				$local.$modalMantenimiento.PopupWindow("close");

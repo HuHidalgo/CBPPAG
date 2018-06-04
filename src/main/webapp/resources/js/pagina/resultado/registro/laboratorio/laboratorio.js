@@ -6,55 +6,31 @@ $(document).ready(function() {
 		$filaSeleccionada : "",
 		$registrarResultado : $("#registrarResultado"),
 		$modalResultado : $("#modalResultado"),
-
-		// Combo
 		$indicadoresRPR : $("#indicadoresRPR"),
 		$diluciones : $("#diluciones"),
 		$indicadoresHemograma : $("#indicadoresHemograma"),
-		$gruposSanguineo : $("#gruposSanguineo"),
-		$factoresRh : $("#factoresRh"),
-
 		$divDilucion : $("#divDilucion"),
 		$hemoglobina : $("#hemoglobina"),
 		$estadoHemoglobina : $("#estadoHemoglobina"),
 		$divObservacion : $("#divObservacion"),
 		$observacion : $("#observacion"),
-
-		// Registro
 		numeroRegistroSeleccionado : 0,
 		anioSeleccionado : "",
 		idSexoSeleccionado : "",
-		tipoAlumnoSeleccionado : "",
-
-		// Formulario
-		$divFormulario : $(".div-formulario"),
-		
-		/* Datos */
-		$inputCodigo : $("#codigo"),
-		$inputApellidosNombres : $("#apellidosNombres")
 	};
 
-	/* Variable Global */
 	$formResultadoExamenMedico = $("#formResultadoExamenMedico");
-	
+
 	$funcionUtil.crearSelect2($local.$indicadoresRPR, "Seleccione un RPR");
 	$funcionUtil.crearSelect2($local.$diluciones, "Seleccione una Dilución");
 	$funcionUtil.crearSelect2($local.$indicadoresHemograma, "Seleccione un Hemograma");
-	$funcionUtil.crearSelect2($local.$gruposSanguineo, "Seleccione un Gpo. Sanguíneo");
-	$funcionUtil.crearSelect2($local.$factoresRh, "Seleccione un Factor de RH");
 
-	$local.$tablaRegistroResultado.on('xhr.dt', function(e, settings, json, xhr) {
-		if (xhr.status == 500) {
-			$local.tablaRegistroResultado.clear().draw();
-		}
-	});
-	
 	$local.$modalResultado.PopupWindow({
 		title : "Resultado de Examen Médico de Laboratorio",
 		autoOpen : false,
 		modal : false,
-		height : $variableUtil.altoModalResultadoLaboratorio,
-		width : $variableUtil.anchoModalResultadoLaboratorio
+		height : 370,
+		width : 700
 	});
 
 	$local.$modalResultado.on("open.popupwindow", function() {
@@ -64,8 +40,7 @@ $(document).ready(function() {
 		$local.$indicadoresHemograma.trigger("change");
 		$local.$indicadoresRPR.val("N").trigger("change.select2");
 		$local.$indicadoresHemograma.val("N").trigger("change.select2");
-		$local.$gruposSanguineo.val("O").trigger("change.select2");
-		$local.$factoresRh.val("P").trigger("change.select2");
+		
 	});
 
 	$local.$modalResultado.on("close.popupwindow", function() {
@@ -73,7 +48,6 @@ $(document).ready(function() {
 		$local.numeroRegistroSeleccionado = 0;
 		$local.anioSeleccionado = "";
 		$local.idSexoSeleccionado = "";
-		$local.tipoAlumnoSeleccionado = "";
 	});
 
 	$local.tablaRegistroResultado = $local.$tablaRegistroResultado.DataTable({
@@ -161,16 +135,9 @@ $(document).ready(function() {
 		$funcionUtil.prepararFormularioRegistro($formResultadoExamenMedico);
 		$local.$filaSeleccionada = $(this).parents("tr");
 		var examenMedicoLaboratorio = $local.tablaRegistroResultado.row($local.$filaSeleccionada).data();
-		var apellidosNombres = examenMedicoLaboratorio.nombres + ", " + examenMedicoLaboratorio.apellidoPaterno + " " + examenMedicoLaboratorio.apellidoMaterno;
 		$local.numeroRegistroSeleccionado = examenMedicoLaboratorio.numeroRegistro;
 		$local.anioSeleccionado = examenMedicoLaboratorio.anio;
 		$local.idSexoSeleccionado = examenMedicoLaboratorio.idSexo;
-		$local.tipoAlumnoSeleccionado = examenMedicoLaboratorio.tipoAlumno;
-		$local.$inputCodigo.val(examenMedicoLaboratorio.codigoAlumno);
-		$local.$inputApellidosNombres.val(apellidosNombres);
-		$funcionUtil.aniadirTitleParaTooltip($local.$inputApellidosNombres, apellidosNombres);
-		$local.$divFormulario.addClass("hidden");
-		$("#" + $local.tipoAlumnoSeleccionado).removeClass("hidden");
 		$local.$modalResultado.PopupWindow("open");
 	});
 
@@ -200,7 +167,7 @@ $(document).ready(function() {
 		examenMedicoLaboratorio.anio = $local.anioSeleccionado;
 		$.ajax({
 			type : "POST",
-			url : $variableUtil.root + "examenmedico/laboratorio?accion=registrar&tipoAlumno=" + $local.tipoAlumnoSeleccionado,
+			url : $variableUtil.root + "examenmedico/laboratorio?accion=registrarExamenMedicoRegularLaboratorio",
 			data : JSON.stringify(examenMedicoLaboratorio),
 			beforeSend : function(xhr) {
 				$local.$registrarResultado.attr("disabled", true).find("i").removeClass("fa-floppy-o").addClass("fa-spinner fa-pulse fa-fw");

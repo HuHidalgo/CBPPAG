@@ -22,23 +22,27 @@
 					</div>
 				</form>
 			</fieldset>
-			<th:block th:replace="~{template/fragments/mantenimiento/formularioAdicionalDetalleMantenimiento :: ${tipo}}?:~{}">
-			</th:block>
 		</div>
 		<div class="col-md-7 col-sm-7 col-xs-7">
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<ul class="panel-controls">
-						<li><select class="pull-left" id="filtroParaDetalleTablaMantenimiento">
-							</select></li>
-						<li>&nbsp; &nbsp; &nbsp;&nbsp;</li>
-						<li><button id="aniadirDetalleMantenimiento" class="btn btn-primary">
+						<li>
+							<select class="pull-left" id="filtroParaDetalleTablaMantenimiento"></select>
+						</li>
+						<li>
+							&nbsp; &nbsp; &nbsp;&nbsp;
+						</li>
+						<li>
+							<button id="aniadirDetalleMantenimiento" class="btn btn-primary">
 								<i class="fa fa-plus"></i> <span>Añadir</span>
-							</button></li>
+							</button>
+						</li>
 					</ul>
 				</div>
 				<div class="panel-body">
-					<table id="tablaDetalleMantenimiento" class="table table-bordered dt-responsive table-condensed nowrap display table-hover">
+					<table id="tablaDetalleMantenimiento" width="100%"
+						class="table table-bordered dt-responsive table-condensed nowrap display table-hover">
 					</table>
 				</div>
 			</div>

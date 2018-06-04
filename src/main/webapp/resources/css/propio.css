@@ -4,14 +4,13 @@ body {
   
 }
 
-#ConsultaAdmistrativaExamenMedico .nav-pills > li > a {
+#ReportesIngresos .nav-pills > li > a {
   border-radius: 8px 8px 0 0;
-  background-color: #D7BDE2;
+  background-color: #F0B846;
   font-weight: bold;
-  font-size: medium;
 }
 
-#ConsultaAdmistrativaExamenMedico .tab-content {
+#ReportesIngresos .tab-content {
   color : black;
   background-color: white;
   padding : 0px 0px 0px 0px;

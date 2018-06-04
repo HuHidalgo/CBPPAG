@@ -9,37 +9,32 @@ $(document).ready(function() {
 		return $(this).attr('href') === path;
 	}).parent("li").addClass('active').parents("li.xn-openable").addClass("active");
 
+	$localUtil = {
+		$navegacionFechaProceso : $("#navegacionFechaProceso")
+	}
+
 	$variableUtil = {
-		anchoModalResultadoLaboratorio : 789,
-		altoModalResultadoLaboratorio : 553,
-		anchoModalResultadoRadiologico : 700,
-		altoModalResultadoRadiologico : 466,
-		anchoModalResultadoTriaje : 785,
-		altoModalResultadoTriaje : 569,
-		anchoModalResultadoOdontologico : 717,
-		altoModalResultadoOdontologico : 609,
-		anchoModalResultadoPsicologico : 729,
-		altoModalResultadoPsicologico : 442,
 		csrf : $('meta[name=_csrf]').attr("content"),
 		root : $("meta[name='root']").attr("content"),
 		posIzquierdo : "izquierdo",
 		posDerecho : "derecho",
 		rutaIconoSimp : this.root + "resources/css/icono-simp/",
+		botonVerGastos : "<button class='btn btn-xs btn-warning ver-gastos' title='Ver Gastos' data-tooltip='tooltip'><i class='fa fa-money'></i>  </button>",
 		botonEliminar : "<button class='btn btn-xs btn-danger eliminar' title='Eliminar' data-tooltip='tooltip'><i class='fa fa-trash'></i></button>",
 		botonActualizar : "<button class='btn btn-xs btn-primary actualizar' title='Actualizar' data-tooltip='tooltip'><i class='fa fa-pencil-square'></i></button>",
-		botonExportarDocx : "<button class='btn btn-xs btn-primary exportar-docx' title='Exportar .DOCX' data-tooltip='tooltip'><i class='fa fa-file-word-o'></i></button>",
 		botonRegistrar : "<button class='btn btn-xs btn-success registrar' title='Registrar' data-tooltip='tooltip'><i class='fa fa-floppy-o'></i></button>",
+		botonAniadirEgresos : "<button class='btn btn-xs btn-success aniadir-egresos' title='Añadir Egresos' data-tooltip='tooltip'><i class='fa fa-plus'></i></button>",
 		botonAniadirDetalle : "<button class='btn btn-xs btn-success aniadir-detalle' title='Añadir' data-tooltip='tooltip'><i class='fa fa-plus'></i></button>",
 		botonVerDetalle : "<button class='btn btn-xs btn-primary ver-detalle' title='Ver Detalle' data-tooltip='tooltip'><i class='fa fa-eye'></i></button>",
-		botonEjecutar : "<button class='btn btn-xs btn-success ejecutar' title='Ejecutar proceso' data-tooltip='tooltip'><i class='fa fa-flash'></i></button>",
+		botonVerComision : "<button class='btn btn-xs btn-success ver-comisiones' title='Ver Comisiones' data-tooltip='tooltip'><i class='fa fa-money'></i></button>",
 		botonPermisos : "<button class='btn btn-xs btn-success permiso' title='Asignar permisos' data-tooltip='tooltip'><i class='fa fa-check-square-o'></i></button>",
 		tableBotonExportarXlsx : "<button id='exportarXlsx' class='btn btn-success pull-right input-sm' type='button'><i class='fa fa-download'></i> XLSX</button>",
 		$labelPrimary : $("<label class='label label-primary label-size-12'></label>"),
 		$labelSuccess : $("<label class='label label-success label-size-12'></label>"),
 		$labelDanger : $("<label class='label label-danger label-size-12'></label>"),
 		labelAtendido : "<label class='label label-primary label-size-12'>ATENDIDO</label>",
-		labelNoRegistrado : "<label class='label label-primary label-size-12' title='AÚN NO REGISTRADO' data-tooltip='tooltip'>N/R</label>",
 		registroExitoso : "Se registró correctamente",
+		registroExitosoGasto : "Se añadió gasto correctamente",
 		asignacionExitosa : "Se asignaron los recursos exitosamente",
 		busquedaSinResultados : "No se han encontrado resultados para su búsqueda. Pruebe diferentes opciones o filtros.",
 		cambioContrasenia : "<strong>¡Cuidado!</strong> Cambie su contraseña, sino sera bloqueado",
@@ -59,23 +54,17 @@ $(document).ready(function() {
 	};
 
 	$funcionUtil = {
-		aniadirTitleParaTooltip : function($element, titulo) {
-			$element.attr({
-				"title" : titulo,
-				"data-original-title" : titulo
-			});
-		},
 		esHemoglobinaObservado : function(hemoglobina, sexo) {
 			return (!((hemoglobina >= 11 && sexo == "F") || (hemoglobina >= 12 && sexo == "M"))) ? true : false;
 		},
 		determinarEstadoHemoglobina : function(hemoglobina, sexo, $spanEstadoHemoglobina) {
-			var hemoglobinaFloat = parseFloat(hemoglobina);
-			if (!hemoglobinaFloat) {
+			var hemoglobina = parseFloat(hemoglobina);
+			if (!hemoglobina) {
 				$spanEstadoHemoglobina.text('NINGUNO');
 				$spanEstadoHemoglobina.removeClass("input-group-addon-success input-group-addon-danger");
 				return;
 			}
-			var observado = this.esHemoglobinaObservado(hemoglobinaFloat, sexo);
+			var observado = this.esHemoglobinaObservado(hemoglobina, sexo);
 			$spanEstadoHemoglobina.text((observado) ? 'OBSERVADO' : 'NORMAL');
 			$spanEstadoHemoglobina.removeClass((observado) ? "input-group-addon-success" : "input-group-addon-danger");
 			$spanEstadoHemoglobina.addClass((observado) ? "input-group-addon-danger" : "input-group-addon-success");
@@ -191,6 +180,12 @@ $(document).ready(function() {
 			this.limpiarMensajesDeError(formulario);
 			formulario.validate().resetForm();
 		},
+		prepararFormularioRegistro2 : function(formulario) {
+			formulario.find(".elemento-desactivable").prop("disabled", false);
+			this.limpiarCamposFormulario(formulario);
+			this.limpiarMensajesDeError(formulario);
+			formulario.validate().resetForm();
+		},
 		prepararFormularioActualizacion : function(formulario) {
 			formulario.find(".elemento-desactivable").prop("disabled", true);
 			this.limpiarMensajesDeError(formulario);
@@ -214,15 +209,6 @@ $(document).ready(function() {
 				return index === $.inArray(el, array);
 			});
 		},
-		unirCodigoDescripcion : function(codigo, descripcion) {
-			if (codigo == null || codigo == undefined) {
-				codigo = "";
-			}
-			if (descripcion == null || descripcion == undefined) {
-				descripcion = "";
-			}
-			return codigo + " - " + descripcion;
-		},
 		crearSelect2 : function(select, textoPorDefecto) {
 			var propiedad = {
 				placeholder : textoPorDefecto,
@@ -244,17 +230,17 @@ $(document).ready(function() {
 			}
 			select.select2(propiedad);
 		},
-		templateResultCie10 : function(data) {
-			return $funcionUtil.unirCodigoDescripcion(data.id, data.text);
-		},
-		templateSelectionCie10 : function(data) {
-			if (data.id == "") {
-				return "Seleccione un CIE 10";
+		unirCodigoDescripcion : function(codigo, descripcion) {
+			if (codigo == null || codigo == undefined) {
+				codigo = "";
 			}
-			return $funcionUtil.unirCodigoDescripcion(data.id, data.text);
+			if (descripcion == null || descripcion == undefined) {
+				descripcion = "";
+			}
+			return codigo + " - " + descripcion;
 		},
 		crearDatePickerSimple : function(input, format) {
-			format = format || "DD/MM/YYYY";
+			format = format || "DD MMMM YYYY";
 			input.daterangepicker({
 				"singleDatePicker" : true,
 				"showDropdowns" : true,
@@ -287,7 +273,7 @@ $(document).ready(function() {
 				"opens" : "left",
 				"locale" : {
 					direction : 'ltr',
-					format : 'DD/MM/YYYY',
+					format : 'D MMMM, YYYY',
 					separator : ' - ',
 					applyLabel : 'Aplicar',
 					cancelLabel : 'Cancelar',
@@ -340,7 +326,7 @@ $(document).ready(function() {
 				"opens" : "left",
 				"locale" : {
 					direction : 'ltr',
-					format : 'DD/MM/YYYY',
+					format : 'D MMMM, YYYY',
 					separator : ' - ',
 					applyLabel : 'Aplicar',
 					cancelLabel : 'Limpiar',
@@ -355,7 +341,7 @@ $(document).ready(function() {
 			}, function(start, end, label) {
 			});
 			input.on('apply.daterangepicker', function(ev, picker) {
-				$(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+				$(this).val(picker.startDate.format('D MMM, YY') + ' - ' + picker.endDate.format('D MMM, YY'));
 			});
 			input.on('cancel.daterangepicker', function(ev, picker) {
 				$(this).val('');

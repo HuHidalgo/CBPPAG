@@ -8,15 +8,10 @@ $(document).ready(function() {
 		$registrarResultado : $("#registrarResultado"),
 		$modalResultado : $("#modalResultado"),
 		$observacion : $("#observacion"),
-		/* Datos */
-		$inputCodigo : $("#codigo"),
-		$inputApellidosNombres : $("#apellidosNombres"),
-		/* Seleccion */
 		numeroRegistroSeleccionado : 0,
 		anioSeleccionado : ""
 	};
 
-	/* Variable Global */
 	$formResultadoExamenMedico = $("#formResultadoExamenMedico");
 
 	$funcionUtil.crearSelect2($local.$resultadosRadiologico, "Seleccione un Resultado");
@@ -25,8 +20,8 @@ $(document).ready(function() {
 		title : "Resultado de Examen Médico Radiológico",
 		autoOpen : false,
 		modal : false,
-		height : $variableUtil.altoModalResultadoRadiologico,
-		width : $variableUtil.anchoModalResultadoRadiologico
+		height : 285,
+		width : 700
 	});
 
 	$local.$modalResultado.on("open.popupwindow", function() {
@@ -123,12 +118,8 @@ $(document).ready(function() {
 		$funcionUtil.prepararFormularioRegistro($formResultadoExamenMedico);
 		$local.$filaSeleccionada = $(this).parents("tr");
 		var examenMedicoRadiologico = $local.tablaRegistroResultado.row($local.$filaSeleccionada).data();
-		var apellidosNombres = examenMedicoRadiologico.nombres + ", " + examenMedicoRadiologico.apellidoPaterno + " " + examenMedicoRadiologico.apellidoMaterno;
 		$local.numeroRegistroSeleccionado = examenMedicoRadiologico.numeroRegistro;
 		$local.anioSeleccionado = examenMedicoRadiologico.anio;
-		$local.$inputCodigo.val(examenMedicoRadiologico.codigoAlumno);
-		$local.$inputApellidosNombres.val(apellidosNombres);
-		$funcionUtil.aniadirTitleParaTooltip($local.$inputApellidosNombres, apellidosNombres);
 		$local.$modalResultado.PopupWindow("open");
 	});
 

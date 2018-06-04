@@ -27,19 +27,6 @@ $(document).ready(function() {
 				required : true,
 				notOnlySpace : true,
 				rangelength : [ 3, 250 ]
-			},
-			/* Ingresantes */
-			idGrupoSanguineo : {
-				required : true,
-				notOnlySpace : true,
-				lettersonly : true,
-				selectlength : [ 1, 2 ]
-			},
-			idFactorRh : {
-				required : true,
-				notOnlySpace : true,
-				lettersonly : true,
-				selectlength : [ 1, 1 ]
 			}
 		},
 		messages : {
@@ -67,19 +54,6 @@ $(document).ready(function() {
 				required : "Ingrese una Observaci&oacute;n.",
 				notOnlySpace : "La Observaci&oacute;n no debe contener solo espacios en blanco.",
 				rangelength : "La Observaci&oacute;n debe contener entre 3 y 250 car&aacute;cteres."
-			},
-			/* Ingresantes */
-			idGrupoSanguineo : {
-				required : "Seleccione un Grupo Sangu&iacute;neo.",
-				notOnlySpace : "El Grupo Sangu&iacute;neo no debe contener solo espacios en blanco.",
-				lettersonly : "El Grupo Sangu&iacute;neo debe contener solo car&aacute;cteres.",
-				selectlength : "El Grupo Sangu&iacute;neo debe contener entre <b>1 y 2 car&aacute;cteres</b>."
-			},
-			idFactorRh : {
-				required : "Seleccione un Factor RH.",
-				notOnlySpace : "El Factor RH no debe contener solo espacios en blanco.",
-				lettersonly : "El Factor RH debe contener solo car&aacute;cteres.",
-				selectlength : "El Factor RH debe contener <b>1 car&aacute;cter</b>."
 			}
 		}
 	});

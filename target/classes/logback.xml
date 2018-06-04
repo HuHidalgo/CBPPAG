@@ -35,7 +35,7 @@
 	<logger name="org.springframework" level="error" additivity="false">
 		<appender-ref ref="STDOUT" />
 	</logger>
-	<logger name="com.cenpro.cbppag.controller" level="error" additivity="false">
+	<logger name="com.cenpro.sircie.controller" level="error" additivity="false">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="file-error" />
 	</logger>

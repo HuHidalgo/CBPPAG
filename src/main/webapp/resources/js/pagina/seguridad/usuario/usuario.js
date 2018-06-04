@@ -74,7 +74,7 @@ $(document).ready(function() {
 			"title" : "Nombres"
 		}, {
 			"data" : function(row) {
-				return $funcionUtil.unirCodigoDescripcion(row.idPerfil, row.descripcionPerfil);
+				return $funcionUtil.unirCodigoDescripcion(row.idPerfil, row.nombrePerfil);
 			},
 			"title" : "Perfil"
 		}, {
@@ -102,7 +102,7 @@ $(document).ready(function() {
 		title : "Mantenimiento de Usuario",
 		autoOpen : false,
 		modal : false,
-		height : 415,
+		height : 430,
 		width : 626,
 	});
 

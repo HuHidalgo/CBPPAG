@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html 	xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+	<div id="modalActualizarGasto" class="row" th:fragment="modalActualizarGasto" th:with="tipo=${tipo}">
+		<fieldset class="well">
+			<legend class="well-legend">Formulario de Mantenimiento</legend>
+			<form id="formMantenimientoGasto" class="form-horizontal" role="form">
+				<th:block 
+					th:replace="~{template/fragments/egresos/planificacion/modalActualizarGasto :: ${tipo}}?:~{}">
+				</th:block>
+				<div id="botonesForm" class="form-group">
+					<div class="col-lg-12 text-center">
+						<button id="actualizarMantenimientoGasto" type="button" class="btn btn-primary">
+							<i class="fa fa-pencil-square"></i> Actualizar
+						</button>
+					</div>
+				</div>
+			</form>
+		</fieldset>
+	</div>
+
+	<th:block th:fragment="gastos">
+		<div class="col-xs-12">
+			<fieldset class="well">
+				<legend class="well-legend">Datos del Gasto</legend>
+				<div class="form-group">
+					<label class="col-lg-2 control-label">Proveedor</label>
+					<div class="col-lg-10">
+						<input class="form-control upperCase" data-skip-falsy="true" data-value-type="string" 
+						name="nombreProveedor">
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="group">
+						<label class="col-lg-2 control-label">Unidad</label>
+						<div class="col-lg-10">
+							<select id="unidades" class="form-control select2 elemento-desactivable" name="codigoUnidad">
+								<option value="-1" selected="selected">
+									Seleccione una Unidad
+								</option>
+								<option th:each="unidad : ${unidades}" th:value="${unidad.codigoUnidad}"
+									th:text="|${unidad.nroConcepto} - ${unidad.nombreUnidad}|"></option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 control-label">Partida</label>
+					<div class="col-lg-10">
+						<select id="partidas" class="form-control select2" name="clasificador">
+							<option value="" disabled="disabled" selected="selected">Elija partida</option>
+							<option th:each="partida: ${partidas}" th:value="${partida.clasificador}"
+								th:text="|${partida.clasificador} - ${partida.descripcion}|"></option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 control-label">Tarea</label>
+					<div class="col-lg-10">
+						<select id="tareas" class="form-control select2" name="codigoTarea">
+							<option value="" disabled="disabled" selected="selected">Elija Tarea</option>
+							<option th:each="tarea: ${tareas}" th:value="${tarea.codigoTarea}"
+								th:text="|${tarea.codigoTarea} - ${tarea.nomTarea}|"></option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 control-label">Meta</label>
+					<div class="col-lg-10">
+						<select id="metas" class="form-control select2" name="nroMeta">
+							<option value="" disabled="disabled" selected="selected">Elija Meta</option>
+							<option th:each="meta : ${metas}" th:value="${meta.nroMeta}"
+								th:text="|${meta.nroMeta} - ${meta.nomMeta}|"></option>
+						</select>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</th:block>
+</body>
+</html>

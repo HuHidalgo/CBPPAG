@@ -27,11 +27,6 @@ $(document).ready(function() {
 				required : true,
 				notOnlySpace : true,
 				rangelength : [ 3, 100 ]
-			},
-			idSexo : {
-				required : true,
-				notOnlySpace : true,
-				selectlength : [ 1, 1 ]
 			}
 		},
 		messages : {
@@ -59,11 +54,6 @@ $(document).ready(function() {
 				required : "Ingrese el(os) Nombre(s).",
 				notOnlySpace : "El(os) Nombre(s) no puede contener solo espacios en blanco.",
 				rangelength : "El(os) Nombre(s) debe contener entre 3 y 100 car&aacute;cteres."
-			},
-			idSexo : {
-				required : "Seleccione un Sexo.",
-				notOnlySpace : "El Sexo no puede contener solo espacios en blanco.",
-				selectlength : "El Sexo debe 1 contener car&aacute;cter."
 			}
 		}
 	});

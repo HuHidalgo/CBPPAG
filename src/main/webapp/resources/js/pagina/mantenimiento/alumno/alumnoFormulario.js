@@ -54,19 +54,12 @@ $(document).ready(function() {
 				range : [ 0, 99 ]
 			},
 			correoInstitucional : {
-				required : function(){
-					return $tiposAlumno.val() == "R";
-				},
-				notOnlySpaceOrEmpty : true,
-				email: true,
-				maxlength : 50
+				required : true,
+				notOnlySpace : true,
+				rangelength : [ 3, 50 ]
 			},
 			correoPersonal : {
-				required : function(){
-					return $tiposAlumno.val() == "I";
-				},
 				notOnlySpaceOrEmpty : true,
-				email: true,
 				maxlength : 50
 			},
 			telefonoFijo : {
@@ -138,14 +131,11 @@ $(document).ready(function() {
 			},
 			correoInstitucional : {
 				required : "Ingrese el Correo Institucional.",
-				notOnlySpaceOrEmpty : "El Correo Institucional no debe contener solo espacios en blanco.",
-				email: "El Correo Institucional debe tener el formato <b>example@compania.com</b>.",
-				maxlength : "El Correo Institucional no debe contener m&aacute;s de 50 car&aacute;cteres."
+				notOnlySpace : "El Correo Institucional no debe contener solo espacios en blanco.",
+				rangelength : "El Correo Institucional debe contener entre 3 y 50 car&aacute;cteres."
 			},
 			correoPersonal : {
-				required : "Ingrese el Correo Personal.",
-				notOnlySpaceOrEmpty : "El Correo Personal no debe contener solo espacios en blanco.",
-				email: "El Correo Personal debe tener el formato <b>example@compania.com</b>.",
+				notOnlySpace : "El Correo Personal no debe contener solo espacios en blanco.",
 				maxlength : "El Correo Personal no debe contener m&aacute;s de 50 car&aacute;cteres."
 			},
 			telefonoFijo : {

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
-	layout:decorator="layout">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" layout:decorator="layout">
 <head>
 <title>Mant. de MultitaTabla</title>
 </head>
@@ -28,7 +28,8 @@
 							</ul>
 						</div>
 						<div class="panel-body">
-							<table id="tablaMantenimiento" class="table table-bordered table-condensed nowrap display table-hover">
+							<table id="tablaMantenimiento" width="100%"
+								class="table table-bordered table-condensed nowrap display table-hover">
 							</table>
 						</div>
 					</div>
@@ -38,7 +39,8 @@
 		<th:block
 			th:replace="~{template/fragments/mantenimiento/filtrosParaTablaMantenimiento :: filtrosParaTablaMantenimiento(tipo=multiTabCab)} ?: ~{}">
 		</th:block>
-		<th:block th:replace="~{template/fragments/mantenimiento/modalMantenimiento :: modalMantenimiento(tipo=multiTabCab)}?:~{}">
+		<th:block
+			th:replace="~{template/fragments/mantenimiento/modalMantenimiento :: modalMantenimiento(tipo=multiTabCab)}?:~{}">
 		</th:block>
 		<th:block
 			th:replace="~{template/fragments/mantenimiento/modalDetalleMantenimiento :: modalDetalleMantenimiento(tipo=multiTabCab)}?:~{}">

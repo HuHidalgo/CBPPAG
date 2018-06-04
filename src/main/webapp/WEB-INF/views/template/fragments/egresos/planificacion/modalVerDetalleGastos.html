@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+	<div id="modalVerDetalleGastos" class="row" th:fragment="modalVerDetalleGastos" th:with="tipo=${tipo}">
+		<div class="col-md-12 col-sm-12 col-xs-12">
+			<fieldset class="well">
+				<form id="formVerDetalleGastos" class="form-horizontal" role="form">
+					<th:block 
+						th:replace="~{template/fragments/egresos/planificacion/modalVerDetalleGastos :: ${tipo}}?:~{}">
+					</th:block>
+				</form>
+			</fieldset>
+		</div>
+		<div class="col-md-12 col-sm-12 col-xs-12">
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<table id="tablaVerDetalleGastos" width="100%"
+						class="table table-bordered dt-responsive table-condensed display">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<th:block th:fragment="verGastos">
+		
+	</th:block>
+</body>
+</html>

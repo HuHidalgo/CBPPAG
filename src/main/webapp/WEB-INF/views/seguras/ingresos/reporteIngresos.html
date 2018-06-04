@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" layout:decorator="layout">
+<head>
+<title>Reporte de Ingresos</title>
+</head>
+<th:block layout:fragment="style">
+	<link th:href="@{/resources/css/dataTables.bootstrap.min.css}" rel="stylesheet" />
+	<link th:href="@{/resources/css/responsive.bootstrap.min.css}" rel="stylesheet" />
+	<link th:href="@{/resources/css/popupwindow.css}" rel="stylesheet" />
+	<link th:href="@{/resources/css/jquery-confirm.min.css}" rel="stylesheet" />
+	<link th:href="@{/resources/css/select2.min.css}" rel="stylesheet" />
+	<link th:href="@{/resources/css/select2-bootstrap.min.css}" rel="stylesheet" />
+	<link th:href="@{/resources/css/daterangepicker.css}" rel="stylesheet" />
+	<link th:href="@{/resources/css/propio.css}" rel="stylesheet" />
+</th:block>
+<body>
+	<th:block layout:fragment="content">
+		
+		<div id="ReportesIngresos" class="container col-md-12">
+			<ul class="nav nav-pills">
+				<li class="active">
+					<a data-toggle="tab" href="#conceptosRep">Por Conceptos</a>
+				</li>
+				<li>
+					<a data-toggle="tab" href="#cursosRep">Por Cursos</a>
+				</li>
+				<li>
+					<a data-toggle="tab" href="#aportantesRep">Por Aportante</a>
+				</li>
+				<li>
+					<a data-toggle="tab" href="#registroIngreso">Por Registro de Ingreso</a>
+				</li>
+			</ul>
+			<div class="tab-content clearfix">
+				<div id="conceptosRep" class="tab-pane fade in active">
+					<div class="page-content-wrap">
+						<div class="row">
+							<div class="col-md-12 col-sm-12 col-xs-12">
+								<div class="panel panel-default">
+									<div class="panel-body">
+										<fieldset class="well">
+											<legend class="well-legend">Búsqueda</legend>
+											<form id="formReporteIngresosConceptos" class="form-horizontal">
+												<div class="form-group">
+													<div class="group">
+														<label class="control-label col-lg-1">Unidad</label>
+														<div class="col-lg-6">
+															<select id="unidades" class="form-control select2" name="codigoUnidad">
+																<option value="" disabled="disabled" selected="selected">
+																	Seleccione una Unidad
+																</option>
+																<option th:each="unidad : ${unidades}" th:value="${unidad.codigoUnidad}"
+																	th:text="|${unidad.nroConcepto} - ${unidad.nombreUnidad}|">
+																</option>
+															</select>
+														</div>
+													</div>
+													<div class="group">
+														<label class="control-label col-lg-1">Fecha</label>
+														<div class="col-lg-4">
+															<div class="input-group">
+																<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+																<input id="rangoFechaBusqueda" type="text" class="form-control filtro"/>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="form-group">
+													<div class="group">
+														<label class="control-label col-lg-1">Concepto</label>
+														<div class="col-lg-6">
+															<select id="conceptos" class="form-control select2" name="idConcepto">
+																<option value="" disabled="disabled" selected="selected">
+																	Seleccione un Concepto de pago
+																</option>
+															</select>
+														</div>
+													</div>
+												</div>
+												<div class="form-group">
+													<div class="col-lg-12 text-center">
+														<button id="limpiar" type="button" class="btn btn-default">
+															<i class="fa fa-refresh"></i> Limpiar
+														</button>
+														<button id="buscar" type="button" class="btn btn-primary">
+															<i class="fa fa-search"></i> Buscar
+														</button>
+														<button id="exportar" type="button" class="btn btn-success" 
+																title="Exportar en .XLSX" data-tooltip="tooltip">
+															<i class="fa fa-download"></i> Exportar
+														</button>
+													</div>
+												</div>
+											</form>
+										</fieldset>
+										<div id="resultadoReporteIngresosConceptos" class="col-xs-12 tabs">
+											<ul class="nav nav-tabs">
+												<li class="active">
+													<a data-toggle="tab" href="#detalle">Detalle</a>
+												</li>
+												<li>
+													<a data-toggle="tab" href="#general">General</a>
+												</li>
+											</ul>
+											<div class="tab-content">
+												<div id="detalle" class="tab-pane fade in active">
+													<table id="tablaReporteIngresosDetalle" width="100%"
+														class="table table-bordered table-condensed nowrap display table-hover">
+													</table>
+												</div> 
+												<div id="general" class="tab-pane fade in">
+													<table id="tablaReporteIngresosGeneral" width="100%"
+														class="table table-bordered table-condensed nowrap display table-hover">
+													</table>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="cursosRep" class="tab-pane fade in">
+					<div class="page-content-wrap">
+						<div class="row">
+							<div class="col-md-12 col-sm-12 col-xs-12">
+								<div class="panel panel-default">
+									<div class="panel-body">
+										<fieldset class="well">
+											<legend class="well-legend">Búsqueda</legend>
+											<form id="formReporteIngresosCursos" class="form-horizontal">
+												<div class="form-group">
+													<div class="group">
+														<label class="control-label col-lg-1">Unidad</label>
+														<div class="col-lg-6">
+															<select id="unidades1" class="form-control select2" name="codigoUnidad">
+																<option value="" disabled="disabled" selected="selected">
+																	Seleccione una Unidad
+																</option>
+																<option th:each="unidad : ${unidades1}" th:value="${unidad.codigoUnidad}"
+																	th:text="|${unidad.nroConcepto} - ${unidad.nombreUnidad}|">
+																</option>
+															</select>
+														</div>
+													</div>
+													<div class="group">
+														<label class="control-label col-lg-1">Fecha</label>
+														<div class="col-lg-4">
+															<div class="input-group">
+																<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+																<input id="rangoFechaBusqueda1" type="text" class="form-control filtro"/>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="form-group">
+													<div class="group">
+														<label class="control-label col-lg-1">Curso</label>
+														<div class="col-lg-6">
+															<select id="cursos" class="form-control select2" name="codigoCurso">
+																<option value="" disabled="disabled" selected="selected">
+																	Seleccione un Curso
+																</option>
+															</select>
+														</div>
+													</div>
+												</div>
+												<div class="form-group">
+													<div class="col-lg-12 text-center">
+														<button id="limpiar1" type="button" class="btn btn-default">
+															<i class="fa fa-refresh"></i> Limpiar
+														</button>
+														<button id="buscar1" type="button" class="btn btn-primary">
+															<i class="fa fa-search"></i> Buscar
+														</button>
+														<button id="exportar1" type="button" class="btn btn-success" 
+																title="Exportar en .XLSX" data-tooltip="tooltip">
+															<i class="fa fa-download"></i> Exportar
+														</button>
+													</div>
+												</div>
+											</form>
+										</fieldset>
+										<div id="resultadoReporteIngresosCursos" class="col-xs-12 tabs">
+											<ul class="nav nav-tabs">
+												<li class="active">
+													<a data-toggle="tab" href="#detalle1">Detalle</a>
+												</li>
+												<li>
+													<a data-toggle="tab" href="#general1">General</a>
+												</li>
+											</ul>
+											<div class="tab-content">
+												<div id="detalle1" class="tab-pane fade in active">
+													<table id="tablaReporteIngresosDetalle1" width="100%"
+														class="table table-bordered table-condensed nowrap display table-hover">
+													</table>
+												</div> 
+												<div id="general1" class="tab-pane fade in">
+													<table id="tablaReporteIngresosGeneral1" width="100%"
+														class="table table-bordered table-condensed nowrap display table-hover">
+													</table>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="aportantesRep" class="tab-pane fade in">
+					<div class="page-content-wrap">
+						<div class="row">
+							<div class="col-md-12 col-sm-12 col-xs-12">
+								<div class="panel panel-default">
+									<div class="panel-body">
+										<fieldset class="well">
+											<legend class="well-legend">Búsqueda</legend>
+											<form id="formReporteIngresosAportantes" class="form-horizontal">
+												<div class="form-group">
+													<label class="col-lg-4 control-label">Ingrese Número de Documento</label>
+													<div class="col-lg-4">
+														<input id="nroDocumento" class="form-control" name="nroDocCliente">
+													</div>
+												</div>
+												<div class="form-group">
+													<div class="col-lg-12 text-center">
+														<button id="buscar2" type="button" class="btn btn-primary">
+															<i class="fa fa-search"></i> Buscar
+														</button>
+														<button id="exportar2" type="button" class="btn btn-success" 
+																title="Exportar en .XLSX" data-tooltip="tooltip">
+															<i class="fa fa-download"></i> Exportar
+														</button>
+													</div>
+												</div>
+											</form>
+										</fieldset>
+										<div id="resultadoReporteIngresosAportantes" class="col-xs-12 tabs">
+											<ul class="nav nav-tabs">
+												<li class="active">
+													<a data-toggle="tab" href="#detalle">Detalle</a>
+												</li>
+												<!--  
+												<li>
+													<a data-toggle="tab" href="#general">General</a>
+												</li>
+												-->
+											</ul>
+											<div class="tab-content">
+												<div id="detalle" class="tab-pane fade in active">
+													<table id="tablaReporteIngresosDetalle2" width="100%"
+														class="table table-bordered table-condensed display">
+													</table>
+												</div> 
+												<!-- 
+												<div id="general" class="tab-pane fade in">
+													<table id="tablaReporteIngresosGeneral" width="100%"
+														class="table table-bordered table-condensed nowrap display table-hover">
+													</table>
+												</div>
+												-->
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="registroIngreso" class="tab-pane fade in">
+					<div class="page-content-wrap">
+						<div class="row">
+							<div class="col-md-12 col-sm-12 col-xs-12">
+								<div class="panel panel-default">
+									<div class="panel-body">
+										<fieldset class="well">
+											<legend class="well-legend">Búsqueda</legend>
+											<form id="formRegistroIngreso" class="form-horizontal">
+												<div class="form-group">
+													<label class="col-lg-4 control-label">Ingrese Nro. Registro Ingreso</label>
+													<div class="col-lg-4">
+														<input id="nroRegistroIngreso" class="form-control" name="nroRegistroIngreso">
+													</div>
+												</div>
+												<div class="form-group">
+													<div class="col-lg-12 text-center">
+														<button id="buscar2" type="button" class="btn btn-primary">
+															<i class="fa fa-search"></i> Buscar
+														</button>
+														<button id="exportar2" type="button" class="btn btn-success" 
+																title="Exportar en .XLSX" data-tooltip="tooltip">
+															<i class="fa fa-download"></i> Exportar
+														</button>
+													</div>
+												</div>
+											</form>
+										</fieldset>
+										<div id="resultadoReporteRegistroIngresos" class="col-xs-12 tabs">
+											<ul class="nav nav-tabs">
+												<li class="active">
+													<a data-toggle="tab" href="#detalle">Detalle</a>
+												</li>
+												<!--  
+												<li>
+													<a data-toggle="tab" href="#general">General</a>
+												</li>
+												-->
+											</ul>
+											<div class="tab-content">
+												<div id="detalle" class="tab-pane fade in active">
+													<table id="tablaReporteRegistroIngresos" width="100%"
+														class="table table-bordered table-condensed display">
+													</table>
+												</div> 
+												<!-- 
+												<div id="general" class="tab-pane fade in">
+													<table id="tablaReporteIngresosGeneral" width="100%"
+														class="table table-bordered table-condensed nowrap display table-hover">
+													</table>
+												</div>
+												-->
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</th:block>
+
+	<th:block layout:fragment="script">
+		<script th:src="@{/resources/js/datatables/jquery.dataTables.min.js}"></script>
+		<script th:src="@{/resources/js/datatables/dataTables.bootstrap.min.js}"></script>
+		<script th:src="@{/resources/js/datatables/dataTables.responsive.min.js}"></script>
+		<script th:src="@{/resources/js/datatables/dataTables.show.rows.js}"></script>
+		<script th:src="@{/resources/js/bootstrap/bootstrap-notify.min.js}"></script>
+		<script th:src="@{/resources/js/jquery/popupwindow.min.js}"></script>
+		<script th:src="@{/resources/js/jquery/jquery.serializejson.min.js}"></script>
+		<script th:src="@{/resources/js/jquery/jquery.validate.min.js}"></script>
+		<script th:src="@{/resources/js/jquery/additional-methods.min.js}"></script>
+		<script th:src="@{/resources/js/jquery/jquery-confirm.min.js}"></script>
+		<script th:src="@{/resources/js/jquery/jquery.animate.min.js}"></script>
+		<script th:src="@{/resources/js/jquery/select2.full.min.js}"></script>
+		<script th:src="@{/resources/js/jquery/moment.min.js}"></script>
+		<script th:src="@{/resources/js/jquery/daterangepicker.js}"></script>
+		<script th:src="@{/resources/js/util/formularioUtil.js}"></script>
+		<script th:src="@{/resources/js/pagina/ingresos/reporte/reporteIngresosConceptos.js}"></script>
+		<script th:src="@{/resources/js/pagina/ingresos/reporte/reporteConceptosFormulario.js}"></script>
+		<script th:src="@{/resources/js/pagina/ingresos/reporte/reporteIngresosCursos.js}"></script>
+		<script th:src="@{/resources/js/pagina/ingresos/reporte/reporteCursosFormulario.js}"></script>
+		<script th:src="@{/resources/js/pagina/ingresos/reporte/reporteIngresosAportantes.js}"></script>
+	</th:block>
+</body>
+</html>

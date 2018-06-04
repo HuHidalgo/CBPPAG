@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+	<div id="modalDetalleMantenimiento" class="row" th:fragment="modalDetalleMantenimiento" th:with="tipo=${tipo}">
+		<div class="col-md-12 col-sm-12 col-xs-12">
+			<fieldset class="well">
+				<legend class="well-legend">Detalle de Gastos</legend>
+				<form id="formDetalleMantenimiento" class="form-horizontal" role="form">
+					<th:block 
+						th:replace="~{template/fragments/egresos/usgom/modalDetalleMantenimiento :: ${tipo}}?:~{}">
+					</th:block>
+					<div class="form-group">
+						<div class="col-lg-12 text-center">
+							<button id="registrarDetalleMantenimiento" type="button" class="btn btn-success">
+								<i class="fa fa-floppy-o"></i> Registrar
+							</button>
+							<button id="actualizarDetalleMantenimiento" type="button" class="btn btn-primary hidden">
+								<i class="fa fa-pencil-square"></i> Actualizar
+							</button>
+						</div>
+					</div>
+				</form>
+			</fieldset>
+		</div>
+		<div class="col-md-12 col-sm-12 col-xs-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<ul class="panel-controls">
+						<li>&nbsp; &nbsp; &nbsp;&nbsp;</li>
+						<li><button id="aniadirDetalleMantenimiento" class="btn btn-primary">
+								<i class="fa fa-plus"></i> <span>Añadir</span>
+							</button>
+						</li>
+					</ul>
+				</div>
+				<div class="panel-body">
+					<table id="tablaDetalleMantenimiento" width="100%"
+						class="table table-bordered dt-responsive table-condensed display">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<th:block th:fragment="gastos">
+		<div class="form-group">
+			<div class="group">
+				<label class="col-lg-2 control-label">Partida</label>
+				<div class="col-lg-4">
+					<select id="partidas" class="form-control select2" name="clasificador">
+						<option value="" disabled="disabled" selected="selected">Elija partida</option>
+						<option th:each="partida: ${partidas}" th:value="${partida.clasificador}"
+							th:text="|${partida.clasificador} - ${partida.descripcion}|"></option>
+					</select>
+				</div>
+			</div>
+			<div class="group">
+				<label class="col-lg-2 control-label">Tipo de Adquisición</label>
+				<div class="col-lg-3">
+					<select id="tiposAdquisicion" class="form-control select2" name="tipoAdquisicion">
+						<option value="" disabled="disabled" selected="selected">
+							Seleccione un tipo de Documento
+						</option>
+						<option th:each="tipoAdquisicion : ${tiposAdquisicion}" th:value="${tipoAdquisicion.idItem}"
+							th:text="|${tipoAdquisicion.idItem} - ${tipoAdquisicion.descripcionItem}|"></option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-lg-2 control-label">Detalle</label>
+			<div class="col-lg-9">
+				<textarea class="form-control" name="detalle" style="resize: none;"
+							rows = "2" data-skip-falsy="true" data-value-type="string"></textarea>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="group">
+				<label class="col-lg-2 control-label">Cantidad</label>
+				<div class="col-lg-3">
+					<input class="form-control numbersOnly" name="cantidad">
+				</div>
+			</div>
+			<div class="group">
+				<label class="col-lg-3 control-label">Precio Unitario</label>
+				<div class="col-lg-3">
+					<input class="form-control numbersOnlyAndDot" name="precioUnitario">
+				</div>
+			</div>
+		</div>
+	</th:block>
+
+</body>
+</html>

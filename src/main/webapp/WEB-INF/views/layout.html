@@ -8,21 +8,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
 <meta th:name="${_csrf.parameterName}" th:content="${_csrf.token}"></meta>
 <meta name="root" th:content="@{/}"/>
-<title layout:title-pattern="$DECORATOR_TITLE - $CONTENT_TITLE">Clinica Universitaria
+<title layout:title-pattern="$DECORATOR_TITLE - $CONTENT_TITLE">Facultad de Ciencias Contables
 </title>
 <link rel="stylesheet" th:href="@{/resources/css/bootstrap.min.css}" />
 <link rel="stylesheet" th:href="@{/resources/css/font-awesome.min.css}" />
 <link rel="stylesheet" th:href="@{/resources/css/jquery.mCustomScrollbar.css}" />
 <link rel="stylesheet" th:href="@{/resources/css/theme-white.css}" />
-<link rel="stylesheet" th:href="@{/resources/css/propio.css}"/>
-<link rel="icon" th:href="@{/resources/image/icono_logo.ico}" type="image/x-icon" />
+<link rel="icon" th:href="@{/resources/image/icono_logo_unmsm.jpg}" type="image/x-icon" />
 <th:block layout:fragment="style"></th:block>
 </head>
 <body>
 	<div class="page-container">
-		<div th:replace="template/fragments/sidebar"></div>		
+		<div th:replace="template/fragments/header"></div>
 		<div class="page-content">
-			<div th:replace="template/fragments/header"></div>
 			<div layout:fragment="content"></div>
 		</div>
 	</div>

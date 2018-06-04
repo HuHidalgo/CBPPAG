@@ -1,24 +1,19 @@
 package utilTest;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.validation.constraints.Digits;
 
-import org.apache.commons.lang3.Validate;
 import org.junit.Test;
 
-import com.cenpro.cbppag.model.mantenimiento.Alumno;
-import com.cenpro.cbppag.utilitario.ConstantesExcepciones;
-import com.cenpro.cbppag.utilitario.Regex;
+import com.cenpro.sircie.utilitario.Regex;
 
 public class ExpresionRegularTest
-{
+{    
     @Digits(integer = 10, fraction = 2)
     Double num;
 
-    // @Test
+    //@Test
     public void contieneSoloNumerosTest()
     {
         String numero = "00123,4";
@@ -26,7 +21,7 @@ public class ExpresionRegularTest
         System.out.println(esNumero);
     }
 
-    // @Test
+    //@Test
     public void contieneSoloEspaciosEnBlancoTest()
     {
         String cadena = "    ";
@@ -34,7 +29,7 @@ public class ExpresionRegularTest
         System.out.println("Solo espacios en blanco: " + esValido);
     }
 
-    // @Test
+    //@Test
     public void formato4Decimales()
     {
         this.num = 0.83456789;
@@ -43,7 +38,7 @@ public class ExpresionRegularTest
         System.out.println("Formatted decimal: " + df.format(12345.4));
     }
 
-    // @Test
+    //@Test
     public void contieneHHMMSS()
     {
         String hora = "23:54";
@@ -51,7 +46,7 @@ public class ExpresionRegularTest
         System.out.println("Es Correcto:" + esCorrecto);
     }
 
-    // @Test
+    //@Test
     public void contieneSoloNumerosJTest()
     {
         String cadena = "Aaaaaaaa";
@@ -59,36 +54,28 @@ public class ExpresionRegularTest
         System.out.println("Password Seguro : " + esValido);
     }
 
-    // @Test
+    //@Test
     public void contieneEspaciosEnBlanco()
     {
         String cadena = "a a";
         boolean esValido = cadena.matches("^\\S+$");
         System.out.println(esValido);
     }
-
-    // @Test
+    
+    //@Test
     public void regexGuionBajo()
     {
         String cadena = "a a";
         boolean esValido = cadena.matches("^[a-zA-Z0-9_]*$");
         System.out.println(esValido);
     }
-
-    // @Test
+  
+    @Test
     public void regexOnlySpaceWithMiddle()
     {
         String cadena = "3";
         boolean esValido = cadena.matches("^[^[A-Za-z]+$]+(\\s+[^[A-Za-z]+$]+)*$");
         System.out.println(esValido);
     }
-
-    @Test
-    public void verificarIndex()
-    {
-        String.format("FF");
-        List<Alumno> alumnos = new ArrayList<>();
-        //Validate.notEmpty(alumnos, ConstantesExcepciones.ERROR_REGISTRO);
-        Validate.notEmpty(alumnos, ConstantesExcepciones.ERROR_REGISTRO);
-    }
+  
 }

@@ -6,7 +6,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.cenpro.cbppag.configuracion.PersistenceConfiguration;
+import com.cenpro.sircie.configuracion.PersistenceConfiguration;
 
 @ContextConfiguration(classes = {PersistenceConfiguration.class })
 @RunWith(SpringJUnit4ClassRunner.class)

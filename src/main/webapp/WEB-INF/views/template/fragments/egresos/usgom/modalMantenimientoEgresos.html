@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html 	xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+	<div id="modalMantenimientoEgresos" class="row" th:fragment="modalMantenimientoEgresos" th:with="tipo=${tipo}">
+		<fieldset class="well">
+			<legend class="well-legend">Formulario de Mantenimiento</legend>
+			<form id="formMantenimiento1" class="form-horizontal" role="form">
+				<th:block 
+					th:replace="~{template/fragments/egresos/usgom/modalMantenimientoEgresos :: ${tipo}}?:~{}">
+				</th:block>
+				<div id="botonesForm" class="form-group">
+					<div class="col-lg-12 text-center">
+						<button id="registrarMantenimiento1" type="button" class="btn btn-success">
+							<i class="fa fa-floppy-o"></i> Registrar
+						</button>
+					</div>
+				</div>
+			</form>
+		</fieldset>
+	</div>
+
+	<th:block th:fragment="egresos">
+		<div class="col-xs-12">
+			<fieldset class="well">
+				<legend class="well-legend">Datos del Egreso</legend>
+				<div class="form-group">
+					<div class="group">
+						<label class="col-lg-2 control-label">Unidad</label>
+						<div class="col-lg-10">
+							<select id="unidades" class="form-control select2 elemento-desactivable" name="codigoUnidad">
+								<option value="-1" selected="selected">
+									Seleccione una Unidad
+								</option>
+								<option th:each="unidad : ${unidades}" th:value="${unidad.codigoUnidad}"
+									th:text="|${unidad.nroConcepto} - ${unidad.nombreUnidad}|"></option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="group">
+						<label class="col-lg-2 control-label">Documento</label>
+						<div class="col-lg-4">
+							<select id="tiposDocumento" class="form-control select2 elemento-desactivable" name="documento">
+								<option value="" disabled="disabled" selected="selected">
+									Seleccione un tipo de Documento
+								</option>
+								<option th:each="tipoDocumento : ${tiposDocumento}" th:value="${tipoDocumento.idItem}"
+									th:text="|${tipoDocumento.idItem} - ${tipoDocumento.descripcionItem}|"></option>
+							</select>
+						</div>
+					</div>
+					<div class="group">
+						<label class="col-lg-2 control-label">Documento Referencia</label>
+						<div class="col-lg-4">
+							<input id="importe" class="form-control upperCase" name="docReferencia">
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 control-label">Curso</label>
+					<div class="col-lg-10">
+						<select id="cursos" class="form-control select2" name="codigoCurso">
+							<option value="-1" selected="selected">Seleccione un Curso</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 control-label">Proveedor</label>
+					<div class="col-lg-10">
+						<input class="form-control upperCase" data-skip-falsy="true" data-value-type="string" 
+						name="nombreProveedor">
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="group">
+						<label class="col-lg-2 control-label">Tipo de Documento</label>
+						<div class="col-lg-4">
+							<select id="tiposDocumentoIdentidad" class="form-control select2 elemento-desactivable" 
+									name="tipoDocProveedor">
+								<option value="" disabled="disabled" selected="selected">
+									Seleccione un tipo de Documento
+								</option>
+								<option th:each="tipoDocumentoIdentidad : ${tiposDocumentoIdentidad}" th:value="${tipoDocumentoIdentidad.idItem}"
+									th:text="|${tipoDocumentoIdentidad.idItem} - ${tipoDocumentoIdentidad.abreviatura}|"></option>
+							</select>
+						</div>
+					</div>
+					<div class="group">
+						<label class="col-lg-2 control-label">Nro. de Documento</label>
+						<div class="col-lg-4">
+							<input class="form-control numbersOnly elemento-desactivable" name="nroDocProveedor" data-skip-falsy="true" 
+							data-value-type="string">
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 control-label">Registro de Gastos</label>
+					<div class="col-lg-10">
+						<button id="gastos" type="button" class="btn btn-warning">
+							<i class="fa fa-plus"></i> Añadir Detalle de Gastos
+						</button>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</th:block>
+</body>
+</html>
