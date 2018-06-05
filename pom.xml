@@ -2,11 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.cenpro.sircie</groupId>
-	<artifactId>SIRCIE</artifactId>
+	<groupId>com.cenpro.cbppag</groupId>
+	<artifactId>CBPPAG</artifactId>
 	<version>0.0.1</version>
 	<packaging>war</packaging>
-	<name>sircie</name>
+	<name>cbppag</name>
 
 	<properties>
 		<thymeleaf.version>2.0.15</thymeleaf.version>
