@@ -7,8 +7,8 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.cenpro.sircie.configuracion.PersistenceConfiguration;
-import com.cenpro.sircie.configuracion.ServiceConfiguration;
+import com.cenpro.cbppag.configuracion.PersistenceConfiguration;
+import com.cenpro.cbppag.configuracion.ServiceConfiguration;
 
 @ContextConfiguration(classes = { ServiceConfiguration.class, PersistenceConfiguration.class })
 @RunWith(SpringJUnit4ClassRunner.class)

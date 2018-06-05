@@ -6,7 +6,7 @@ import javax.validation.constraints.Digits;
 
 import org.junit.Test;
 
-import com.cenpro.sircie.utilitario.Regex;
+import com.cenpro.cbppag.utilitario.Regex;
 
 public class ExpresionRegularTest
 {    

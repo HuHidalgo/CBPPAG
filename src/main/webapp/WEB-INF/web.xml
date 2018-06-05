@@ -27,7 +27,7 @@
   </context-param>
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>com.cenpro.sircie.configuracion.ApplicationConfiguration</param-value>
+    <param-value>com.cenpro.cbppag.configuracion.ApplicationConfiguration</param-value>
   </context-param>
   <listener>
     <listener-class>
@@ -52,7 +52,7 @@
     <init-param>
       <param-name>contextConfigLocation</param-name>
       <param-value>
-				com.cenpro.sircie.configuracion.MvcConfiguration
+				com.cenpro.cbppag.configuracion.MvcConfiguration
 		</param-value>
     </init-param>
     <load-on-startup>2</load-on-startup>
