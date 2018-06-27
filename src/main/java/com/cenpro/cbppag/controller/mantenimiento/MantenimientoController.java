@@ -12,8 +12,6 @@ import com.cenpro.cbppag.aspecto.enumeracion.Accion;
 import com.cenpro.cbppag.aspecto.enumeracion.Comentario;
 import com.cenpro.cbppag.aspecto.enumeracion.Tipo;
 import com.cenpro.cbppag.controller.excepcion.anotacion.Vista;
-import com.cenpro.cbppag.service.IConceptoService;
-import com.cenpro.cbppag.service.IMetaService;
 import com.cenpro.cbppag.service.IMultiTabDetService;
 import com.cenpro.cbppag.service.IPersonaService;
 import com.cenpro.cbppag.service.IEspecializacionService;
@@ -27,10 +25,8 @@ public @Controller class MantenimientoController
 {
     private @Autowired IPersonaService personaService;
     private @Autowired IMultiTabDetService multiTabDetService;
-    private @Autowired IMetaService metaService;
     private @Autowired IEspecializacionService tareaService;
     private @Autowired IModalidadService modalidadService;
-    private @Autowired IConceptoService conceptoService;
 
     @Audit(tipo = Tipo.Persona)
     @GetMapping("/{mantenimiento:persona}")
@@ -62,21 +58,6 @@ public @Controller class MantenimientoController
     {
         model.addAttribute("mantenimiento", mantenimiento);
         model.addAttribute("modalidades", modalidadService.buscarTodos());
-        return "seguras/mantenimiento/mantenimiento";
-    }
-    
-    @GetMapping("/{mantenimiento:partida}")
-    public String irPaginaMantenimientoPartida(@PathVariable String mantenimiento, ModelMap model)
-    {
-        model.addAttribute("mantenimiento", mantenimiento);
-        model.addAttribute("tareas", tareaService.buscarTodos());
-        return "seguras/mantenimiento/mantenimiento";
-    }
-
-    @GetMapping("/{mantenimiento:meta}")
-    public String irPaginaMantenimientoMeta(@PathVariable String mantenimiento, ModelMap model)
-    {
-        model.addAttribute("mantenimiento", mantenimiento);
         return "seguras/mantenimiento/mantenimiento";
     }
 
