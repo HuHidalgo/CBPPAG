@@ -18,7 +18,7 @@ $(document).ready(function() {
 
 	$formMantenimiento = $("#formMantenimiento");
 	
-	$funcionUtil.crearSelect2($local.$modalidades, "--Selecciona Modalidad--");
+	$funcionUtil.crearSelect2($local.$modalidades, "--Selecciona Modalidad2--");
 	$funcionUtil.crearSelect2($local.$especializaciones, "--Selecciona Especialización--");
 	$.fn.dataTable.ext.errMode = 'none';
 
