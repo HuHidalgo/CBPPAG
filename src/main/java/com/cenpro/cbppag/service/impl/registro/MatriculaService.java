@@ -13,7 +13,9 @@ import com.cenpro.cbppag.mapper.base.IMantenibleMapper;
 import com.cenpro.cbppag.model.mantenimiento.Alumno;
 import com.cenpro.cbppag.model.registro.Matricula;
 import com.cenpro.cbppag.service.IMatriculaService;
+import com.cenpro.cbppag.service.excepcion.MantenimientoException;
 import com.cenpro.cbppag.service.impl.MantenibleService;
+import com.cenpro.cbppag.utilitario.ConstantesExcepciones;
 import com.cenpro.cbppag.utilitario.Verbo;
 
 @Service
@@ -33,13 +35,27 @@ public class MatriculaService extends MantenibleService<Matricula> implements IM
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public List<Matricula> buscarPorId(String codigo) {
+		Matricula matricula = Matricula.builder().codigoAlumno(codigo).build();
+        return this.buscar(matricula, Verbo.GET);
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public List<Matricula> buscarAlumno(String documento) {
 		return this.buscar(new Matricula(), Verbo.VERIFICAR_AM);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void registrarMatricula(Matricula matricula) {
-		this.registrar(matricula);	
+	public String registrarMatricula(Matricula matricula) {
+		List<Matricula> matriculas = this.registrarAutoIncrementable(matricula);
+		
+        if (!matriculas.isEmpty() && matriculas.get(0).getCodigoAlumno() != null)
+        {
+            return matriculas.get(0).getCodigoAlumno();
+        } else
+        {
+            throw new MantenimientoException(ConstantesExcepciones.ERROR_REGISTRO);
+        }	
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)

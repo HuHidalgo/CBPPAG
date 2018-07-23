@@ -36,8 +36,8 @@ public @RestController class MatriculaRestController {
 	@PostMapping
     public ResponseEntity<?> registrarMatricula(@RequestBody Matricula matricula)
     {
-		matriculaService.registrarMatricula(matricula);
-        return ResponseEntity.ok(ConstantesGenerales.REGISTRO_EXITOSO);
+        String codigo = matriculaService.registrarMatricula(matricula);
+		return ResponseEntity.ok(matriculaService.buscarPorId(codigo));
     }
 	
 }

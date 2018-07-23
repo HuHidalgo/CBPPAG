@@ -11,6 +11,10 @@ $(document).ready(function() {
 		$actualizarMantenimiento : $("#actualizarMantenimiento"),
 		idTipoDocumento : "",
 		numeroDocumento : "",
+		$apellidos : $("#apellidoCliente"),
+		$nombres : $("#nombreAlumno"),
+		$apellidos : $("#apellidoAlumno"),
+		$correo : $("#correoAlumno"),
 		$modalidades : $("#modalidades"),
 		$especializaciones : $("#especializaciones"),
 		filtrosSeleccionables : {}
@@ -18,7 +22,7 @@ $(document).ready(function() {
 
 	$formMantenimiento = $("#formMantenimiento");
 	
-	$funcionUtil.crearSelect2($local.$modalidades, "--Selecciona Modalidad2--");
+	$funcionUtil.crearSelect2($local.$modalidades, "--Selecciona Modalidad--");
 	$funcionUtil.crearSelect2($local.$especializaciones, "--Selecciona Especialización--");
 	$.fn.dataTable.ext.errMode = 'none';
 
@@ -88,7 +92,7 @@ $(document).ready(function() {
 	});
 
 	$local.$modalMantenimiento.PopupWindow({
-		title : "Mantenimiento de Matricula",
+		title : "Registro de Matricula",
 		autoOpen : false,
 		modal : false,
 		height : 640,
@@ -125,6 +129,24 @@ $(document).ready(function() {
 		}
 	});
 
+	$local.$verificarAlumno.click(function(){		
+		var nroDocumento = $local.$codigoAlumno .val();
+		if (nroDocumento == null || nroDocumento == undefined) {
+			return;
+		}
+		$.ajax({
+			type : "GET",
+			url : $variableUtil.root + "ingresos/matricula/" + nroDocumento,
+			success : function(matriculas) {
+				$.each(matriculas, function(i, matricula) {				
+					$local.$apellidos.val(this.apellidoAlumno);
+					$local.$nombres.val(this.nombreAlumno);
+					$local.$correo.val(this.correoAlumno);
+				});
+			}
+		});
+	});
+	
 	$local.$modalidades.on("change", function(event, opcionSeleccionada) {
 		var idModalidad = $(this).val();
 		if (idModalidad == null || idModalidad == undefined) {
@@ -163,11 +185,11 @@ $(document).ready(function() {
 		if (!$formMantenimiento.valid()) {
 			return;
 		}
-		var medico = $formMantenimiento.serializeJSON();
+		var matricula = $formMantenimiento.serializeJSON();
 		$.ajax({
 			type : "POST",
-			url : $variableUtil.root + "mantenimiento/persona",
-			data : JSON.stringify(medico),
+			url : $variableUtil.root + "ingresos/matricula",
+			data : JSON.stringify(mmatricula),
 			beforeSend : function(xhr) {
 				$local.$registrarMantenimiento.attr("disabled", true).find("i").removeClass("fa-floppy-o").addClass("fa-spinner fa-pulse fa-fw");
 				xhr.setRequestHeader('Content-Type', 'application/json');
@@ -179,10 +201,10 @@ $(document).ready(function() {
 					$funcionUtil.mostrarMensajeDeError(response.responseJSON, $formMantenimiento);
 				}
 			},
-			success : function(personas) {
+			success : function(matriculas) {
 				$funcionUtil.notificarException($variableUtil.registroExitoso, "fa-check", "Aviso", "success");
-				var persona = personas[0];
-				var row = $local.tablaMantenimiento.row.add(persona).draw();
+				var matricula = matriculas[0];
+				var row = $local.tablaMantenimiento.row.add(matricula).draw();
 				row.show().draw(false);
 				$(row.node()).animateHighlight();
 				$local.$modalMantenimiento.PopupWindow("close");
