@@ -28,4 +28,11 @@ public @Controller class IngresosController
         return "seguras/ingresos/mantenimiento";
     }
     
+    @GetMapping(value = "/{mantenimiento:matricula}")
+    public String irPaginaMantenimientoMatricula(@PathVariable String mantenimiento, ModelMap model)
+    {
+        model.addAttribute("mantenimiento", mantenimiento);
+        return "seguras/ingresos/mantenimiento";
+    }
+    
 }

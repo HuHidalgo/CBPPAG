@@ -21,12 +21,12 @@ import com.cenpro.cbppag.utilitario.ConstantesGenerales;
 public @RestController class EspecializacionRestController 
 {
 	private @Autowired IEspecializacionService especializacionService;
-		/*
-	@GetMapping("/unidad/{codigoUnidad}")
-    public List<Especializacion> buscarUnidad(@PathVariable String codigoUnidad)
+	
+	@GetMapping("/modalidad/{idModalidad}")
+    public List<Especializacion> buscarModalidades(@PathVariable String idModalidad)
     {
-        return especializacionService.buscarUnidad(codigoUnidad);
-    }*/
+        return especializacionService.buscarModalidad(idModalidad);
+    }
 	
 	@GetMapping(params = "accion=buscarTodos")
     public List<Especializacion> buscarTodos()

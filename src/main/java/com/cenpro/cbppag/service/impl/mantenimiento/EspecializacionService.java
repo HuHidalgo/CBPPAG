@@ -55,7 +55,7 @@ public class EspecializacionService extends MantenibleService<Especializacion> i
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public List<Especializacion> buscarModalidad(String idModalidad) {
 		Especializacion especializacion = Especializacion.builder().idModalidad(idModalidad).build();
-		return this.buscar(especializacion, Verbo.GET_UNI);
+		return this.buscar(especializacion, Verbo.GET_MODA);
 	}
 	
 }
