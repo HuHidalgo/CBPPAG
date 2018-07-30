@@ -12,7 +12,7 @@ public interface IMatriculaService extends IMantenibleService<Matricula>{
     
     public List<Matricula> buscarPorId(String codigo);
     
-    public String registrarMatricula(Matricula matricula);
+    public void registrarMatricula(Matricula matricula);
     
     public void actualizarMatricula(Matricula matricula);
     

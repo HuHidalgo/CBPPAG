@@ -57,5 +57,11 @@ public class EspecializacionService extends MantenibleService<Especializacion> i
 		Especializacion especializacion = Especializacion.builder().idModalidad(idModalidad).build();
 		return this.buscar(especializacion, Verbo.GET_MODA);
 	}
+
+	@Override
+	public List<Especializacion> buscarCosto(String idEspecializacion) {
+		Especializacion especializacion = Especializacion.builder().idEspecializacion(idEspecializacion).build();
+		return this.buscar(especializacion, Verbo.GET_COSTO);
+	}
 	
 }

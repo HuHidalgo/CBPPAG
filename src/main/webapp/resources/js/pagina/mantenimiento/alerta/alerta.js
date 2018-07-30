@@ -8,30 +8,14 @@ $(document).ready(function() {
 		$registrarMantenimiento : $("#registrarMantenimiento"),
 		$filaSeleccionada : "",
 		$actualizarMantenimiento : $("#actualizarMantenimiento"),
-		idTipoDocumento : "",
-		numeroDocumento : "",
-		$verificarAlumno : $("#verificarDatos"),
-		$codigoAlumno : $("#codigoAlumno"),
-		$nombres : $("#nombreAlumno"),
-		$apellidos : $("#apellidoAlumno"),
-		$correo : $("#correoAlumno"),
-		$modalidades : $("#modalidades"),
-		$costoMatricula : $("#montoPago"),
-		$tiposPago : $("#tiposPago"),
-		$especializaciones : $("#especializaciones"),
-		$fechaMatricula : $("#fechaMatricula"),
-		$voucher : $("#adjuntarVoucher"),
-		$documento : "",
-		filtrosSeleccionables : {}
+		codigoEspecializacionSeleccionada : 0,
+		$tiposAlerta : $("#tiposAlerta")
 	};
 
 	$formMantenimiento = $("#formMantenimiento");
-
-	$funcionUtil.crearSelect2($local.$modalidades, "--Selecciona Modalidad--");
-	$funcionUtil.crearSelect2($local.$especializaciones, "--Selecciona Especialización--");
-	$funcionUtil.crearSelect2($local.$tiposPago, "--Seleccione tipo de pago--");
-	$funcionUtil.crearDatePickerSimple($local.$fechaMatricula, "DD/MM/YYYY");
-
+	
+	$funcionUtil.crearSelect2($local.$tiposAlerta, "Seleccione un tipo de alerta");
+	
 	$.fn.dataTable.ext.errMode = 'none';
 
 	$local.$tablaMantenimiento.on('xhr.dt', function(e, settings, json, xhr) {
@@ -44,69 +28,52 @@ $(document).ready(function() {
 
 	$local.tablaMantenimiento = $local.$tablaMantenimiento.DataTable({
 		"ajax" : {
-			"url" : $variableUtil.root + "ingresos/matricula?accion=buscarTodos",
+			"url" : $variableUtil.root + "mantenimiento/alerta?accion=buscarTodos",
 			"dataSrc" : ""
 		},
 		"language" : {
-			"emptyTable" : "No hay Alumnos matriculados"
+			"emptyTable" : "No hay Alerta registradas."
 		},
 		"initComplete" : function() {
 			$local.$tablaMantenimiento.wrap("<div class='table-responsive'></div>");
 			$tablaFuncion.aniadirFiltroDeBusquedaEnEncabezado(this, $local.$tablaMantenimiento);
 		},
 		"columnDefs" : [ {
-			"targets" : [ 0, 1, 2, 3, 4, 5, 6 ],
+			"targets" : [ 0, 1, 2, 3 ],
 			"className" : "all filtrable",
 		}, {
-			"targets" : 7,
+			"targets" : 4,
 			"className" : "all dt-center",
 			"defaultContent" : $variableUtil.botonActualizar + " " + $variableUtil.botonEliminar
 		} ],
 		"columns" : [ {
-			"data" : 'codigoAlumno',
-			"title" : "Código"
+			"data" : "codigoAlerta",
+			"title" : "Codigo"
 		}, {
-			"data" : function(row) {
-				return row.apellidoAlumno+ ", " + row.nombreAlumno;
-			},
-			"title" : "Datos del Alumno"
+			"data" : "tipoAlerta",
+			"title" : "Tipo"
 		}, {
-			"data" : 'nombreModalidad',
-			"title" : "Modalidad"
+			"data" : "diasVerificacion",
+			"title" : "Días Verificación"
 		}, {
-			"data" : 'nombreEspecializacion',
-			"title" : "Especialización"
-		}, {
-			"data" : 'numeroCiclo',
-			"title" : "Ciclo"
-		}, {
-			"data" : 'costoMatricula',
-			"title" : "Costo(Soles)"
-		},{
-			"data" : 'fechaMatricula',
-			"title" : "Fecha Matricula"
+			"data" : "descAlerta",
+			"title" : "Mensaje"
 		},{
 			"data" : null,
 			"title" : 'Acción'
 		} ]
 	});
 
-
 	$local.$tablaMantenimiento.find("thead").on('keyup', 'input.filtrable', function() {
 		$local.tablaMantenimiento.column($(this).parent().index() + ':visible').search(this.value).draw();
 	});
 
-	$local.$tablaMantenimiento.find("thead").on('change', 'select', function() {
-		var val = $.fn.dataTable.util.escapeRegex($(this).val());
-		$local.tablaMantenimiento.column($(this).parent().index() + ':visible').search(val ? '^' + val + '$' : '', true, false).draw();
-	});
-
 	$local.$modalMantenimiento.PopupWindow({
-		title : "Registro de Matricula",
+		title : "Mantenimiento de Alertas",
 		autoOpen : false,
 		modal : false,
-		height : 640,
-		width : 636,
+		height : 500,
+		width : 800
 	});
 
 	$local.$aniadirMantenimento.on("click", function() {
@@ -121,8 +88,7 @@ $(document).ready(function() {
 	});
 
 	$local.$modalMantenimiento.on("close.popupwindow", function() {
-		$local.idTipoDocumento = "";
-		$local.numeroDocumento = "";
+		$local.codigoEspecializacionSeleccionada = 0;
 	});
 
 	$formMantenimiento.find("input").keypress(function(event) {
@@ -139,90 +105,16 @@ $(document).ready(function() {
 		}
 	});
 
-	$local.$modalidades.on("change", function(event, opcionSeleccionada) {
-		var idModalidad = $(this).val();
-		if (idModalidad == null || idModalidad == undefined) {
-			$local.$especializaciones.find("option:not(:eq(0))").remove();
-			return;
-		}
-		$.ajax({
-			type : "GET",
-			url : $variableUtil.root + "mantenimiento/especializacion/modalidad/" + idModalidad,
-			beforeSend : function(xhr) {
-				$local.$especializaciones.find("option:not(:eq(0))").remove();
-				$local.$especializaciones.parent().append("<span class='help-block cargando'><i class='fa fa-spinner fa-pulse fa-fw'></i> Cargando Especializaciones</span>")
-			},
-			statusCode : {
-				400 : function(response) {
-					$funcionUtil.limpiarMensajesDeError($formMantenimiento);
-					$funcionUtil.mostrarMensajeDeError(response.responseJSON, $formMantenimiento);
-				}
-			},
-			success : function(especializaciones) {
-				$.each(especializaciones, function(i, especializacion) {
-					$local.$especializaciones.append($("<option />").val(this.idEspecializacion).text(this.idEspecializacion + " - " + this.nombreEspecializacion));
-				});
-				if (opcionSeleccionada != null && opcionSeleccionada != undefined) {
-					$local.$especializaciones.val(opcionSeleccionada).trigger("change.select2");
-				}
-			},
-			complete : function() {
-				$local.$especializaciones.parent().find(".cargando").remove();
-			}
-		});
-
-	});
-	
-	$local.$especializaciones.on("change", function(event, opcionSeleccionada) {
-		var idEspecializacion = $(this).val();
-		if (idEspecializacion == null || idEspecializacion == undefined) {
-			$local.$especializaciones.find("option:not(:eq(0))").remove();
-			return;
-		}
-		$.ajax({
-			type : "GET",
-			url : $variableUtil.root + "mantenimiento/especializacion/costo/" + idEspecializacion,
-			success : function(especializaciones) {
-				$.each(especializaciones, function(i, especializacion) {
-					$local.$costoMatricula.val(this.costoMatricula);
-				});
-			}
-		});
-
-	});
-	
-	$local.$verificarAlumno.click(function(){		
-		var codAlumno = $local.$codigoAlumno .val();
-		if (codAlumno == null || codAlumno == undefined) {
-			return;
-		}
-		$.ajax({
-			type : "GET",
-			url : $variableUtil.root + "ingresos/matricula/" + codAlumno,
-			success : function(matriculas) {
-				$.each(matriculas, function(i, matricula) {				
-					$local.$apellidos.val(this.apellidoAlumno);
-					$local.$nombres.val(this.nombreAlumno);
-					$local.$correo.val(this.correoAlumno);
-				});
-			}
-		});
-	});
-	
 	$local.$registrarMantenimiento.on("click", function() {
 		if (!$formMantenimiento.valid()) {
 			return;
 		}
-		var matricula = $formMantenimiento.serializeJSON();
-		matricula.nombreArchivo = $local.$voucher.val();
-		matricula.idModalidad = $local.$modalidades.val();
-		matricula.idEspecializacion = $local.$especializaciones.val();
-		matricula.tipoPago = $local.$tiposPago.val();
-		matricula.fechaMatricula = $local.$fechaMatricula.data("daterangepicker").startDate.format("YYYY-MM-DD");			
+		var alerta = $formMantenimiento.serializeJSON();
+		alerta.tipoAlerta = $local.$tiposAlerta.val();
 		$.ajax({
 			type : "POST",
-			url : $variableUtil.root + "ingresos/matricula",
-			data : JSON.stringify(matricula),
+			url : $variableUtil.root + "mantenimiento/alerta",
+			data : JSON.stringify(alerta),
 			beforeSend : function(xhr) {
 				$local.$registrarMantenimiento.attr("disabled", true).find("i").removeClass("fa-floppy-o").addClass("fa-spinner fa-pulse fa-fw");
 				xhr.setRequestHeader('Content-Type', 'application/json');
@@ -234,10 +126,9 @@ $(document).ready(function() {
 					$funcionUtil.mostrarMensajeDeError(response.responseJSON, $formMantenimiento);
 				}
 			},
-			success : function(matriculas) {
+			success : function(alertas) {
 				$funcionUtil.notificarException($variableUtil.registroExitoso, "fa-check", "Aviso", "success");
-				var matricula = matriculas[0];
-				var row = $local.tablaMantenimiento.row.add(matricula).draw();
+				var row = $local.tablaMantenimiento.row.add(alertas[0]).draw();
 				row.show().draw(false);
 				$(row.node()).animateHighlight();
 				$local.$modalMantenimiento.PopupWindow("close");
@@ -253,10 +144,9 @@ $(document).ready(function() {
 	$local.$tablaMantenimiento.children("tbody").on("click", ".actualizar", function() {
 		$funcionUtil.prepararFormularioActualizacion($formMantenimiento);
 		$local.$filaSeleccionada = $(this).parents("tr");
-		var persona = $local.tablaMantenimiento.row($local.$filaSeleccionada).data();
-		$local.idTipoDocumento = persona.idTipoDocumento;
-		$local.numeroDocumento = persona.numeroDocumento;
-		$funcionUtil.llenarFormulario(persona, $formMantenimiento);
+		var especializacion = $local.tablaMantenimiento.row($local.$filaSeleccionada).data();
+		$local.codigoEspecializacionSeleccionada = especializacion.idEspecializacion;
+		$funcionUtil.llenarFormulario(especializacion, $formMantenimiento);
 		$local.$actualizarMantenimiento.removeClass("hidden");
 		$local.$registrarMantenimiento.addClass("hidden");
 		$local.$modalMantenimiento.PopupWindow("open");
@@ -266,13 +156,14 @@ $(document).ready(function() {
 		if (!$formMantenimiento.valid()) {
 			return;
 		}
-		var persona = $formMantenimiento.serializeJSON();
-		persona.idTipoDocumento = $local.idTipoDocumento;
-		persona.numeroDocumento = $local.numeroDocumento;
+		var especializacion = $formMantenimiento.serializeJSON();
+		especializacion.idEspecializacion = $local.codigoEspecializacionSeleccionada;
+		campania.fechaInicio = $local.$fechaInicio.data("daterangepicker").startDate.format('YYYY-MM-DD');
+		campania.fechaFin = $local.$fechaFin.data("daterangepicker").startDate.format('YYYY-MM-DD');
 		$.ajax({
 			type : "PUT",
-			url : $variableUtil.root + "mantenimiento/persona",
-			data : JSON.stringify(persona),
+			url : $variableUtil.root + "mantenimiento/especializacion",
+			data : JSON.stringify(especializacion),
 			beforeSend : function(xhr) {
 				$local.$actualizarMantenimiento.attr("disabled", true).find("i").removeClass("fa-pencil-square").addClass("fa-spinner fa-pulse fa-fw");
 				xhr.setRequestHeader('Content-Type', 'application/json');
@@ -284,9 +175,9 @@ $(document).ready(function() {
 					$funcionUtil.mostrarMensajeDeError(response.responseJSON, $formMantenimiento);
 				}
 			},
-			success : function(personas) {
+			success : function(especializacions) {
 				$funcionUtil.notificarException($variableUtil.actualizacionExitosa, "fa-check", "Aviso", "success");
-				var row = $local.tablaMantenimiento.row($local.$filaSeleccionada).data(personas[0]).draw();
+				var row = $local.tablaMantenimiento.row($local.$filaSeleccionada).data(especializacions[0]).draw();
 				row.show().draw(false);
 				$(row.node()).animateHighlight();
 				$local.$modalMantenimiento.PopupWindow("close");
@@ -301,12 +192,12 @@ $(document).ready(function() {
 
 	$local.$tablaMantenimiento.children("tbody").on("click", ".eliminar", function() {
 		$local.$filaSeleccionada = $(this).parents("tr");
-		var persona = $local.tablaMantenimiento.row($local.$filaSeleccionada).data();
+		var especializacion = $local.tablaMantenimiento.row($local.$filaSeleccionada).data();
 		$.confirm({
 			icon : "fa fa-info-circle",
 			title : "Aviso",
-			content : "¿Desea eliminar la Persona <b>'" + persona.idTipoDocumento + " - " + persona.numeroDocumento + "'<b/>?",
-			theme: "bootstrap",
+			content : "¿Desea eliminar la especializacion <b>'" + especializacion.codigoEspecializacion + " - " + especializacion.nomEspecializacion + "'<b/>?",
+			theme : "bootstrap",
 			buttons : {
 				Aceptar : {
 					action : function() {
@@ -318,8 +209,8 @@ $(document).ready(function() {
 								self.buttons.close.hide();
 								$.ajax({
 									type : "DELETE",
-									url : $variableUtil.root + "mantenimiento/persona",
-									data : JSON.stringify(persona),
+									url : $variableUtil.root + "mantenimiento/especializacion",
+									data : JSON.stringify(especializacion),
 									autoclose : true,
 									beforeSend : function(xhr) {
 										xhr.setRequestHeader('Content-Type', 'application/json');
@@ -336,7 +227,7 @@ $(document).ready(function() {
 										$funcionUtil.notificarException($funcionUtil.obtenerMensajeErrorEnCadena(xhr.responseJSON), "fa-warning", "Aviso", "warning");
 										break;
 									case 409:
-										var mensaje = $funcionUtil.obtenerMensajeError("La Persona <b>" + persona.idTipoDocumento + " - " + persona.numeroDocumento + "</b>", xhr.responseJSON, $variableUtil.accionEliminado);
+										var mensaje = $funcionUtil.obtenerMensajeError("La especializacion <b>" + especializacion.codigoEspecializacion + " - " + especializacion.nomEspecializacion + "</b>", xhr.responseJSON, $variableUtil.accionEliminado);
 										$funcionUtil.notificarException(mensaje, "fa-warning", "Aviso", "warning");
 										break;
 									}

@@ -10,13 +10,26 @@ $(document).ready(function() {
 		$actualizarMantenimiento : $("#actualizarMantenimiento"),
 		idTipoDocumento : "",
 		numeroDocumento : "",
-		$tiposDocumento : $("#tiposDocumento"),
+		codigoMatricula : "",
+		$verificarAlumno : $("#verificarDatos"),
+		$codigoAlumno : $("#codigoAlumno"),
+		$nombres : $("#nombreAlumno"),
+		$apellidos : $("#apellidoAlumno"),
+		$correo : $("#correoAlumno"),
+		$modalidad : $("#modalidad"),
+		$tipoPago : $("#tipoPago"),
+		$nroCiclo : $("#ciclo"),
+		$costoCuota : $("#costoCuota"),
+		$especializacion : $("#especializacion"),
+		$fechaPago : $("#fechaPago"),
+		$voucher : $("#adjuntarVoucher"),
+		$documento : "",
 		filtrosSeleccionables : {}
 	};
 
 	$formMantenimiento = $("#formMantenimiento");
 
-	$funcionUtil.crearSelect2($local.$tiposDocumento, "Seleccione un Tipo de Documento");
+	$funcionUtil.crearDatePickerSimple($local.$fechaPago, "DD/MM/YYYY");
 
 	$.fn.dataTable.ext.errMode = 'none';
 
@@ -30,47 +43,52 @@ $(document).ready(function() {
 
 	$local.tablaMantenimiento = $local.$tablaMantenimiento.DataTable({
 		"ajax" : {
-			"url" : $variableUtil.root + "mantenimiento/persona?accion=buscarTodos",
+			"url" : $variableUtil.root + "ingresos/pago?accion=buscarTodos",
 			"dataSrc" : ""
 		},
 		"language" : {
-			"emptyTable" : "No hay Persona registrados"
+			"emptyTable" : "No hay Pagos registrados"
 		},
 		"initComplete" : function() {
 			$local.$tablaMantenimiento.wrap("<div class='table-responsive'></div>");
 			$tablaFuncion.aniadirFiltroDeBusquedaEnEncabezado(this, $local.$tablaMantenimiento);
 		},
 		"columnDefs" : [ {
-			"targets" : [ 0, 1, 2, 3 ],
+			"targets" : [ 0, 1, 2, 3, 4, 5 ],
 			"className" : "all filtrable",
 		}, {
-			"targets" : 4,
+			"targets" : 6,
 			"className" : "all dt-center",
 			"defaultContent" : $variableUtil.botonActualizar + " " + $variableUtil.botonEliminar
 		} ],
 		"columns" : [ {
-			"data" : function(row) {
-				return $funcionUtil.unirCodigoDescripcion(row.idTipoDocumento, row.descripcionTipoDocumento);
-			},
-			"title" : "Tipo de Documento"
-		}, {
-			"data" : 'numeroDocumento',
-			"title" : "Número de Documento"
+			"data" : 'codigoAlumno',
+			"title" : "Código"
 		}, {
 			"data" : function(row) {
-				return row.apellidoPaterno + ", " + row.apellidoMaterno;
+				return row.apellidoAlumno+ ", " + row.nombreAlumno;
 			},
-			"title" : "Apellidos"
+			"title" : "Datos del Alumno"
 		}, {
 			"data" : function(row) {
-				return row.nombres;
+				return row.nombreModalidad + " - " + row.nombreEspecializacion;
 			},
-			"title" : "Nombres"
+			"title" : "Modalidad - Especialización"
 		}, {
+			"data" : 'tipoPago',
+			"title" : "Tipo Pago"
+		},{
+			"data" : 'numeroCiclo',
+			"title" : "Ciclo"
+		}, {
+			"data" : 'costoMatricula',
+			"title" : "Monto(Soles)"
+		},{
 			"data" : null,
 			"title" : 'Acción'
 		} ]
 	});
+
 
 	$local.$tablaMantenimiento.find("thead").on('keyup', 'input.filtrable', function() {
 		$local.tablaMantenimiento.column($(this).parent().index() + ':visible').search(this.value).draw();
@@ -82,7 +100,7 @@ $(document).ready(function() {
 	});
 
 	$local.$modalMantenimiento.PopupWindow({
-		title : "Mantenimiento de Pago",
+		title : "Registro de Pago",
 		autoOpen : false,
 		modal : false,
 		height : 640,
@@ -118,16 +136,44 @@ $(document).ready(function() {
 			}
 		}
 	});
-
+	
+	$local.$verificarAlumno.click(function(){		
+		var codAlumno = $local.$codigoAlumno .val();
+		if (codAlumno == null || codAlumno == undefined) {
+			return;
+		}
+		$.ajax({
+			type : "GET",
+			url : $variableUtil.root + "ingresos/pago/" + codAlumno,
+			success : function(pagos) {
+				$.each(pagos, function(i, pago) {				
+					$local.$apellidos.val(this.apellidoAlumno);
+					$local.$nombres.val(this.nombreAlumno);
+					$local.$correo.val(this.correoAlumno);
+					$local.$modalidad.val(this.nombreModalidad);
+					$local.$tipoPago.val(this.tipoPago);
+					$local.$nroCiclo.val(this.numeroCiclo);
+					$local.$costoCuota.val(this.costoCuota);
+					$local.$especializacion.val(this.nombreEspecializacion);
+					$local.codigoMatricula = this.codigoMatricula;
+					console.log($local.codigoMatricula);
+				});
+			}
+		});
+	});
+	
 	$local.$registrarMantenimiento.on("click", function() {
 		if (!$formMantenimiento.valid()) {
 			return;
 		}
-		var medico = $formMantenimiento.serializeJSON();
+		var pago = $formMantenimiento.serializeJSON();
+		pago.codigoMatricula = $local.codigoMatricula;
+		pago.fechaPago = $local.$fechaPago.data("daterangepicker").startDate.format("YYYY-MM-DD");	
+		  
 		$.ajax({
 			type : "POST",
-			url : $variableUtil.root + "mantenimiento/persona",
-			data : JSON.stringify(medico),
+			url : $variableUtil.root + "ingresos/pago",
+			data : JSON.stringify(pago),
 			beforeSend : function(xhr) {
 				$local.$registrarMantenimiento.attr("disabled", true).find("i").removeClass("fa-floppy-o").addClass("fa-spinner fa-pulse fa-fw");
 				xhr.setRequestHeader('Content-Type', 'application/json');
@@ -139,10 +185,10 @@ $(document).ready(function() {
 					$funcionUtil.mostrarMensajeDeError(response.responseJSON, $formMantenimiento);
 				}
 			},
-			success : function(personas) {
+			success : function(pagos) {
 				$funcionUtil.notificarException($variableUtil.registroExitoso, "fa-check", "Aviso", "success");
-				var persona = personas[0];
-				var row = $local.tablaMantenimiento.row.add(persona).draw();
+				var pago = pagos[0];
+				var row = $local.tablaMantenimiento.row.add(pago).draw();
 				row.show().draw(false);
 				$(row.node()).animateHighlight();
 				$local.$modalMantenimiento.PopupWindow("close");

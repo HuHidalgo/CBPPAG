@@ -42,20 +42,13 @@ public class MatriculaService extends MantenibleService<Matricula> implements IM
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public List<Matricula> buscarAlumno(String documento) {
-		return this.buscar(new Matricula(), Verbo.VERIFICAR_AM);
+		Matricula matricula = Matricula.builder().codigoAlumno(documento).build();
+		return this.buscar(matricula, Verbo.VERIFICAR_AM);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public String registrarMatricula(Matricula matricula) {
-		List<Matricula> matriculas = this.registrarAutoIncrementable(matricula);
-		
-        if (!matriculas.isEmpty() && matriculas.get(0).getCodigoAlumno() != null)
-        {
-            return matriculas.get(0).getCodigoAlumno();
-        } else
-        {
-            throw new MantenimientoException(ConstantesExcepciones.ERROR_REGISTRO);
-        }	
+	public void registrarMatricula(Matricula matricula) {
+		this.registrar(matricula);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)

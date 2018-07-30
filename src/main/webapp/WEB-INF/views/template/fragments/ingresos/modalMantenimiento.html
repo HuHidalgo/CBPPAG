@@ -234,7 +234,7 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Código Alumno</label>
 				<div class="col-lg-4">
-					<input class="form-control upperCase elemento-desactivable" name="codigoA">
+					<input id="codigoAlumno" class="form-control upperCase" name="codigoAlumno">
 				</div>
 			</div>
 			<div class="form-group">
@@ -252,14 +252,14 @@
 				<div class="col-lg-4">
 					<div class="input-group">
 						<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-						<input id="fechaPago" type="text" class="form-control elemento-desactivable" name="fechaPago"/>
+						<input id="fechaPago" type="text" class="form-control" name="fechaPago"/>
 					</div>
 				</div>
 			</div>
 			<div class="group">
 				<label class="col-lg-2 control-label">Concepto de Pago</label>
 				<div class="col-lg-4">
-					<input class="form-control numbersOnlyAndDot" name="conceptoPago">
+					<input class="form-control" name="conceptoPago">
 				</div>
 			</div>
 		</div>
@@ -268,13 +268,13 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Modalidad</label>
 				<div class="col-lg-4">
-					<input class="form-control " name="modalidad">
+					<input id="modalidad" class="form-control " name="nombreModalidad">
 				</div>
 			</div>
 			<div class="group">
 				<label class="col-lg-2 control-label">Especialización</label>
 				<div class="col-lg-4">
-					<input class="form-control" name="especializacion">
+					<input id="especializacion" class="form-control" name="nombreEspecializacion">
 				</div>
 			</div>
 		</div>
@@ -283,13 +283,13 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Tipo de Pago</label>
 				<div class="col-lg-4">
-					<input class="form-control" name="tipoPago">
+					<input id="tipoPago" class="form-control" name="tipoPago">
 				</div>
 			</div>
 			<div class="group">
 				<label class="col-lg-2 control-label">Ciclo a Pagar</label>
 				<div class="col-lg-4">
-					<input class="form-control" name="cicloPago">
+					<input id="ciclo" class="form-control" name="numeroCiclo">
 				</div>
 			</div>
 		</div>
@@ -298,13 +298,13 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Nro. Cuotas Pendientes de Pago</label>
 				<div class="col-lg-4">
-					<input class="form-control" name="cuotaPendiente">
+					<input class="form-control" name="nroCuotasPendientes">
 				</div>
 			</div>
 			<div class="group">
 				<label class="col-lg-2 control-label">Costo por cada cuota</label>
 				<div class="col-lg-4">
-					<input class="form-control numbersOnlyAndDot" name="costoCuota">
+					<input id="costoCuota" class="form-control" name="costoCuota">
 				</div>
 			</div>
 		</div>
@@ -312,7 +312,7 @@
 		<div class="form-group">
 			<label class="col-lg-2 control-label">Nro. Cuota a Pagar</label>
 			<div class="col-lg-4">
-				<input class="form-control upperCase elemento-desactivable" name="cuotaPagar">
+				<input id="nroCuotasAPagar" class="form-control upperCase" name="nroCuotasPagadas">
 			</div>
 		</div>
 
@@ -320,13 +320,13 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Nombre del Alumno</label>
 				<div class="col-lg-4">
-					<input class="form-control" name="nombreA">
+					<input id="nombreAlumno" class="form-control" name="nombreAlumno">
 				</div>
 			</div>
 			<div class="group">
 				<label class="col-lg-2 control-label">Apellido del Alumno</label>
 				<div class="col-lg-4">
-					<input class="form-control" name="apellidoA">
+					<input id="apellidoAlumno" class="form-control" name="apellidoAlumno">
 				</div>
 			</div>
 		</div>
@@ -335,7 +335,7 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Correo del Alumno</label>
 				<div class="col-lg-4">
-					<input class="form-control" name="correoA">
+					<input id = "correoAlumno" class="form-control" name="correoAlumno">
 				</div>
 			</div>
 			<div class="group">
@@ -353,7 +353,7 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Código Alumno</label>
 				<div class="col-lg-4">
-					<input id="codigoAlumno" class="form-control upperCase elemento-desactivable" name="codigoAlumno">
+					<input id="codigoAlumno" class="form-control upperCase" name="codigoAlumno">
 				</div>
 			</div>
 			<div class="form-group">
@@ -371,14 +371,14 @@
 				<div class="col-lg-4">
 					<div class="input-group">
 						<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-						<input id="fechaPago" type="text" class="form-control elemento-desactivable" name="fechaPago"/>
+						<input id="fechaMatricula" type="text" class="form-control" name="fechaMatricula"/>
 					</div>
 				</div>
 			</div>
 			<div class="group">
 				<label class="col-lg-2 control-label">Concepto de Pago</label>
 				<div class="col-lg-4">
-					<input class="form-control numbersOnlyAndDot" name="conceptoPago">
+					<input class="form-control" name="conceptoPago">
 				</div>
 			</div>
 		</div>
@@ -387,12 +387,12 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Modalidad</label>
 				<div class="col-lg-4">
-					<select id="modalidades" class="form-control select2 elemento-desactivable" name="tipoModalidad">
+					<select id="modalidades" class="form-control select2" name="modalidades">
 						<option value="" disabled="disabled" selected="selected">
 									--Selecciona Modalidad--
 						</option>
-						<option th:each="tipoModalidad : ${tiposModalidad}" th:value="${tipoModalidad.idModalidad}"
-									th:text="|${tipoModalidad.idModalidad} - ${tipoModalidad.nombreModalidad}|">
+						<option th:each="modalidad : ${modalidades}" th:value="${modalidad.idModalidad}"
+									th:text="|${modalidad.idModalidad} - ${modalidad.nombreModalidad}|">
 						</option>
 					</select>
 				</div>
@@ -400,7 +400,7 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Especialización</label>
 				<div class="col-lg-4">
-					<select id="especializaciones" class="form-control select2 elemento-desactivable" name="especializaciones">
+					<select id="especializaciones" class="form-control select2" name="especializaciones">
 						<option value="" disabled="disabled" selected="selected">
 									--Selecciona Especialización--
 						</option>
@@ -416,18 +416,18 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Monto de Pago</label>
 				<div class="col-lg-4">
-					<input class="form-control" name="montoPago">
+					<input id ="montoPago" class="form-control" name="montoPago">
 				</div>
 			</div>
 			<div class="group">
 				<label class="col-lg-2 control-label">Tipo de Pago del Ciclo</label>
 				<div class="col-lg-4">
-					<select id="tiposPago" class="form-control select2 elemento-desactivable" name="tiposPago">
+					<select id="tiposPago" class="form-control select2" name="tiposPago">
 						<option value="" disabled="disabled" selected="selected">
-									Pago al contado
+									--Seleccione tipo de pago--
 						</option>
-						<option th:each="tipoPago : ${tiposPago}" th:value="${tipoPago.idEspecializacion}"
-									th:text="|${tipoPago.idEspecializacion} - ${tipoPago.nombreEspecializacion}|">
+						<option th:each="tipoPago : ${tiposPago}" th:value="${tipoPago.idItem}"
+									th:text="|${tipoPago.idItem} - ${tipoPago.descripcionItem}|">
 						</option>
 					</select>
 				</div>
@@ -437,7 +437,7 @@
 		<div class="form-group">
 			<label class="col-lg-2 control-label">Ciclo a matricular</label>
 			<div class="col-lg-4">
-				<input class="form-control upperCase elemento-desactivable" name="cicloMatricular">
+				<input class="form-control upperCase elemento-desactivable" name="numeroCiclo">
 			</div>
 		</div>
 
@@ -466,7 +466,7 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Adjuntar Voucher</label>
 				<div class="col-lg-4">
-					<input id="adjuntarVoucher" name="adjuntarVoucher" type="file" class="file form-control" data-show-preview="false">
+					<input id="adjuntarVoucher" name="docV" type="file" class="file form-control" data-show-preview="false">
 				</div>
 			</div>
 		</div>

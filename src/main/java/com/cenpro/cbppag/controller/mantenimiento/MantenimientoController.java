@@ -61,4 +61,12 @@ public @Controller class MantenimientoController
         return "seguras/mantenimiento/mantenimiento";
     }
 
+    @GetMapping("/{mantenimiento:alerta}")
+    public String irPaginaMantenimientoAlerta(@PathVariable String mantenimiento, ModelMap model)
+    {
+        model.addAttribute("mantenimiento", mantenimiento);
+        model.addAttribute("tiposAlerta", multiTabDetService.buscarPorIdTabla(23));
+        return "seguras/mantenimiento/mantenimiento";
+    }
+    
 }

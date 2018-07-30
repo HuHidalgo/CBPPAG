@@ -1,34 +1,53 @@
 package com.cenpro.cbppag.model.registro;
 
+import java.io.FileInputStream;
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.mysql.jdbc.Blob;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.FileInputStream;
-import java.util.Date;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Pago {
-	private String codigoPago;
-    private String codigoAlumno;
+	private String codigoAlumno;
+	private String nombreAlumno;
+    private String apellidoAlumno;
+    private String correoAlumno;
+    private String nombreModalidad;
+    private String nombreEspecializacion;
+    private String tipoPago;
+    private int numeroCiclo;
+    private double costoMatricula;
+    
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "EST")
     private Date fechaPago;
-    private String concepto;
-    private String descModalidad;
+    
     private String idEspecializacion;
-    private String descEspecializacion;
+    private String idModalidad;
+    private String conceptoPago;
+    private int nroCuotasPagadas;
+    private Blob voucher = null;
+    private String codigoMatricula;
+    
+    
+	private String codigoPago;
+        
+    
+    
+    
     private String descTipoPago;
-    private int ciclo;
+    
     private int nroCuotasPendientes;
     private double costoCuota;
     private int nroCuotasAPagar;
     private double montoPagado;
-    private String nombresAlumno;
-    private String apellidosAlumno;
-    private String correoAlumno;
     private String fechaPago2;
     private FileInputStream fileInput;
     private String fileOutput;
