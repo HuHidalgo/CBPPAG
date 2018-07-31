@@ -18,7 +18,7 @@ public interface IPagoMapper extends IMantenibleMapper<Pago> {
             + "#{objeto.idEspecializacion, jdbcType = VARCHAR, mode = IN},"
             + "#{objeto.conceptoPago, jdbcType = VARCHAR, mode = IN},"
             + "#{objeto.numeroCiclo, jdbcType = NUMERIC, mode = IN},"
-            + "#{objeto.nroCuotasPagadas, jdbcType = NUMERIC, mode = IN},"
+            + "#{objeto.nroCuotasAPagar, jdbcType = NUMERIC, mode = IN},"
             + "#{objeto.voucher, jdbcType = BLOB, mode = IN},"
             + "#{objeto.codigoMatricula, jdbcType = VARCHAR, mode = IN},"
 			+ "#{userAudit, jdbcType = VARCHAR, mode = IN})}" })

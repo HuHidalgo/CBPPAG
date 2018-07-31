@@ -81,13 +81,13 @@
 				</a>
 				<ul>
 					<li sec:authorize="hasPermission('1','ALL') or hasPermission('2','ALL') or hasPermission('3','ALL')">
-						<a th:href="@{/presupuesto/inicial}">
+						<a th:href="@{/ingresos/reporteDeuda}">
 							<span class="fa fa-line-chart"></span>
 							<span> Deudas</span>
 						</a>
 					</li>
 					<li sec:authorize="hasPermission('1','ALL') or hasPermission('2','ALL')">
-						<a th:href="@{/presupuesto/ingreso}">
+						<a th:href="@{/ingresos/reportePago}">
 							<span class="fa fa-usd"></span>
 							<span> Pagos</span>
 						</a>

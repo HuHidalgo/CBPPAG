@@ -42,4 +42,19 @@ public @Controller class IngresosController
         return "seguras/ingresos/mantenimiento";
     }
     
+    @GetMapping("{reporteIngresos:reportePago}")
+    public String irPaginaReportePagos(ModelMap model)
+    {
+    	model.addAttribute("modalidades", modalidadService.buscarTodos());
+        model.addAttribute("especializaciones", especializacionService.buscarTodos());
+        return "seguras/ingresos/reportePagos";
+    }
+    
+    @GetMapping("{reporteIngresos:reporteDeuda}")
+    public String irPaginaReporteDeudas(ModelMap model)
+    {
+    	model.addAttribute("modalidades", modalidadService.buscarTodos());
+        model.addAttribute("especializaciones", especializacionService.buscarTodos());
+        return "seguras/ingresos/reporteDeudas";
+    }
 }

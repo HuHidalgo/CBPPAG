@@ -27,8 +27,8 @@ public class Matricula{
     private String idEspecializacion;
     private String nombreEspecializacion;
     private String conceptoPago;
-    private double estadoCiclo;
-    private double numeroCiclo;
+    private int estadoCiclo;
+    private int numeroCiclo;
     private FileInputStream archivo;
     private File pdf;
     private String fileOutput;
@@ -39,7 +39,7 @@ public class Matricula{
     private String tipoPago;
     private String descTipoPago;
     private String fechaMatricula3;
-    private Blob voucher  = null;
+    private Blob voucher;
     private String nombreArchivo;
     private Part docV;
 

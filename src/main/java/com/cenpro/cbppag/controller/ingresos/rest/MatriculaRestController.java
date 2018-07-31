@@ -45,7 +45,8 @@ public @RestController class MatriculaRestController {
 	@PostMapping
     public ResponseEntity<?> registrarMatricula(@RequestBody Matricula matricula)
     {
-		/*System.out.println("Nombre : "+matricula.getNombreArchivo());
+		System.out.println("Nombre : "+matricula.getVoucher());
+		/*
 		try {
 			//matricula.setPdf(new File(matricula.getNombreArchivo()));
 			matricula.setArchivo(new FileInputStream(matricula.getPdf()));
@@ -77,8 +78,8 @@ public @RestController class MatriculaRestController {
 		
         matriculaService.registrarMatricula(matricula);
         
-        enviar.setAlerta(alertaService);
-        enviar.mensajeRegistroMatricula(matricula);
+        /*enviar.setAlerta(alertaService);
+        enviar.mensajeRegistroMatricula(matricula);*/
 		return ResponseEntity.ok(ConstantesGenerales.REGISTRO_EXITOSO);
     }
 	

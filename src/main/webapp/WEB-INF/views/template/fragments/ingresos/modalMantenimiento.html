@@ -298,7 +298,7 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Nro. Cuotas Pendientes de Pago</label>
 				<div class="col-lg-4">
-					<input class="form-control" name="nroCuotasPendientes">
+					<input id="nroCuotasPendientes" class="form-control" name="nroCuotasPendientes">
 				</div>
 			</div>
 			<div class="group">
@@ -312,7 +312,7 @@
 		<div class="form-group">
 			<label class="col-lg-2 control-label">Nro. Cuota a Pagar</label>
 			<div class="col-lg-4">
-				<input id="nroCuotasAPagar" class="form-control upperCase" name="nroCuotasPagadas">
+				<input id="nroCuotasAPagar" class="form-control numbersOnly" name="nroCuotasAPagar">
 			</div>
 		</div>
 
@@ -426,7 +426,7 @@
 						<option value="" disabled="disabled" selected="selected">
 									--Seleccione tipo de pago--
 						</option>
-						<option th:each="tipoPago : ${tiposPago}" th:value="${tipoPago.idItem}"
+						<option th:each="tipoPago : ${tiposPago}" th:value="${tipoPago.descripcionItem}"
 									th:text="|${tipoPago.idItem} - ${tipoPago.descripcionItem}|">
 						</option>
 					</select>
@@ -437,7 +437,7 @@
 		<div class="form-group">
 			<label class="col-lg-2 control-label">Ciclo a matricular</label>
 			<div class="col-lg-4">
-				<input class="form-control upperCase elemento-desactivable" name="numeroCiclo">
+				<input class="form-control numbersOnly" name="numeroCiclo">
 			</div>
 		</div>
 
@@ -466,7 +466,7 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Adjuntar Voucher</label>
 				<div class="col-lg-4">
-					<input id="adjuntarVoucher" name="docV" type="file" class="file form-control" data-show-preview="false">
+					<input id="adjuntarVoucher" name="pdf" type="file" class="file form-control" data-show-preview="false">
 				</div>
 			</div>
 		</div>

@@ -216,7 +216,10 @@ $(document).ready(function() {
 		var matricula = $formMantenimiento.serializeJSON();
 		matricula.nombreArchivo = $local.$voucher.val();
 		matricula.idModalidad = $local.$modalidades.val();
+		matricula.nombreModalidad = $("#modalidades option:selected").text().substring(7);
 		matricula.idEspecializacion = $local.$especializaciones.val();
+		matricula.nombreEspecializacion = $("#especializaciones option:selected").text().substring(7);
+		console.log(matricula.nombreModalidad+" "+matricula.nombreEspecializacion);
 		matricula.tipoPago = $local.$tiposPago.val();
 		matricula.fechaMatricula = $local.$fechaMatricula.data("daterangepicker").startDate.format("YYYY-MM-DD");			
 		$.ajax({
@@ -249,7 +252,7 @@ $(document).ready(function() {
 			}
 		});
 	});
-
+	
 	$local.$tablaMantenimiento.children("tbody").on("click", ".actualizar", function() {
 		$funcionUtil.prepararFormularioActualizacion($formMantenimiento);
 		$local.$filaSeleccionada = $(this).parents("tr");

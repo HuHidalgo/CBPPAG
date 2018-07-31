@@ -17,6 +17,7 @@ $(document).ready(function() {
 		$apellidos : $("#apellidoAlumno"),
 		$correo : $("#correoAlumno"),
 		$modalidad : $("#modalidad"),
+		$cuotaPendiente : $("#nroCuotasPendientes"),
 		$tipoPago : $("#tipoPago"),
 		$nroCiclo : $("#ciclo"),
 		$costoCuota : $("#costoCuota"),
@@ -155,6 +156,7 @@ $(document).ready(function() {
 					$local.$nroCiclo.val(this.numeroCiclo);
 					$local.$costoCuota.val(this.costoCuota);
 					$local.$especializacion.val(this.nombreEspecializacion);
+					$local.$cuotaPendiente.val(this.nroCuotasPendientes);
 					$local.codigoMatricula = this.codigoMatricula;
 					console.log($local.codigoMatricula);
 				});
