@@ -13,13 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cenpro.cbppag.model.mantenimiento.Alerta;
 import com.cenpro.cbppag.model.registro.Matricula;
+import com.cenpro.cbppag.model.registro.Pago;
 import com.cenpro.cbppag.service.IAlertaService;
 import com.ibm.icu.text.SimpleDateFormat;
 
 public class EnviarCorreoUtil {
-	private @Autowired IAlertaService alertaService;
-	private final String correo = "";
-    private final String clave = "";
+	private IAlertaService alertaService;
+	private final String correo = "carlos.llontop3@unmsm.edu.pe";
+    private final String clave = "DarkPhoenixVergil20";
 	private String estructuraMensaje;
 	private final SimpleDateFormat date = new SimpleDateFormat("dd-MM-yyyy");
 	static Properties properties = new Properties();
@@ -37,11 +38,18 @@ public class EnviarCorreoUtil {
 		this.alertaService = alertaService;
 	}
 	
+	public void enviarCorreo(Matricula matricula, Pago pago) {
+		if(matricula != null) {
+			mensajeRegistroMatricula(matricula);
+		}
+		if(pago != null) {
+			 mensajeRegistroPago(pago);
+		}
+	}
+	
 	public int mensajeRegistroMatricula(Matricula matricula) {
-		System.out.println("Objeto : "+alertaService);
- 
 		List<Alerta> alertas = alertaService.buscarMensaje("REGISTRO MATRICULA");
-		System.out.println("Numero : "+alertas.size());
+
 		estructuraMensaje = "Codigo: " + matricula.getCodigoAlumno() +
                 			"\nAlumno: " + matricula.getNombreAlumno() + " " + matricula.getApellidoAlumno() +
                 			"\nFecha de Pago: " + date.format(matricula.getFechaMatricula()) +
@@ -74,4 +82,40 @@ public class EnviarCorreoUtil {
         System.out.println("Mensaje de registro de Pago Enviado");
         return 0;
 	}
+	
+	public int mensajeRegistroPago(Pago pago){
+		List<Alerta> alertas = alertaService.buscarMensaje("REGISTRO PERFECCIONAMIENTO");
+		
+		estructuraMensaje = "Codigo: " + pago.getCodigoAlumno()+
+                			"\nAlumno: " + pago.getNombreAlumno()+" "+pago.getApellidoAlumno()+
+                			"\nFecha de Pago: " + date.format(pago.getFechaPago())+
+                			"\nConcepto de Pago: " + pago.getConceptoPago()+
+                			"\nModalidad: " + pago.getNombreModalidad()+
+                			"\nEspecializacion: " + pago.getNombreEspecializacion()+
+                			"\nNro. Cuotas que está Pagando: " + pago.getNroCuotasAPagar()+
+                			"\nMonto Pagado: " + pago.getMontoPagado()+
+                			"\n" + alertas.get(0).getDescAlerta();
+        try {
+            Session session = Session.getDefaultInstance(properties,
+                    new javax.mail.Authenticator() {
+                public PasswordAuthentication
+                        getPasswordAuthentication() {
+                    return new PasswordAuthentication(correo, clave);
+                }
+            });
+
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(pago.getCorreoAlumno()));
+            message.setRecipients(Message.RecipientType.TO,
+                    InternetAddress.parse(pago.getCorreoAlumno()));
+            message.setSubject("Posgrado - Pago de Perfeccionamiento");
+            message.setText(estructuraMensaje);
+            Transport.send(message);
+        } catch (Exception e) {
+            e.getStackTrace();
+            return 1;
+        }
+        System.out.println("Mensaje de registro de Pago Enviado");
+        return 0;
+    }
 }

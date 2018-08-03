@@ -20,7 +20,7 @@ $(document).ready(function() {
 		$tiposPago : $("#tiposPago"),
 		$especializaciones : $("#especializaciones"),
 		$fechaMatricula : $("#fechaMatricula"),
-		$voucher : $("#adjuntarVoucher"),
+		$voucher : $("#uploadfile"),
 		$documento : "",
 		filtrosSeleccionables : {}
 	};
@@ -219,7 +219,6 @@ $(document).ready(function() {
 		matricula.nombreModalidad = $("#modalidades option:selected").text().substring(7);
 		matricula.idEspecializacion = $local.$especializaciones.val();
 		matricula.nombreEspecializacion = $("#especializaciones option:selected").text().substring(7);
-		console.log(matricula.nombreModalidad+" "+matricula.nombreEspecializacion);
 		matricula.tipoPago = $local.$tiposPago.val();
 		matricula.fechaMatricula = $local.$fechaMatricula.data("daterangepicker").startDate.format("YYYY-MM-DD");			
 		$.ajax({
@@ -243,6 +242,27 @@ $(document).ready(function() {
 				var row = $local.tablaMantenimiento.row.add(matricula).draw();
 				row.show().draw(false);
 				$(row.node()).animateHighlight();
+				
+				var form = $("#formMantenimiento")[0];
+				var data = new FormData(form);
+				
+				$.ajax({
+					type : "POST",
+					enctype : 'multipart/form-data',
+					url : $variableUtil.root + "ingresos/matricula/uploadfile/"+"?accion=cargar",
+					data : data,
+					processData : false,
+					contentType : false,
+					cache : false,
+					beforeSend : function(xhr) {
+						xhr.setRequestHeader("X-CSRF-TOKEN", $variableUtil.csrf);
+					},
+					success : function(response) {
+					},
+					complete : function(response) {
+					}
+				});
+				
 				$local.$modalMantenimiento.PopupWindow("close");
 			},
 			error : function(response) {
@@ -251,6 +271,9 @@ $(document).ready(function() {
 				$local.$registrarMantenimiento.attr("disabled", false).find("i").addClass("fa-floppy-o").removeClass("fa-spinner fa-pulse fa-fw");
 			}
 		});
+		
+		
+		
 	});
 	
 	$local.$tablaMantenimiento.children("tbody").on("click", ".actualizar", function() {

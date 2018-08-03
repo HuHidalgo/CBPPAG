@@ -1,5 +1,6 @@
 package com.cenpro.cbppag.service.impl.registro;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,9 +37,20 @@ public class PagoService extends MantenibleService<Pago> implements IPagoService
 		return this.buscar(pago, Verbo.VERIFICAR_AM);
 	}
 
-	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void registrarPago(Pago pago) {
 		this.registrar(pago);
+	}
+
+	
+	public void cargarVoucher(Pago pago) {
+		this.registrar(pago);
+	}
+
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public List<Pago> recuperarVoucher(String documento) {
+		Pago pago = Pago.builder().codigoAlumno(documento).build();
+		return this.buscar(pago, Verbo.GET_VOUCHER_PAGO);
 	}
 
 }

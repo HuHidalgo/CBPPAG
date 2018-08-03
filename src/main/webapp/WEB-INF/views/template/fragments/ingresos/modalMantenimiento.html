@@ -6,7 +6,8 @@
 	<div id="modalMantenimiento" class="row" th:fragment="modalMantenimiento" th:with="tipo=${tipo}">
 		<fieldset class="well">
 			<legend class="well-legend">Formulario de Mantenimiento</legend>
-			<form id="formMantenimiento" class="form-horizontal" role="form">
+			<form id="formMantenimiento" class="form-horizontal" role="form" method="POST"
+								enctype="multipart/form-data">
 				<th:block th:replace="~{template/fragments/ingresos/modalMantenimiento :: ${tipo}}?:~{}">
 				</th:block>
 				<div id="botonesForm" class="form-group">
@@ -341,7 +342,7 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Adjuntar Voucher</label>
 				<div class="col-lg-4">
-					<input id="adjuntarVoucher" name="adjuntarVoucher" type="file" class="file form-control" data-show-preview="false">
+					<input id="uploadfile" name="uploadfile" type="file" class="file form-control" data-show-preview="false">
 				</div>
 			</div>
 		</div>
@@ -466,7 +467,7 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Adjuntar Voucher</label>
 				<div class="col-lg-4">
-					<input id="adjuntarVoucher" name="pdf" type="file" class="file form-control" data-show-preview="false">
+					<input id="uploadfile" name="uploadfile" type="file" class="file form-control" data-show-preview="false">
 				</div>
 			</div>
 		</div>

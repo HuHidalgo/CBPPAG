@@ -1,10 +1,10 @@
 package com.cenpro.cbppag.model.registro;
 
 import java.io.FileInputStream;
+import java.sql.Blob;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.mysql.jdbc.Blob;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,7 +33,7 @@ public class Pago {
     private String idModalidad;
     private String conceptoPago;
     private int nroCuotasPagadas;
-    private Blob voucher = null;
+    private Blob voucher;
     private String codigoMatricula;
     
     

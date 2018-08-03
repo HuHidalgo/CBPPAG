@@ -40,6 +40,7 @@ public class Verbo
     public static final String GET_MODA = "GET_MODA";
     public static final String GET_COSTO = "GET_COSTO";
     public static final String GET_MENSAJE = "GET_MENSAJE";
+    public static final String GET_VOUCHER_PAGO = "GET_VOUCHER_PAGO";
     
     // Verbo de Reporte
     public static final String COMISION_BANCO_ADMINISTRADOR = "COMISION_BANCO_ADMINISTRADOR";

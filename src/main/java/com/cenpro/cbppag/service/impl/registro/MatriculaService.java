@@ -50,7 +50,12 @@ public class MatriculaService extends MantenibleService<Matricula> implements IM
 	public void registrarMatricula(Matricula matricula) {
 		this.registrar(matricula);
 	}
-
+	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void cargarVoucher(Matricula matricula) {
+		this.registrar(matricula);
+	}
+	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void actualizarMatricula(Matricula matricula) {
 		// TODO Auto-generated method stub

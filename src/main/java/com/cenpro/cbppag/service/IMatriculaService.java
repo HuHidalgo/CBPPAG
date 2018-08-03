@@ -14,6 +14,8 @@ public interface IMatriculaService extends IMantenibleService<Matricula>{
     
     public void registrarMatricula(Matricula matricula);
     
+    public void cargarVoucher(Matricula matricula);
+    
     public void actualizarMatricula(Matricula matricula);
     
     public void eliminarMatricula(Matricula matricula);

@@ -23,7 +23,7 @@ $(document).ready(function() {
 		$costoCuota : $("#costoCuota"),
 		$especializacion : $("#especializacion"),
 		$fechaPago : $("#fechaPago"),
-		$voucher : $("#adjuntarVoucher"),
+		$voucher : $("#uploadfile"),
 		$documento : "",
 		filtrosSeleccionables : {}
 	};
@@ -193,6 +193,27 @@ $(document).ready(function() {
 				var row = $local.tablaMantenimiento.row.add(pago).draw();
 				row.show().draw(false);
 				$(row.node()).animateHighlight();
+				
+				var form = $("#formMantenimiento")[0];
+				var data = new FormData(form);
+				
+				$.ajax({
+					type : "POST",
+					enctype : 'multipart/form-data',
+					url : $variableUtil.root + "ingresos/pago/uploadfile/"+"?accion=cargar",
+					data : data,
+					processData : false,
+					contentType : false,
+					cache : false,
+					beforeSend : function(xhr) {
+						xhr.setRequestHeader("X-CSRF-TOKEN", $variableUtil.csrf);
+					},
+					success : function(response) {
+					},
+					complete : function(response) {
+					}
+				});
+				
 				$local.$modalMantenimiento.PopupWindow("close");
 			},
 			error : function(response) {
@@ -254,61 +275,49 @@ $(document).ready(function() {
 
 	$local.$tablaMantenimiento.children("tbody").on("click", ".eliminar", function() {
 		$local.$filaSeleccionada = $(this).parents("tr");
-		var persona = $local.tablaMantenimiento.row($local.$filaSeleccionada).data();
-		$.confirm({
-			icon : "fa fa-info-circle",
-			title : "Aviso",
-			content : "¿Desea eliminar la Persona <b>'" + persona.idTipoDocumento + " - " + persona.numeroDocumento + "'<b/>?",
-			theme: "bootstrap",
-			buttons : {
-				Aceptar : {
-					action : function() {
-						var confirmar = $.confirm({
-							icon : 'fa fa-spinner fa-pulse fa-fw',
-							title : "Eliminando...",
-							content : function() {
-								var self = this;
-								self.buttons.close.hide();
-								$.ajax({
-									type : "DELETE",
-									url : $variableUtil.root + "mantenimiento/persona",
-									data : JSON.stringify(persona),
-									autoclose : true,
-									beforeSend : function(xhr) {
-										xhr.setRequestHeader('Content-Type', 'application/json');
-										xhr.setRequestHeader("X-CSRF-TOKEN", $variableUtil.csrf);
-									}
-								}).done(function(response) {
-									$funcionUtil.notificarException(response, "fa-check", "Aviso", "success");
-									$local.tablaMantenimiento.row($local.$filaSeleccionada).remove().draw(false);
-									confirmar.close();
-								}).fail(function(xhr) {
-									confirmar.close();
-									switch (xhr.status) {
-									case 400:
-										$funcionUtil.notificarException($funcionUtil.obtenerMensajeErrorEnCadena(xhr.responseJSON), "fa-warning", "Aviso", "warning");
-										break;
-									case 409:
-										var mensaje = $funcionUtil.obtenerMensajeError("La Persona <b>" + persona.idTipoDocumento + " - " + persona.numeroDocumento + "</b>", xhr.responseJSON, $variableUtil.accionEliminado);
-										$funcionUtil.notificarException(mensaje, "fa-warning", "Aviso", "warning");
-										break;
-									}
-								});
-							},
-							buttons : {
-								close : {
-									text : 'Aceptar'
-								}
-							}
-						});
-					},
-					keys : [ 'enter' ],
-					btnClass : "btn-primary"
-				},
-				Cancelar : {
-					keys : [ 'esc' ]
-				},
+		var pago = $local.tablaMantenimiento.row($local.$filaSeleccionada).data();
+		
+		var codAlumno = pago.codigoAlumno;
+		if (codAlumno == null || codAlumno == undefined) {
+			return;
+		}
+		var file = $local.$voucher[0].files[0];
+		$.ajax({
+			type : "GET",
+			url : $variableUtil.root + "ingresos/pago/voucher/" + codAlumno,
+			success : function(pagos) {
+				$.each(pagos, function(i, pago) {	
+					console.log(pago.codigoAlumno);
+				});
 			}
 		});
+		descargarArchivo(file,"voucher");
 	});
+	
+	function descargarArchivo(contenidoEnBlob, nombreArchivo) {
+		  //creamos un FileReader para leer el Blob
+		  var reader = new FileReader();
+		  //Definimos la función que manejará el archivo
+		  //una vez haya terminado de leerlo
+		  reader.onload = function (event) {
+		    //Usaremos un link para iniciar la descarga 
+		    var save = document.createElement('a');
+		    save.href = event.target.result;
+		    save.target = '_blank';
+		    //Truco: así le damos el nombre al archivo 
+		    save.download = nombreArchivo || 'archivo.dat';
+		    var clicEvent = new MouseEvent('click', {
+		      'view': window,
+		      'bubbles': true,
+		      'cancelable': true
+		    });
+		    //Simulamos un clic del usuario
+		    //no es necesario agregar el link al DOM.
+		    save.dispatchEvent(clicEvent);
+		    //Y liberamos recursos...
+		    (window.URL || window.webkitURL).revokeObjectURL(save.href);
+		  };
+		  //Leemos el blob y esperamos a que dispare el evento "load"
+		  reader.readAsDataURL(contenidoEnBlob);
+		};
 });
