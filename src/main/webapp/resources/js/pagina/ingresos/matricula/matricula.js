@@ -8,6 +8,7 @@ $(document).ready(function() {
 		$registrarMantenimiento : $("#registrarMantenimiento"),
 		$filaSeleccionada : "",
 		$actualizarMantenimiento : $("#actualizarMantenimiento"),
+		codigoMatricula :"",
 		idTipoDocumento : "",
 		numeroDocumento : "",
 		$verificarAlumno : $("#verificarDatos"),
@@ -55,17 +56,20 @@ $(document).ready(function() {
 			$tablaFuncion.aniadirFiltroDeBusquedaEnEncabezado(this, $local.$tablaMantenimiento);
 		},
 		"columnDefs" : [ {
-			"targets" : [ 0, 1, 2, 3, 4, 5, 6 ],
+			"targets" : [ 0, 1, 2, 3, 4, 5, 6, 7 ],
 			"className" : "all filtrable",
 		}, {
-			"targets" : 7,
+			"targets" : 8,
 			"className" : "all dt-center",
-			"defaultContent" : $variableUtil.botonActualizar + " " + $variableUtil.botonEliminar
+			"defaultContent" : $variableUtil.botonActualizar + " " + $variableUtil.botonDescargar
 		} ],
 		"columns" : [ {
+			"data" : 'codigoMatricula',
+			"title" : "Matricula"
+		}, {
 			"data" : 'codigoAlumno',
 			"title" : "Código"
-		}, {
+		},{
 			"data" : function(row) {
 				return row.apellidoAlumno+ ", " + row.nombreAlumno;
 			},
@@ -237,12 +241,6 @@ $(document).ready(function() {
 				}
 			},
 			success : function(matriculas) {
-				$funcionUtil.notificarException($variableUtil.registroExitoso, "fa-check", "Aviso", "success");
-				var matricula = matriculas[0];
-				var row = $local.tablaMantenimiento.row.add(matricula).draw();
-				row.show().draw(false);
-				$(row.node()).animateHighlight();
-				
 				var form = $("#formMantenimiento")[0];
 				var data = new FormData(form);
 				
@@ -258,6 +256,11 @@ $(document).ready(function() {
 						xhr.setRequestHeader("X-CSRF-TOKEN", $variableUtil.csrf);
 					},
 					success : function(response) {
+						$funcionUtil.notificarException($variableUtil.registroExitoso, "fa-check", "Aviso", "success");
+						var matricula = matriculas[0];
+						var row = $local.tablaMantenimiento.row.add(matricula).draw();
+						row.show().draw(false);
+						$(row.node()).animateHighlight();
 					},
 					complete : function(response) {
 					}
@@ -279,9 +282,9 @@ $(document).ready(function() {
 	$local.$tablaMantenimiento.children("tbody").on("click", ".actualizar", function() {
 		$funcionUtil.prepararFormularioActualizacion($formMantenimiento);
 		$local.$filaSeleccionada = $(this).parents("tr");
-		var persona = $local.tablaMantenimiento.row($local.$filaSeleccionada).data();
-		$local.idTipoDocumento = persona.idTipoDocumento;
-		$local.numeroDocumento = persona.numeroDocumento;
+		var matricula = $local.tablaMantenimiento.row($local.$filaSeleccionada).data();
+		$local.codigoMatricula = matricula.codigoMatricula;
+		
 		$funcionUtil.llenarFormulario(persona, $formMantenimiento);
 		$local.$actualizarMantenimiento.removeClass("hidden");
 		$local.$registrarMantenimiento.addClass("hidden");
@@ -325,63 +328,58 @@ $(document).ready(function() {
 		});
 	});
 
-	$local.$tablaMantenimiento.children("tbody").on("click", ".eliminar", function() {
+	$local.$tablaMantenimiento.children("tbody").on("click", ".descargar", function() {
 		$local.$filaSeleccionada = $(this).parents("tr");
-		var persona = $local.tablaMantenimiento.row($local.$filaSeleccionada).data();
-		$.confirm({
-			icon : "fa fa-info-circle",
-			title : "Aviso",
-			content : "¿Desea eliminar la Persona <b>'" + persona.idTipoDocumento + " - " + persona.numeroDocumento + "'<b/>?",
-			theme: "bootstrap",
-			buttons : {
-				Aceptar : {
-					action : function() {
-						var confirmar = $.confirm({
-							icon : 'fa fa-spinner fa-pulse fa-fw',
-							title : "Eliminando...",
-							content : function() {
-								var self = this;
-								self.buttons.close.hide();
-								$.ajax({
-									type : "DELETE",
-									url : $variableUtil.root + "mantenimiento/persona",
-									data : JSON.stringify(persona),
-									autoclose : true,
-									beforeSend : function(xhr) {
-										xhr.setRequestHeader('Content-Type', 'application/json');
-										xhr.setRequestHeader("X-CSRF-TOKEN", $variableUtil.csrf);
-									}
-								}).done(function(response) {
-									$funcionUtil.notificarException(response, "fa-check", "Aviso", "success");
-									$local.tablaMantenimiento.row($local.$filaSeleccionada).remove().draw(false);
-									confirmar.close();
-								}).fail(function(xhr) {
-									confirmar.close();
-									switch (xhr.status) {
-									case 400:
-										$funcionUtil.notificarException($funcionUtil.obtenerMensajeErrorEnCadena(xhr.responseJSON), "fa-warning", "Aviso", "warning");
-										break;
-									case 409:
-										var mensaje = $funcionUtil.obtenerMensajeError("La Persona <b>" + persona.idTipoDocumento + " - " + persona.numeroDocumento + "</b>", xhr.responseJSON, $variableUtil.accionEliminado);
-										$funcionUtil.notificarException(mensaje, "fa-warning", "Aviso", "warning");
-										break;
-									}
-								});
-							},
-							buttons : {
-								close : {
-									text : 'Aceptar'
-								}
-							}
-						});
-					},
-					keys : [ 'enter' ],
-					btnClass : "btn-primary"
-				},
-				Cancelar : {
-					keys : [ 'esc' ]
-				},
+		
+		var matricula = $local.tablaMantenimiento.row($local.$filaSeleccionada).data();
+		
+		$.ajax({
+			type : "GET",
+			url : $variableUtil.root + "ingresos/matricula/voucher/" + matricula.codigoMatricula,
+			beforeSend : function(xhr) {
+				$local.$registrarMantenimiento.attr("disabled", true).find("i").removeClass("fa-floppy-o").addClass("fa-spinner fa-pulse fa-fw");
+				xhr.setRequestHeader('Content-Type', 'application/json');
+				xhr.setRequestHeader("X-CSRF-TOKEN", $variableUtil.csrf);
+			},
+			success : function(matricula) {
+				var contentType = "application/pdf";
+				var file = b64toBlob (matricula.bytesLeidos,contentType);
+				download(file, "voucher");
 			}
 		});
+		
 	});
+	
+	function b64toBlob(b64Data, contentType, sliceSize) {
+		  contentType = contentType || '';
+		  sliceSize = sliceSize || 512;
+
+		  var byteCharacters = atob(b64Data);
+		  var byteArrays = [];
+
+		  for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+		    var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+		    var byteNumbers = new Array(slice.length);
+		    for (var i = 0; i < slice.length; i++) {
+		      byteNumbers[i] = slice.charCodeAt(i);
+		    }
+
+		    var byteArray = new Uint8Array(byteNumbers);
+
+		    byteArrays.push(byteArray);
+		  }
+
+		  var blob = new Blob(byteArrays, {type: contentType});
+		  return blob;
+	};
+	
+	function download(text, filename){
+		  var blob = new Blob([text], {type: "application/pdf"});
+		  var url = window.URL.createObjectURL(blob);
+		  var a = document.createElement("a");
+		  a.href = url;
+		  a.download = filename;
+		  a.click();
+	};
 });

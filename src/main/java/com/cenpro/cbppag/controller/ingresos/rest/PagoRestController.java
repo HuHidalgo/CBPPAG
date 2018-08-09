@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.sql.rowset.serial.SerialBlob;
+import javax.xml.bind.DatatypeConverter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -46,12 +47,12 @@ public @RestController class PagoRestController {
     public ResponseEntity<?> registrarPago(@RequestBody Pago pago)
     {
 		pago.setMontoPagado(pago.getNroCuotasAPagar()*pago.getCostoCuota());
-		pagoService.registrarPago(pago);
+		String codigoPago = pagoService.registrarPago(pago);
+
+		/*correo = new HiloCorreo(alertaService, null, pago);
+        correo.start();*/
 		
-		correo = new HiloCorreo(alertaService, null, pago);
-        correo.start();
-        
-		return ResponseEntity.ok(ConstantesGenerales.REGISTRO_EXITOSO);
+		return ResponseEntity.ok(pagoService.buscarPorId(codigoPago));
     }
 	
 	@PostMapping(value = "/uploadfile/", params = "accion=cargar")
@@ -70,20 +71,13 @@ public @RestController class PagoRestController {
 		pagoService.registrarPago(pago);
 	}
 	
-	@GetMapping("/voucher/{codAlumno}")
-    public List<Pago> recuperarVoucher(@PathVariable String codAlumno)
+	@GetMapping("/voucher/{codigoPago}")
+    public Pago recuperarVoucher(@PathVariable String codigoPago)
     {
-		List<Pago> f = pagoService.recuperarVoucher(codAlumno);
-		System.out.println(f.size());
-		
-		if(f.get(0) == null) {
-			System.out.println("nulo");
-		}
-		else {
-			System.out.println("objeto");
-		}
-		
-		
-        return pagoService.recuperarVoucher(codAlumno);
+		List<Pago> lista = pagoService.recuperarVoucher(codigoPago);
+		String base64Encoded = DatatypeConverter.printBase64Binary(lista.get(0).getBytesLeidos());
+        byte[] base64Decoded = DatatypeConverter.parseBase64Binary(base64Encoded);
+		lista.get(0).setBytesLeidos(base64Decoded);
+        return lista.get(0);
     }
 }

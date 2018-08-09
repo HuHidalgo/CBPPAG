@@ -55,17 +55,20 @@ $(document).ready(function() {
 			$tablaFuncion.aniadirFiltroDeBusquedaEnEncabezado(this, $local.$tablaMantenimiento);
 		},
 		"columnDefs" : [ {
-			"targets" : [ 0, 1, 2, 3, 4, 5 ],
+			"targets" : [ 0, 1, 2, 3, 4, 5, 6 ],
 			"className" : "all filtrable",
 		}, {
-			"targets" : 6,
+			"targets" : 7,
 			"className" : "all dt-center",
-			"defaultContent" : $variableUtil.botonActualizar + " " + $variableUtil.botonEliminar
+			"defaultContent" : $variableUtil.botonActualizar + " " + $variableUtil.botonDescargar
 		} ],
 		"columns" : [ {
+			"data" : 'codigoPago',
+			"title" : "Pago"
+		}, {
 			"data" : 'codigoAlumno',
 			"title" : "Código"
-		}, {
+		},{
 			"data" : function(row) {
 				return row.apellidoAlumno+ ", " + row.nombreAlumno;
 			},
@@ -187,13 +190,7 @@ $(document).ready(function() {
 					$funcionUtil.mostrarMensajeDeError(response.responseJSON, $formMantenimiento);
 				}
 			},
-			success : function(pagos) {
-				$funcionUtil.notificarException($variableUtil.registroExitoso, "fa-check", "Aviso", "success");
-				var pago = pagos[0];
-				var row = $local.tablaMantenimiento.row.add(pago).draw();
-				row.show().draw(false);
-				$(row.node()).animateHighlight();
-				
+			success : function(pagos) {		
 				var form = $("#formMantenimiento")[0];
 				var data = new FormData(form);
 				
@@ -207,8 +204,14 @@ $(document).ready(function() {
 					cache : false,
 					beforeSend : function(xhr) {
 						xhr.setRequestHeader("X-CSRF-TOKEN", $variableUtil.csrf);
+						
 					},
 					success : function(response) {
+						$funcionUtil.notificarException($variableUtil.registroExitoso, "fa-check", "Aviso", "success");
+						var pago = pagos[0];
+						var row = $local.tablaMantenimiento.row.add(pago).draw();
+						row.show().draw(false);
+						$(row.node()).animateHighlight();
 					},
 					complete : function(response) {
 					}
@@ -273,51 +276,56 @@ $(document).ready(function() {
 		});
 	});
 
-	$local.$tablaMantenimiento.children("tbody").on("click", ".eliminar", function() {
+	$local.$tablaMantenimiento.children("tbody").on("click", ".descargar", function() {
 		$local.$filaSeleccionada = $(this).parents("tr");
 		var pago = $local.tablaMantenimiento.row($local.$filaSeleccionada).data();
 		
-		var codAlumno = pago.codigoAlumno;
-		if (codAlumno == null || codAlumno == undefined) {
-			return;
-		}
-		var file = $local.$voucher[0].files[0];
 		$.ajax({
 			type : "GET",
-			url : $variableUtil.root + "ingresos/pago/voucher/" + codAlumno,
-			success : function(pagos) {
-				$.each(pagos, function(i, pago) {	
-					console.log(pago.codigoAlumno);
-				});
+			url : $variableUtil.root + "ingresos/pago/voucher/" + pago.codigoPago,
+			beforeSend : function(xhr) {
+				$local.$registrarMantenimiento.attr("disabled", true).find("i").removeClass("fa-floppy-o").addClass("fa-spinner fa-pulse fa-fw");
+				xhr.setRequestHeader('Content-Type', 'application/json');
+				xhr.setRequestHeader("X-CSRF-TOKEN", $variableUtil.csrf);
+			},
+			success : function(pago) {
+				var contentType = "application/pdf";
+				var file = b64toBlob (pago.bytesLeidos,contentType);
+				download(file, "voucher");
 			}
 		});
-		descargarArchivo(file,"voucher");
 	});
 	
-	function descargarArchivo(contenidoEnBlob, nombreArchivo) {
-		  //creamos un FileReader para leer el Blob
-		  var reader = new FileReader();
-		  //Definimos la función que manejará el archivo
-		  //una vez haya terminado de leerlo
-		  reader.onload = function (event) {
-		    //Usaremos un link para iniciar la descarga 
-		    var save = document.createElement('a');
-		    save.href = event.target.result;
-		    save.target = '_blank';
-		    //Truco: así le damos el nombre al archivo 
-		    save.download = nombreArchivo || 'archivo.dat';
-		    var clicEvent = new MouseEvent('click', {
-		      'view': window,
-		      'bubbles': true,
-		      'cancelable': true
-		    });
-		    //Simulamos un clic del usuario
-		    //no es necesario agregar el link al DOM.
-		    save.dispatchEvent(clicEvent);
-		    //Y liberamos recursos...
-		    (window.URL || window.webkitURL).revokeObjectURL(save.href);
-		  };
-		  //Leemos el blob y esperamos a que dispare el evento "load"
-		  reader.readAsDataURL(contenidoEnBlob);
-		};
+	function b64toBlob(b64Data, contentType, sliceSize) {
+		  contentType = contentType || '';
+		  sliceSize = sliceSize || 512;
+
+		  var byteCharacters = atob(b64Data);
+		  var byteArrays = [];
+
+		  for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+		    var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+		    var byteNumbers = new Array(slice.length);
+		    for (var i = 0; i < slice.length; i++) {
+		      byteNumbers[i] = slice.charCodeAt(i);
+		    }
+
+		    var byteArray = new Uint8Array(byteNumbers);
+
+		    byteArrays.push(byteArray);
+		  }
+
+		  var blob = new Blob(byteArrays, {type: contentType});
+		  return blob;
+	};
+	
+	function download(text, filename){
+		  var blob = new Blob([text], {type: "application/pdf"});
+		  var url = window.URL.createObjectURL(blob);
+		  var a = document.createElement("a");
+		  a.href = url;
+		  a.download = filename;
+		  a.click();
+	};
 });

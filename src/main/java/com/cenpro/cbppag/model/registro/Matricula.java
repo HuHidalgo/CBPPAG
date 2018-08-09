@@ -5,12 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.Date;
-import javax.servlet.http.Part;
-
-import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.sql.Blob;
@@ -29,9 +24,6 @@ public class Matricula{
     private String conceptoPago;
     private int estadoCiclo;
     private int numeroCiclo;
-    private FileInputStream archivo;
-    private File pdf;
-    private String fileOutput;
     private double costoMatricula;
     private String nombreAlumno;
     private String apellidoAlumno;
@@ -41,8 +33,7 @@ public class Matricula{
     private String fechaMatricula3;
     private Blob voucher;
     private String nombreArchivo;
-    private Part docV;
-
+    
     private byte[] bytesLeidos;
     
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "EST")

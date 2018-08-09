@@ -43,23 +43,22 @@ $(document).ready(function() {
 			$tablaFuncion.aniadirFiltroDeBusquedaEnEncabezado(this, $local.$tablaMantenimiento);
 		},
 		"columnDefs" : [ {
-			"targets" : [ 0, 1, 2, 3, 4, 5 ],
+			"targets" : [ 0, 1, 2, 3, 4, 5, 6 ],
 			"className" : "all filtrable",
 		}, {
-			"targets" : 6,
+			"targets" : 7,
 			"className" : "all dt-center",
 			"defaultContent" : $variableUtil.botonActualizar + " " + $variableUtil.botonEliminar
 		} ],
 		"columns" : [ {
-			"data" : function(row) {
-				return row.nombreModalidad;
-			},
-			"title" : "Modalidad"
+			"data" : "idEspecializacion",
+			"title" : "Código de Especialización"
 		}, {
-			"data" : function(row) {
-				return row.nombreEspecializacion;
-			},
+			"data" : "nombreEspecializacion",
 			"title" : "Especialización"
+		}, {
+			"data" : "nombreModalidad",
+			"title" : "Modalidad"
 		}, {
 			"data" : "costoMatricula",
 			"title" : "Costo de Matrícula"
@@ -147,7 +146,8 @@ $(document).ready(function() {
 			},
 			success : function(especializaciones) {
 				$funcionUtil.notificarException($variableUtil.registroExitoso, "fa-check", "Aviso", "success");
-				var row = $local.tablaMantenimiento.row.add(especializaciones[0]).draw();
+				var especializacion = especializaciones[0];
+				var row = $local.tablaMantenimiento.row.add(especializacion).draw();
 				row.show().draw(false);
 				$(row.node()).animateHighlight();
 				$local.$modalMantenimiento.PopupWindow("close");
@@ -194,9 +194,10 @@ $(document).ready(function() {
 					$funcionUtil.mostrarMensajeDeError(response.responseJSON, $formMantenimiento);
 				}
 			},
-			success : function(especializacions) {
+			success : function(especializaciones) {
 				$funcionUtil.notificarException($variableUtil.actualizacionExitosa, "fa-check", "Aviso", "success");
-				var row = $local.tablaMantenimiento.row($local.$filaSeleccionada).data(especializacions[0]).draw();
+				var especializacion = especializaciones[0];
+				var row = $local.tablaMantenimiento.row($local.$filaSeleccionada).data(especializacion).draw();
 				row.show().draw(false);
 				$(row.node()).animateHighlight();
 				$local.$modalMantenimiento.PopupWindow("close");

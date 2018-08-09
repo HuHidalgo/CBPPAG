@@ -1,6 +1,5 @@
 package com.cenpro.cbppag.model.registro;
 
-import java.io.FileInputStream;
 import java.sql.Blob;
 import java.util.Date;
 
@@ -24,31 +23,21 @@ public class Pago {
     private String nombreEspecializacion;
     private String tipoPago;
     private int numeroCiclo;
-    private double costoMatricula;
-    
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "EST")
-    private Date fechaPago;
-    
+    private double costoMatricula;      
     private String idEspecializacion;
     private String idModalidad;
     private String conceptoPago;
     private int nroCuotasPagadas;
     private Blob voucher;
-    private String codigoMatricula;
-    
-    
-	private String codigoPago;
-        
-    
-    
-    
-    private String descTipoPago;
-    
+    private String codigoMatricula;   
+	private String codigoPago;  
+    private String descTipoPago;    
     private int nroCuotasPendientes;
     private double costoCuota;
     private int nroCuotasAPagar;
     private double montoPagado;
     private String fechaPago2;
-    private FileInputStream fileInput;
-    private String fileOutput;
+    private byte[] bytesLeidos;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "EST")
+    private Date fechaPago;  
 }

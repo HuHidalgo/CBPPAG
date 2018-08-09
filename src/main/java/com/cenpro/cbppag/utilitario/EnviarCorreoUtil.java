@@ -19,8 +19,8 @@ import com.ibm.icu.text.SimpleDateFormat;
 
 public class EnviarCorreoUtil {
 	private IAlertaService alertaService;
-	private final String correo = "carlos.llontop3@unmsm.edu.pe";
-    private final String clave = "DarkPhoenixVergil20";
+	private final String correo = "";
+    private final String clave = "";
 	private String estructuraMensaje;
 	private final SimpleDateFormat date = new SimpleDateFormat("dd-MM-yyyy");
 	static Properties properties = new Properties();

@@ -37,8 +37,8 @@ public @RestController class AlertaRestController {
     @PostMapping
     public ResponseEntity<?> registrarAlerta(@RequestBody Alerta alerta)
     {	
-    	alertaService.registrarAlerta(alerta);
-        return ResponseEntity.ok(ConstantesGenerales.REGISTRO_EXITOSO);
+    	String codigoAlerta = alertaService.registrarAlerta(alerta);
+        return ResponseEntity.ok(alertaService.buscarPorId(codigoAlerta));
     }
 
     @PutMapping

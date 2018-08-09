@@ -8,7 +8,7 @@ $(document).ready(function() {
 		$registrarMantenimiento : $("#registrarMantenimiento"),
 		$filaSeleccionada : "",
 		$actualizarMantenimiento : $("#actualizarMantenimiento"),
-		codigoEspecializacionSeleccionada : 0,
+		codigoAlertaSeleccionado : 0,
 		$tiposAlerta : $("#tiposAlerta")
 	};
 
@@ -128,7 +128,8 @@ $(document).ready(function() {
 			},
 			success : function(alertas) {
 				$funcionUtil.notificarException($variableUtil.registroExitoso, "fa-check", "Aviso", "success");
-				var row = $local.tablaMantenimiento.row.add(alertas[0]).draw();
+				var alerta = alertas[0];
+				var row = $local.tablaMantenimiento.row.add(alerta).draw();
 				row.show().draw(false);
 				$(row.node()).animateHighlight();
 				$local.$modalMantenimiento.PopupWindow("close");
@@ -144,9 +145,10 @@ $(document).ready(function() {
 	$local.$tablaMantenimiento.children("tbody").on("click", ".actualizar", function() {
 		$funcionUtil.prepararFormularioActualizacion($formMantenimiento);
 		$local.$filaSeleccionada = $(this).parents("tr");
-		var especializacion = $local.tablaMantenimiento.row($local.$filaSeleccionada).data();
-		$local.codigoEspecializacionSeleccionada = especializacion.idEspecializacion;
-		$funcionUtil.llenarFormulario(especializacion, $formMantenimiento);
+		var alerta = $local.tablaMantenimiento.row($local.$filaSeleccionada).data();
+		$local.codigoAlertaSeleccionado = alerta.codigoAlerta;
+		$local.$tiposAlerta.val(alerta.tipoAlerta).trigger("change.select2");
+		$funcionUtil.llenarFormulario(alerta, $formMantenimiento);
 		$local.$actualizarMantenimiento.removeClass("hidden");
 		$local.$registrarMantenimiento.addClass("hidden");
 		$local.$modalMantenimiento.PopupWindow("open");
@@ -156,14 +158,13 @@ $(document).ready(function() {
 		if (!$formMantenimiento.valid()) {
 			return;
 		}
-		var especializacion = $formMantenimiento.serializeJSON();
-		especializacion.idEspecializacion = $local.codigoEspecializacionSeleccionada;
-		campania.fechaInicio = $local.$fechaInicio.data("daterangepicker").startDate.format('YYYY-MM-DD');
-		campania.fechaFin = $local.$fechaFin.data("daterangepicker").startDate.format('YYYY-MM-DD');
+		var alerta = $formMantenimiento.serializeJSON();
+		alerta.tipoAlerta = $local.$tiposAlerta.val();
+		alerta.codigoAlerta = $local.codigoAlertaSeleccionado;
 		$.ajax({
 			type : "PUT",
-			url : $variableUtil.root + "mantenimiento/especializacion",
-			data : JSON.stringify(especializacion),
+			url : $variableUtil.root + "mantenimiento/alerta",
+			data : JSON.stringify(alerta),
 			beforeSend : function(xhr) {
 				$local.$actualizarMantenimiento.attr("disabled", true).find("i").removeClass("fa-pencil-square").addClass("fa-spinner fa-pulse fa-fw");
 				xhr.setRequestHeader('Content-Type', 'application/json');
@@ -175,9 +176,9 @@ $(document).ready(function() {
 					$funcionUtil.mostrarMensajeDeError(response.responseJSON, $formMantenimiento);
 				}
 			},
-			success : function(especializacions) {
-				$funcionUtil.notificarException($variableUtil.actualizacionExitosa, "fa-check", "Aviso", "success");
-				var row = $local.tablaMantenimiento.row($local.$filaSeleccionada).data(especializacions[0]).draw();
+			success : function(response) {
+				$funcionUtil.notificarException(response, "fa-check", "Aviso", "success");
+				var row = $local.tablaMantenimiento.row($local.$filaSeleccionada).data(alerta).draw();
 				row.show().draw(false);
 				$(row.node()).animateHighlight();
 				$local.$modalMantenimiento.PopupWindow("close");
@@ -192,11 +193,11 @@ $(document).ready(function() {
 
 	$local.$tablaMantenimiento.children("tbody").on("click", ".eliminar", function() {
 		$local.$filaSeleccionada = $(this).parents("tr");
-		var especializacion = $local.tablaMantenimiento.row($local.$filaSeleccionada).data();
+		var alerta = $local.tablaMantenimiento.row($local.$filaSeleccionada).data();
 		$.confirm({
 			icon : "fa fa-info-circle",
 			title : "Aviso",
-			content : "¿Desea eliminar la especializacion <b>'" + especializacion.codigoEspecializacion + " - " + especializacion.nomEspecializacion + "'<b/>?",
+			content : "¿Desea eliminar la alerta <b>'" + alerta.codigoAlerta + " - " + alerta.tipoAlerta + "'<b/>?",
 			theme : "bootstrap",
 			buttons : {
 				Aceptar : {
@@ -209,8 +210,8 @@ $(document).ready(function() {
 								self.buttons.close.hide();
 								$.ajax({
 									type : "DELETE",
-									url : $variableUtil.root + "mantenimiento/especializacion",
-									data : JSON.stringify(especializacion),
+									url : $variableUtil.root + "mantenimiento/alerta",
+									data : JSON.stringify(alerta),
 									autoclose : true,
 									beforeSend : function(xhr) {
 										xhr.setRequestHeader('Content-Type', 'application/json');
@@ -227,7 +228,7 @@ $(document).ready(function() {
 										$funcionUtil.notificarException($funcionUtil.obtenerMensajeErrorEnCadena(xhr.responseJSON), "fa-warning", "Aviso", "warning");
 										break;
 									case 409:
-										var mensaje = $funcionUtil.obtenerMensajeError("La especializacion <b>" + especializacion.codigoEspecializacion + " - " + especializacion.nomEspecializacion + "</b>", xhr.responseJSON, $variableUtil.accionEliminado);
+										var mensaje = $funcionUtil.obtenerMensajeError("La alerta <b>" + alerta.codigoAlerta + " - " + alerta.tipoAlerta + "</b>", xhr.responseJSON, $variableUtil.accionEliminado);
 										$funcionUtil.notificarException(mensaje, "fa-warning", "Aviso", "warning");
 										break;
 									}

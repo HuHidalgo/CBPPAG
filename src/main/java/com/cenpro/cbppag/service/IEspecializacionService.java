@@ -8,13 +8,13 @@ public interface IEspecializacionService extends IMantenibleService<Especializac
 {
 	public List<Especializacion> buscarTodos();
     	
-    public List<Especializacion> buscarPorId();
+    public List<Especializacion> buscarPorId(String idEspecializacion);
     
     public List<Especializacion> buscarModalidad(String idModalidad);
     
     public List<Especializacion> buscarCosto(String idEspecializacion);
     
-    public void registrarEspecializacion(Especializacion especializacion);
+    public String registrarEspecializacion(Especializacion especializacion);
     
     public void actualizarEspecializacion(Especializacion especializacion);
     

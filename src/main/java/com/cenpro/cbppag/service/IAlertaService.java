@@ -12,7 +12,7 @@ public interface IAlertaService extends IMantenibleService<Alerta>{
     
     public List<Alerta> buscarMensaje(String tipoAlerta);
     
-    public void registrarAlerta(Alerta alerta);
+    public String registrarAlerta(Alerta alerta);
     
     public void actualizarAlerta(Alerta alerta);
     

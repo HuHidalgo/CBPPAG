@@ -13,6 +13,7 @@ import com.cenpro.cbppag.model.registro.Matricula;
 public interface IMatriculaMapper extends IMantenibleMapper<Matricula> {
 	@Select(value = { "{call MANT_MATRICULA( "
             + "#{verbo, jdbcType = VARCHAR, mode = IN},"
+            + "#{objeto.codigoMatricula, jdbcType = VARCHAR, mode = IN},"
             + "#{objeto.codigoAlumno, jdbcType = VARCHAR, mode = IN},"
             + "#{objeto.idEspecializacion, jdbcType = VARCHAR, mode = IN},"
             + "#{objeto.conceptoPago, jdbcType = VARCHAR, mode = IN},"

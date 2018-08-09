@@ -9,10 +9,12 @@ public interface IPagoService extends IMantenibleService<Pago>{
 	public List<Pago> buscarTodos();
     
     public List<Pago> buscarAlumno(String documento);
+    
+    public List<Pago> buscarPorId(String codigoPago);
 	
-    public void registrarPago(Pago pago);
+    public String registrarPago(Pago pago);
     
     public void cargarVoucher(Pago pago);
     
-    public List<Pago> recuperarVoucher(String documento);
+    public List<Pago> recuperarVoucher(String codigoPago);
 }

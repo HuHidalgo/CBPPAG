@@ -35,8 +35,8 @@ public class MatriculaService extends MantenibleService<Matricula> implements IM
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public List<Matricula> buscarPorId(String codigo) {
-		Matricula matricula = Matricula.builder().codigoAlumno(codigo).build();
+	public List<Matricula> buscarPorId(String codigoMatricula) {
+		Matricula matricula = Matricula.builder().codigoMatricula(codigoMatricula).build();
         return this.buscar(matricula, Verbo.GET);
 	}
 	
@@ -47,13 +47,24 @@ public class MatriculaService extends MantenibleService<Matricula> implements IM
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void registrarMatricula(Matricula matricula) {
-		this.registrar(matricula);
+	public String registrarMatricula(Matricula matricula) {
+		List<Matricula> matriculas = this.registrarAutoIncrementable(matricula);
+		if (!matriculas.isEmpty() && matriculas.get(matriculas.size()-1).getCodigoMatricula()!= null){
+            return matriculas.get(matriculas.size()-1).getCodigoMatricula();
+        } else {
+            throw new MantenimientoException(ConstantesExcepciones.ERROR_REGISTRO);
+        }
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void cargarVoucher(Matricula matricula) {
 		this.registrar(matricula);
+	}
+	
+	@Override
+	public List<Matricula> recuperarVoucher(String codigoMatricula) {
+		Matricula matricula = Matricula.builder().codigoMatricula(codigoMatricula).build();
+		return this.buscar(matricula, Verbo.GET_VOUCHER_PAGO);
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)

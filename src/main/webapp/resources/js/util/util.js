@@ -21,6 +21,7 @@ $(document).ready(function() {
 		rutaIconoSimp : this.root + "resources/css/icono-simp/",
 		botonVerGastos : "<button class='btn btn-xs btn-warning ver-gastos' title='Ver Gastos' data-tooltip='tooltip'><i class='fa fa-money'></i>  </button>",
 		botonEliminar : "<button class='btn btn-xs btn-danger eliminar' title='Eliminar' data-tooltip='tooltip'><i class='fa fa-trash'></i></button>",
+		botonDescargar : "<button class='btn btn-xs btn-info descargar' title='Descargar' data-tooltip='tooltip'><i class='fa fa-download'></i></button>",
 		botonActualizar : "<button class='btn btn-xs btn-primary actualizar' title='Actualizar' data-tooltip='tooltip'><i class='fa fa-pencil-square'></i></button>",
 		botonRegistrar : "<button class='btn btn-xs btn-success registrar' title='Registrar' data-tooltip='tooltip'><i class='fa fa-floppy-o'></i></button>",
 		botonAniadirEgresos : "<button class='btn btn-xs btn-success aniadir-egresos' title='Añadir Egresos' data-tooltip='tooltip'><i class='fa fa-plus'></i></button>",

@@ -30,8 +30,8 @@ public @RestController class ModalidadRestController {
     @PostMapping
     public ResponseEntity<?> registrarModalidad(@RequestBody Modalidad modalidad)
     {
-        modalidadService.registrarModalidad(modalidad);
-        return ResponseEntity.ok(ConstantesGenerales.REGISTRO_EXITOSO);
+        String idModalidad = modalidadService.registrarModalidad(modalidad);
+        return ResponseEntity.ok(modalidadService.buscarPorId(idModalidad));
     }
 
     @PutMapping

@@ -3,6 +3,7 @@ package com.cenpro.cbppag.service;
 import java.util.List;
 
 import com.cenpro.cbppag.model.registro.Matricula;
+import com.cenpro.cbppag.model.registro.Pago;
 
 public interface IMatriculaService extends IMantenibleService<Matricula>{
 
@@ -10,9 +11,11 @@ public interface IMatriculaService extends IMantenibleService<Matricula>{
     
     public List<Matricula> buscarAlumno(String documento);
     
-    public List<Matricula> buscarPorId(String codigo);
+    public List<Matricula> buscarPorId(String codigoMatricula);
     
-    public void registrarMatricula(Matricula matricula);
+    public String registrarMatricula(Matricula matricula);
+    
+    public List<Matricula> recuperarVoucher(String codigoMatricula);
     
     public void cargarVoucher(Matricula matricula);
     

@@ -12,7 +12,9 @@ import com.cenpro.cbppag.mapper.IPagoMapper;
 import com.cenpro.cbppag.mapper.base.IMantenibleMapper;
 import com.cenpro.cbppag.model.registro.Pago;
 import com.cenpro.cbppag.service.IPagoService;
+import com.cenpro.cbppag.service.excepcion.MantenimientoException;
 import com.cenpro.cbppag.service.impl.MantenibleService;
+import com.cenpro.cbppag.utilitario.ConstantesExcepciones;
 import com.cenpro.cbppag.utilitario.Verbo;
 
 @Service
@@ -32,14 +34,25 @@ public class PagoService extends MantenibleService<Pago> implements IPagoService
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public List<Pago> buscarPorId(String codigoPago) {
+		Pago pago = Pago.builder().codigoPago(codigoPago).build();
+		return this.buscar(pago, Verbo.GET);
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public List<Pago> buscarAlumno(String documento) {
 		Pago pago = Pago.builder().codigoAlumno(documento).build();
 		return this.buscar(pago, Verbo.VERIFICAR_AM);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void registrarPago(Pago pago) {
-		this.registrar(pago);
+	public String registrarPago(Pago pago) {
+		List<Pago> pagos = this.registrarAutoIncrementable(pago);
+		if (!pagos.isEmpty() && pagos.get(pagos.size()-1).getCodigoPago()!= null){
+            return pagos.get(pagos.size()-1).getCodigoPago();
+        } else {
+            throw new MantenimientoException(ConstantesExcepciones.ERROR_REGISTRO);
+        }
 	}
 
 	
@@ -48,8 +61,8 @@ public class PagoService extends MantenibleService<Pago> implements IPagoService
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public List<Pago> recuperarVoucher(String documento) {
-		Pago pago = Pago.builder().codigoAlumno(documento).build();
+	public List<Pago> recuperarVoucher(String codigoPago) {
+		Pago pago = Pago.builder().codigoPago(codigoPago).build();
 		return this.buscar(pago, Verbo.GET_VOUCHER_PAGO);
 	}
 

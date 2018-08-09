@@ -12,7 +12,9 @@ import com.cenpro.cbppag.mapper.base.IMantenibleMapper;
 import com.cenpro.cbppag.model.mantenimiento.Especializacion;
 //import com.cenpro.cbppag.model.mantenimiento.Unidad;
 import com.cenpro.cbppag.service.IEspecializacionService;
+import com.cenpro.cbppag.service.excepcion.MantenimientoException;
 import com.cenpro.cbppag.service.impl.MantenibleService;
+import com.cenpro.cbppag.utilitario.ConstantesExcepciones;
 import com.cenpro.cbppag.utilitario.Verbo;
 
 @Service
@@ -33,13 +35,19 @@ public class EspecializacionService extends MantenibleService<Especializacion> i
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public List<Especializacion> buscarPorId() {
-		return this.buscar(new Especializacion(), Verbo.GET);
+	public List<Especializacion> buscarPorId(String idEspecializacion) {
+		Especializacion especializacion = Especializacion.builder().idEspecializacion(idEspecializacion).build();
+		return this.buscar(especializacion, Verbo.GET);
 	}
 		
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void registrarEspecializacion(Especializacion especializacion) {
-		this.registrar(especializacion);
+	public String registrarEspecializacion(Especializacion especializacion) {
+		List<Especializacion> especializaciones = this.registrarAutoIncrementable(especializacion);
+		if (!especializaciones.isEmpty() && especializaciones.get(especializaciones.size()-1).getIdEspecializacion()!= null){
+            return especializaciones.get(especializaciones.size()-1).getIdEspecializacion();
+        } else {
+            throw new MantenimientoException(ConstantesExcepciones.ERROR_REGISTRO);
+        }
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)

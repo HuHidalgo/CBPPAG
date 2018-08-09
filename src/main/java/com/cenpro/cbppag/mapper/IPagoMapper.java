@@ -13,6 +13,7 @@ import com.cenpro.cbppag.model.registro.Pago;
 public interface IPagoMapper extends IMantenibleMapper<Pago> {
 	@Select(value = { "{call MANT_PAGOS( "
             + "#{verbo, jdbcType = VARCHAR, mode = IN},"
+            + "#{objeto.codigoPago, jdbcType = VARCHAR, mode = IN},"
             + "#{objeto.codigoAlumno, jdbcType = VARCHAR, mode = IN},"
             + "#{objeto.fechaPago, jdbcType = DATE, mode = IN},"
             + "#{objeto.idEspecializacion, jdbcType = VARCHAR, mode = IN},"

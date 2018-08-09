@@ -119,8 +119,9 @@ $(document).ready(function() {
 					$funcionUtil.mostrarMensajeDeError(response.responseJSON, $formMantenimiento);
 				}
 			},
-			success : function(response) {
+			success : function(modalidades) {	
 				$funcionUtil.notificarException(response, "fa-check", "Aviso", "success");
+				var modalidad = modalidades[0];
 				var row = $local.tablaMantenimiento.row.add(modalidad).draw();
 				row.show().draw(false);
 				$(row.node()).animateHighlight();

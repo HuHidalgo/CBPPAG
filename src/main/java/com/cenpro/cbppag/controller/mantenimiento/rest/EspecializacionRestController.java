@@ -43,8 +43,8 @@ public @RestController class EspecializacionRestController
     @PostMapping
     public ResponseEntity<?> registrarEspecializacion(@RequestBody Especializacion especializacion)
     {	
-        especializacionService.registrarEspecializacion(especializacion);
-        return ResponseEntity.ok(ConstantesGenerales.REGISTRO_EXITOSO);
+        String idEspecializacion = especializacionService.registrarEspecializacion(especializacion);
+        return ResponseEntity.ok(especializacionService.buscarPorId(idEspecializacion));
     }
 
     @PutMapping

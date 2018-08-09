@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Blob;
 import javax.sql.rowset.serial.SerialBlob;
+import javax.xml.bind.DatatypeConverter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -44,12 +45,12 @@ public @RestController class MatriculaRestController {
 	@PostMapping
     public ResponseEntity<?> registrarMatricula(@RequestBody Matricula matricula)
     {
-        matriculaService.registrarMatricula(matricula);
+        String codigoMatricula = matriculaService.registrarMatricula(matricula);
         
-        correo = new HiloCorreo(alertaService, matricula, null);
-        correo.start();
+        /*correo = new HiloCorreo(alertaService, matricula, null);
+        correo.start();*/
         
-		return ResponseEntity.ok(ConstantesGenerales.REGISTRO_EXITOSO);
+        return ResponseEntity.ok(matriculaService.buscarPorId(codigoMatricula));
     }
 	
 	@PostMapping(value = "/uploadfile/", params = "accion=cargar")
@@ -67,5 +68,15 @@ public @RestController class MatriculaRestController {
 		Matricula matricula = Matricula.builder().voucher(archivo).build();
 		matriculaService.cargarVoucher(matricula);
 	}
+	
+	@GetMapping("/voucher/{codigoMatricula}")
+    public Matricula recuperarVoucher(@PathVariable String codigoMatricula)
+    {
+		List<Matricula> lista = matriculaService.recuperarVoucher(codigoMatricula);
+		String base64Encoded = DatatypeConverter.printBase64Binary(lista.get(0).getBytesLeidos());
+        byte[] base64Decoded = DatatypeConverter.parseBase64Binary(base64Encoded);
+		lista.get(0).setBytesLeidos(base64Decoded);
+        return lista.get(0);
+    }
 	
 }

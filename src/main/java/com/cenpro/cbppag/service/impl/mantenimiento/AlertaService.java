@@ -11,7 +11,9 @@ import com.cenpro.cbppag.mapper.IAlertaMapper;
 import com.cenpro.cbppag.mapper.base.IMantenibleMapper;
 import com.cenpro.cbppag.model.mantenimiento.Alerta;
 import com.cenpro.cbppag.service.IAlertaService;
+import com.cenpro.cbppag.service.excepcion.MantenimientoException;
 import com.cenpro.cbppag.service.impl.MantenibleService;
+import com.cenpro.cbppag.utilitario.ConstantesExcepciones;
 import com.cenpro.cbppag.utilitario.Verbo;
 
 @Service
@@ -44,8 +46,13 @@ public class AlertaService extends MantenibleService<Alerta> implements IAlertaS
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void registrarAlerta(Alerta alerta) {
-		this.registrar(alerta);
+	public String registrarAlerta(Alerta alerta) {
+		List<Alerta>alertas = this.registrarAutoIncrementable(alerta);
+		if (!alertas.isEmpty() && alertas.get(alertas.size()-1).getCodigoAlerta()!= null){
+            return alertas.get(alertas.size()-1).getCodigoAlerta();
+        } else {
+            throw new MantenimientoException(ConstantesExcepciones.ERROR_REGISTRO);
+        }
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
