@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -80,4 +81,11 @@ public @RestController class PagoRestController {
 		lista.get(0).setBytesLeidos(base64Decoded);
         return lista.get(0);
     }
+	
+	@PutMapping
+	public ResponseEntity<?> actualizarPago(@RequestBody Pago pago){
+		pagoService.actualizarPago(pago);
+		return ResponseEntity.ok(pagoService.buscarPorId(pago.getCodigoPago()));
+	}
+	
 }

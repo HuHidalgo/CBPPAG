@@ -10,7 +10,7 @@ $(document).ready(function() {
 		$actualizarMantenimiento : $("#actualizarMantenimiento"),
 		idTipoDocumento : "",
 		numeroDocumento : "",
-		codigoMatricula : "",
+		codigoPago : "",
 		$verificarAlumno : $("#verificarDatos"),
 		$codigoAlumno : $("#codigoAlumno"),
 		$nombres : $("#nombreAlumno"),
@@ -21,7 +21,7 @@ $(document).ready(function() {
 		$tipoPago : $("#tipoPago"),
 		$nroCiclo : $("#ciclo"),
 		$costoCuota : $("#costoCuota"),
-		$especializacion : $("#especializacion"),
+		$especializacion : $("#nombreEspecializacion"),
 		$fechaPago : $("#fechaPago"),
 		$voucher : $("#uploadfile"),
 		$documento : "",
@@ -194,6 +194,12 @@ $(document).ready(function() {
 				var form = $("#formMantenimiento")[0];
 				var data = new FormData(form);
 				
+				$funcionUtil.notificarException($variableUtil.registroExitoso, "fa-check", "Aviso", "success");
+				var pago = pagos[0];
+				var row = $local.tablaMantenimiento.row.add(pago).draw();
+				row.show().draw(false);
+				$(row.node()).animateHighlight();
+				
 				$.ajax({
 					type : "POST",
 					enctype : 'multipart/form-data',
@@ -207,11 +213,7 @@ $(document).ready(function() {
 						
 					},
 					success : function(response) {
-						$funcionUtil.notificarException($variableUtil.registroExitoso, "fa-check", "Aviso", "success");
-						var pago = pagos[0];
-						var row = $local.tablaMantenimiento.row.add(pago).draw();
-						row.show().draw(false);
-						$(row.node()).animateHighlight();
+			
 					},
 					complete : function(response) {
 					}
@@ -230,10 +232,9 @@ $(document).ready(function() {
 	$local.$tablaMantenimiento.children("tbody").on("click", ".actualizar", function() {
 		$funcionUtil.prepararFormularioActualizacion($formMantenimiento);
 		$local.$filaSeleccionada = $(this).parents("tr");
-		var persona = $local.tablaMantenimiento.row($local.$filaSeleccionada).data();
-		$local.idTipoDocumento = persona.idTipoDocumento;
-		$local.numeroDocumento = persona.numeroDocumento;
-		$funcionUtil.llenarFormulario(persona, $formMantenimiento);
+		var pago = $local.tablaMantenimiento.row($local.$filaSeleccionada).data();
+		$local.codigoPago = pago.codigoPago;
+		$funcionUtil.llenarFormulario(pago, $formMantenimiento);
 		$local.$actualizarMantenimiento.removeClass("hidden");
 		$local.$registrarMantenimiento.addClass("hidden");
 		$local.$modalMantenimiento.PopupWindow("open");
@@ -243,13 +244,13 @@ $(document).ready(function() {
 		if (!$formMantenimiento.valid()) {
 			return;
 		}
-		var persona = $formMantenimiento.serializeJSON();
-		persona.idTipoDocumento = $local.idTipoDocumento;
-		persona.numeroDocumento = $local.numeroDocumento;
+		var pago = $formMantenimiento.serializeJSON();
+		pago.codigoPago = $local.codigoPago;
+		console.log(pago.nombreEspecializacion);
 		$.ajax({
 			type : "PUT",
-			url : $variableUtil.root + "mantenimiento/persona",
-			data : JSON.stringify(persona),
+			url : $variableUtil.root + "ingresos/pago",
+			data : JSON.stringify(pago),
 			beforeSend : function(xhr) {
 				$local.$actualizarMantenimiento.attr("disabled", true).find("i").removeClass("fa-pencil-square").addClass("fa-spinner fa-pulse fa-fw");
 				xhr.setRequestHeader('Content-Type', 'application/json');
@@ -261,9 +262,9 @@ $(document).ready(function() {
 					$funcionUtil.mostrarMensajeDeError(response.responseJSON, $formMantenimiento);
 				}
 			},
-			success : function(personas) {
+			success : function(pagos) {
 				$funcionUtil.notificarException($variableUtil.actualizacionExitosa, "fa-check", "Aviso", "success");
-				var row = $local.tablaMantenimiento.row($local.$filaSeleccionada).data(personas[0]).draw();
+				var row = $local.tablaMantenimiento.row($local.$filaSeleccionada).data(pagos[0]).draw();
 				row.show().draw(false);
 				$(row.node()).animateHighlight();
 				$local.$modalMantenimiento.PopupWindow("close");

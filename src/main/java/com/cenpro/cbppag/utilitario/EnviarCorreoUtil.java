@@ -1,5 +1,6 @@
 package com.cenpro.cbppag.utilitario;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import javax.mail.Message;
@@ -11,14 +12,17 @@ import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.cenpro.cbppag.model.alerta.AlertaPago;
 import com.cenpro.cbppag.model.mantenimiento.Alerta;
 import com.cenpro.cbppag.model.registro.Matricula;
 import com.cenpro.cbppag.model.registro.Pago;
+import com.cenpro.cbppag.service.IAlertaPagoService;
 import com.cenpro.cbppag.service.IAlertaService;
 import com.ibm.icu.text.SimpleDateFormat;
 
 public class EnviarCorreoUtil {
 	private IAlertaService alertaService;
+	private IAlertaPagoService alertaPagoService;
 	private final String correo = "";
     private final String clave = "";
 	private String estructuraMensaje;
@@ -36,6 +40,10 @@ public class EnviarCorreoUtil {
 	
 	public void setAlerta(IAlertaService alertaService) {
 		this.alertaService = alertaService;
+	}
+	
+	public void setAlertaPagoService(IAlertaPagoService alertaPagoService) {
+		this.alertaPagoService = alertaPagoService;
 	}
 	
 	public void enviarCorreo(Matricula matricula, Pago pago) {
@@ -118,4 +126,96 @@ public class EnviarCorreoUtil {
         System.out.println("Mensaje de registro de Pago Enviado");
         return 0;
     }
+	
+	public int mensajeAlertaAntes(String fecha) {	
+		List<AlertaPago> pagosVencidos = alertaPagoService.buscarPorFecha(fecha);
+		
+		if(!pagosVencidos.isEmpty()) {
+			List<Alerta> alertas = alertaService.buscarMensaje("ANTES DE VENCER");
+			ArrayList<String> mensajes = new ArrayList<>();
+			for(AlertaPago auxiliar : pagosVencidos) {
+				String mensaje = "Alumno: " + auxiliar.getNombreAlumno() + " " + auxiliar.getApellidoAlumno() +
+            					 "\nFecha de Vencimiento: " + date.format(auxiliar.getFechaVencimiento()) +
+            					 "\nConcepto de Pago: " + auxiliar.getConceptoPago() +
+            					 "\nModalidad: " + auxiliar.getModalidad() +
+            					 "\nEspecializacion: " + auxiliar.getEspecializacion() +
+            					 "\n" + alertas.get(0).getDescAlerta();
+				mensajes.add(mensaje);
+			}
+			
+			int i = 0;
+			for(String auxiliar : mensajes) {
+				try {
+		            Session session = Session.getDefaultInstance(properties,
+		                    new javax.mail.Authenticator() {
+		                public PasswordAuthentication
+		                        getPasswordAuthentication() {
+		                    return new PasswordAuthentication(correo, clave);
+		                }
+		            });
+
+		            Message message = new MimeMessage(session);
+		            message.setFrom(new InternetAddress(correo));
+		            message.setRecipients(Message.RecipientType.TO,
+		                    InternetAddress.parse(pagosVencidos.get(i).getCorreoAlumno()));
+		            message.setSubject("Posgrado - Aviso de vencimiento de Pago");
+		            message.setText(auxiliar);
+		            Transport.send(message);
+		            
+		            i++;
+		        } catch (Exception e) {
+		            System.out.println("error: "+e);
+		        }
+		        System.out.println("Mensaje de registro de Pago Enviado1");
+			}
+			return 1;
+		}
+		return 0;
+	}
+	
+	public int mensajeAlertaDespues(String fecha) {	
+		List<AlertaPago> pagosVencidos = alertaPagoService.buscarPorFecha(fecha);
+		
+		if(!pagosVencidos.isEmpty()) {
+			List<Alerta> alertas = alertaService.buscarMensaje("DESPUES DE VENCER");
+			ArrayList<String> mensajes = new ArrayList<>();
+			for(AlertaPago auxiliar : pagosVencidos) {
+				String mensaje = "Alumno: " + auxiliar.getNombreAlumno() + " " + auxiliar.getApellidoAlumno() +
+            					 "\nFecha de Vencimiento: " + date.format(auxiliar.getFechaVencimiento()) +
+            					 "\nConcepto de Pago: " + auxiliar.getConceptoPago() +
+            					 "\nModalidad: " + auxiliar.getModalidad() +
+            					 "\nEspecializacion: " + auxiliar.getEspecializacion() +
+            					 "\n" + alertas.get(0).getDescAlerta();
+				mensajes.add(mensaje);
+			}
+			
+			int i = 0;
+			for(String auxiliar : mensajes) {
+				try {
+		            Session session = Session.getDefaultInstance(properties,
+		                    new javax.mail.Authenticator() {
+		                public PasswordAuthentication
+		                        getPasswordAuthentication() {
+		                    return new PasswordAuthentication(correo, clave);
+		                }
+		            });
+
+		            Message message = new MimeMessage(session);
+		            message.setFrom(new InternetAddress(correo));
+		            message.setRecipients(Message.RecipientType.TO,
+		                    InternetAddress.parse(pagosVencidos.get(i).getCorreoAlumno()));
+		            message.setSubject("Posgrado - Aviso de vencimiento de Pago");
+		            message.setText(auxiliar);
+		            Transport.send(message);
+		            
+		            i++;
+		        } catch (Exception e) {
+		            System.out.println("error: "+e);
+		        }
+		        System.out.println("Mensaje de registro de Pago Enviado2");
+			}
+			return 1;
+		}
+		return 0;
+	}
 }

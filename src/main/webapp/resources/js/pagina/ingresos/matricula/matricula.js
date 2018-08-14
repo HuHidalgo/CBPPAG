@@ -17,7 +17,7 @@ $(document).ready(function() {
 		$apellidos : $("#apellidoAlumno"),
 		$correo : $("#correoAlumno"),
 		$modalidades : $("#modalidades"),
-		$costoMatricula : $("#montoPago"),
+		$costoMatricula : $("#costoMatricula"),
 		$tiposPago : $("#tiposPago"),
 		$especializaciones : $("#especializaciones"),
 		$fechaMatricula : $("#fechaMatricula"),
@@ -167,6 +167,7 @@ $(document).ready(function() {
 					$local.$especializaciones.append($("<option />").val(this.idEspecializacion).text(this.idEspecializacion + " - " + this.nombreEspecializacion));
 				});
 				if (opcionSeleccionada != null && opcionSeleccionada != undefined) {
+					console.log(" 123 "+opcionSeleccionada);
 					$local.$especializaciones.val(opcionSeleccionada).trigger("change.select2");
 				}
 			},
@@ -244,6 +245,12 @@ $(document).ready(function() {
 				var form = $("#formMantenimiento")[0];
 				var data = new FormData(form);
 				
+				$funcionUtil.notificarException($variableUtil.registroExitoso, "fa-check", "Aviso", "success");
+				var matricula = matriculas[0];
+				var row = $local.tablaMantenimiento.row.add(matricula).draw();
+				row.show().draw(false);
+				$(row.node()).animateHighlight();
+				
 				$.ajax({
 					type : "POST",
 					enctype : 'multipart/form-data',
@@ -256,11 +263,7 @@ $(document).ready(function() {
 						xhr.setRequestHeader("X-CSRF-TOKEN", $variableUtil.csrf);
 					},
 					success : function(response) {
-						$funcionUtil.notificarException($variableUtil.registroExitoso, "fa-check", "Aviso", "success");
-						var matricula = matriculas[0];
-						var row = $local.tablaMantenimiento.row.add(matricula).draw();
-						row.show().draw(false);
-						$(row.node()).animateHighlight();
+						
 					},
 					complete : function(response) {
 					}
@@ -283,9 +286,16 @@ $(document).ready(function() {
 		$funcionUtil.prepararFormularioActualizacion($formMantenimiento);
 		$local.$filaSeleccionada = $(this).parents("tr");
 		var matricula = $local.tablaMantenimiento.row($local.$filaSeleccionada).data();
+
+		$local.$modalidades.val(matricula.idModalidad).trigger("change.select2"); 
+
+		$local.$modalidades.trigger("change", [ matricula.idEspecializacion ]);
+		
+		$local.$tiposPago.val(matricula.tipoPago).trigger("change.select2"); 
+		
 		$local.codigoMatricula = matricula.codigoMatricula;
 		
-		$funcionUtil.llenarFormulario(persona, $formMantenimiento);
+		$funcionUtil.llenarFormulario(matricula, $formMantenimiento);
 		$local.$actualizarMantenimiento.removeClass("hidden");
 		$local.$registrarMantenimiento.addClass("hidden");
 		$local.$modalMantenimiento.PopupWindow("open");
@@ -295,13 +305,18 @@ $(document).ready(function() {
 		if (!$formMantenimiento.valid()) {
 			return;
 		}
-		var persona = $formMantenimiento.serializeJSON();
-		persona.idTipoDocumento = $local.idTipoDocumento;
-		persona.numeroDocumento = $local.numeroDocumento;
+		var matricula = $formMantenimiento.serializeJSON();
+		console.log($local.codigoMatricula);
+		matricula.codigoMatricula = $local.codigoMatricula;
+		matricula.nombreArchivo = $local.$voucher.val();
+		matricula.idModalidad = $local.$modalidades.val();
+		matricula.idEspecializacion = $local.$especializaciones.val();
+		matricula.tipoPago = $local.$tiposPago.val();
+		matricula.fechaMatricula = $local.$fechaMatricula.data("daterangepicker").startDate.format("YYYY-MM-DD");	
 		$.ajax({
 			type : "PUT",
-			url : $variableUtil.root + "mantenimiento/persona",
-			data : JSON.stringify(persona),
+			url : $variableUtil.root + "ingresos/matricula",
+			data : JSON.stringify(matricula),
 			beforeSend : function(xhr) {
 				$local.$actualizarMantenimiento.attr("disabled", true).find("i").removeClass("fa-pencil-square").addClass("fa-spinner fa-pulse fa-fw");
 				xhr.setRequestHeader('Content-Type', 'application/json');
@@ -313,9 +328,9 @@ $(document).ready(function() {
 					$funcionUtil.mostrarMensajeDeError(response.responseJSON, $formMantenimiento);
 				}
 			},
-			success : function(personas) {
+			success : function(matriculas) {
 				$funcionUtil.notificarException($variableUtil.actualizacionExitosa, "fa-check", "Aviso", "success");
-				var row = $local.tablaMantenimiento.row($local.$filaSeleccionada).data(personas[0]).draw();
+				var row = $local.tablaMantenimiento.row($local.$filaSeleccionada).data(matriculas[0]).draw();
 				row.show().draw(false);
 				$(row.node()).animateHighlight();
 				$local.$modalMantenimiento.PopupWindow("close");

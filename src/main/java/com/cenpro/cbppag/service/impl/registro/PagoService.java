@@ -55,7 +55,7 @@ public class PagoService extends MantenibleService<Pago> implements IPagoService
         }
 	}
 
-	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void cargarVoucher(Pago pago) {
 		this.registrar(pago);
 	}
@@ -64,6 +64,11 @@ public class PagoService extends MantenibleService<Pago> implements IPagoService
 	public List<Pago> recuperarVoucher(String codigoPago) {
 		Pago pago = Pago.builder().codigoPago(codigoPago).build();
 		return this.buscar(pago, Verbo.GET_VOUCHER_PAGO);
+	}
+
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void actualizarPago(Pago pago) {
+		this.actualizar(pago);
 	}
 
 }
