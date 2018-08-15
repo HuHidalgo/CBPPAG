@@ -50,8 +50,8 @@ public @RestController class PagoRestController {
 		pago.setMontoPagado(pago.getNroCuotasAPagar()*pago.getCostoCuota());
 		String codigoPago = pagoService.registrarPago(pago);
 
-		/*correo = new HiloCorreo(alertaService, null, pago);
-        correo.start();*/
+		correo = new HiloCorreo(alertaService, null, pago);
+        correo.start();
 		
 		return ResponseEntity.ok(pagoService.buscarPorId(codigoPago));
     }

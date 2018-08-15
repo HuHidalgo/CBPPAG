@@ -48,9 +48,8 @@ public @RestController class MatriculaRestController {
     {
         String codigoMatricula = matriculaService.registrarMatricula(matricula);
         
-        System.out.println(codigoMatricula);
-        /*correo = new HiloCorreo(alertaService, matricula, null);
-        correo.start();*/
+        correo = new HiloCorreo(alertaService, matricula, null);
+        correo.start();
         
         return ResponseEntity.ok(matriculaService.buscarPorId(codigoMatricula));
     }
