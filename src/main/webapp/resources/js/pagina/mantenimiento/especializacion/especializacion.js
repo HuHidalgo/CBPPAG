@@ -18,7 +18,7 @@ $(document).ready(function() {
 	
 	$funcionUtil.crearSelect2($local.$modalidades, "Seleccione una Modalidad");
 	$funcionUtil.crearDatePickerSimple($local.$fechaInicio, "DD/MM/YYYY");
-	$funcionUtil.crearDatePickerSimple($local.$fechaFin, "DD/MM/YYYY");
+	$funcionUtil.crearDatePickerSimple2($local.$fechaFin, "DD/MM/YYYY");
 	
 	$.fn.dataTable.ext.errMode = 'none';
 

@@ -8,7 +8,7 @@ $(document).ready(function() {
 		$registrarMantenimiento : $("#registrarMantenimiento"),
 		$filaSeleccionada : "",
 		$actualizarMantenimiento : $("#actualizarMantenimiento"),
-		codigoAlertaSeleccionado : 0,
+		codigoAlertaSeleccionado : "",
 		$tiposAlerta : $("#tiposAlerta")
 	};
 
@@ -88,7 +88,7 @@ $(document).ready(function() {
 	});
 
 	$local.$modalMantenimiento.on("close.popupwindow", function() {
-		$local.codigoEspecializacionSeleccionada = 0;
+		$local.codigoAlertaSeleccionado = "";
 	});
 
 	$formMantenimiento.find("input").keypress(function(event) {

@@ -55,6 +55,11 @@ public class EnviarCorreoUtil {
 		}
 	}
 	
+	public int diasVerificacion(String tipoAlerta) {
+		List<Alerta> alertas = alertaService.buscarMensaje(tipoAlerta);
+		return alertas.get(0).getDiasVerificacion();
+	}
+	
 	public int mensajeRegistroMatricula(Matricula matricula) {
 		List<Alerta> alertas = alertaService.buscarMensaje("REGISTRO MATRICULA");
 

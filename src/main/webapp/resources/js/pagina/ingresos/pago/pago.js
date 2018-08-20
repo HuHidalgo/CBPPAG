@@ -23,6 +23,7 @@ $(document).ready(function() {
 		$costoCuota : $("#costoCuota"),
 		$especializacion : $("#nombreEspecializacion"),
 		$fechaPago : $("#fechaPago"),
+		$numeroCuotas : $("#numeroCuotas"),
 		$voucher : $("#uploadfile"),
 		$documento : "",
 		filtrosSeleccionables : {}
@@ -31,6 +32,7 @@ $(document).ready(function() {
 	$formMantenimiento = $("#formMantenimiento");
 
 	$funcionUtil.crearDatePickerSimple($local.$fechaPago, "DD/MM/YYYY");
+	$funcionUtil.crearSelect2($local.$numeroCuotas, "Seleccione un número de cuotas");
 
 	$.fn.dataTable.ext.errMode = 'none';
 
@@ -112,7 +114,7 @@ $(document).ready(function() {
 	});
 
 	$local.$aniadirMantenimento.on("click", function() {
-		$funcionUtil.prepararFormularioRegistro($formMantenimiento);
+		$funcionUtil.prepararFormularioRegistro2($formMantenimiento);
 		$local.$actualizarMantenimiento.addClass("hidden");
 		$local.$registrarMantenimiento.removeClass("hidden");
 		$local.$modalMantenimiento.PopupWindow("open");
@@ -150,19 +152,24 @@ $(document).ready(function() {
 			type : "GET",
 			url : $variableUtil.root + "ingresos/pago/" + codAlumno,
 			success : function(pagos) {
-				$.each(pagos, function(i, pago) {				
-					$local.$apellidos.val(this.apellidoAlumno);
-					$local.$nombres.val(this.nombreAlumno);
-					$local.$correo.val(this.correoAlumno);
-					$local.$modalidad.val(this.nombreModalidad);
-					$local.$tipoPago.val(this.tipoPago);
-					$local.$nroCiclo.val(this.numeroCiclo);
-					$local.$costoCuota.val(this.costoCuota);
-					$local.$especializacion.val(this.nombreEspecializacion);
-					$local.$cuotaPendiente.val(this.nroCuotasPendientes);
-					$local.codigoMatricula = this.codigoMatricula;
-					console.log($local.codigoMatricula);
-				});
+				if(pagos.length == 0){
+					$funcionUtil.notificarException($variableUtil.alumnoNoEncontrado, "fa-exclamation-circle", "Información", "danger");
+					return;
+				}
+				else{
+					$.each(pagos, function(i, pago) {				
+						$local.$apellidos.val(this.apellidoAlumno);
+						$local.$nombres.val(this.nombreAlumno);
+						$local.$correo.val(this.correoAlumno);
+						$local.$modalidad.val(this.nombreModalidad);
+						$local.$tipoPago.val(this.tipoPago);
+						$local.$nroCiclo.val(this.numeroCiclo);
+						$local.$costoCuota.val(this.costoCuota);
+						$local.$especializacion.val(this.nombreEspecializacion);
+						$local.$cuotaPendiente.val(this.nroCuotasPendientes);
+						$local.codigoMatricula = this.codigoMatricula;
+					});
+				}
 			}
 		});
 	});
@@ -174,7 +181,7 @@ $(document).ready(function() {
 		var pago = $formMantenimiento.serializeJSON();
 		pago.codigoMatricula = $local.codigoMatricula;
 		pago.fechaPago = $local.$fechaPago.data("daterangepicker").startDate.format("YYYY-MM-DD");	
-		  
+		pago.nroCuotasAPagar =$local.$numeroCuotas.val();  
 		$.ajax({
 			type : "POST",
 			url : $variableUtil.root + "ingresos/pago",
@@ -234,6 +241,7 @@ $(document).ready(function() {
 		$local.$filaSeleccionada = $(this).parents("tr");
 		var pago = $local.tablaMantenimiento.row($local.$filaSeleccionada).data();
 		$local.codigoPago = pago.codigoPago;
+		$local.$numeroCuotas.val(pago.nroCuotasAPagar).trigger("change.select2"); 
 		$funcionUtil.llenarFormulario(pago, $formMantenimiento);
 		$local.$actualizarMantenimiento.removeClass("hidden");
 		$local.$registrarMantenimiento.addClass("hidden");
@@ -246,7 +254,7 @@ $(document).ready(function() {
 		}
 		var pago = $formMantenimiento.serializeJSON();
 		pago.codigoPago = $local.codigoPago;
-		console.log(pago.nombreEspecializacion);
+		pago.nroCuotasAPagar =$local.$numeroCuotas.val();  
 		$.ajax({
 			type : "PUT",
 			url : $variableUtil.root + "ingresos/pago",

@@ -235,7 +235,7 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Código Alumno</label>
 				<div class="col-lg-4">
-					<input id="codigoAlumno" class="form-control upperCase" name="codigoAlumno">
+					<input id="codigoAlumno" class="form-control upperCase" name="codigoAlumno" maxlength="8">
 				</div>
 			</div>
 			<div class="form-group">
@@ -269,13 +269,13 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Modalidad</label>
 				<div class="col-lg-4">
-					<input id="modalidad" class="form-control " name="nombreModalidad">
+					<input id="modalidad" class="form-control elemento-desactivable" name="nombreModalidad">
 				</div>
 			</div>
 			<div class="group">
 				<label class="col-lg-2 control-label">Especialización</label>
 				<div class="col-lg-4">
-					<input id="nombreEspecializacion" class="form-control" name="nombreEspecializacion">
+					<input id="nombreEspecializacion" class="form-control elemento-desactivable" name="nombreEspecializacion">
 				</div>
 			</div>
 		</div>
@@ -284,13 +284,13 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Tipo de Pago</label>
 				<div class="col-lg-4">
-					<input id="tipoPago" class="form-control" name="tipoPago">
+					<input id="tipoPago" class="form-control elemento-desactivable" name="tipoPago">
 				</div>
 			</div>
 			<div class="group">
 				<label class="col-lg-2 control-label">Ciclo a Pagar</label>
 				<div class="col-lg-4">
-					<input id="ciclo" class="form-control" name="numeroCiclo">
+					<input id="ciclo" class="form-control elemento-desactivable" name="numeroCiclo">
 				</div>
 			</div>
 		</div>
@@ -299,13 +299,13 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Nro. Cuotas Pendientes de Pago</label>
 				<div class="col-lg-4">
-					<input id="nroCuotasPendientes" class="form-control" name="nroCuotasPendientes">
+					<input id="nroCuotasPendientes" class="form-control elemento-desactivable" name="nroCuotasPendientes">
 				</div>
 			</div>
 			<div class="group">
 				<label class="col-lg-2 control-label">Costo por cada cuota</label>
 				<div class="col-lg-4">
-					<input id="costoCuota" class="form-control" name="costoCuota">
+					<input id="costoCuota" class="form-control elemento-desactivable" name="costoCuota">
 				</div>
 			</div>
 		</div>
@@ -313,7 +313,15 @@
 		<div class="form-group">
 			<label class="col-lg-2 control-label">Nro. Cuota a Pagar</label>
 			<div class="col-lg-4">
-				<input id="nroCuotasAPagar" class="form-control numbersOnly" name="nroCuotasAPagar">
+				<select id="numeroCuotas" class="form-control select2">
+						<option value="" disabled="disabled" selected="selected">
+									Seleccione un número de cuotas
+						</option>
+						<option value="1">1 cuota</option>
+						<option value="2">2 cuotas</option>
+						<option value="3">3 cuotas</option>
+						<option value="4">4 cuotas</option>
+				</select>
 			</div>
 		</div>
 
@@ -342,7 +350,7 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Adjuntar Voucher</label>
 				<div class="col-lg-4">
-					<input id="uploadfile" name="uploadfile" type="file" class="file form-control" data-show-preview="false">
+					<input id="uploadfile" name="uploadfile" type="file" class="file form-control" data-show-preview="false" accept="application/pdf">
 				</div>
 			</div>
 		</div>
@@ -354,7 +362,7 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Código Alumno</label>
 				<div class="col-lg-4">
-					<input id="codigoAlumno" class="form-control upperCase" name="codigoAlumno">
+					<input id="codigoAlumno" class="form-control numbersOnly" name="codigoAlumno" maxlength="8">
 				</div>
 			</div>
 			<div class="form-group">
@@ -417,7 +425,7 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Monto de Pago</label>
 				<div class="col-lg-4">
-					<input id ="costoMatricula" class="form-control" name="costoMatricula">
+					<input id ="costoMatricula" class="form-control numbersOnlyAndDot" name="costoMatricula">
 				</div>
 			</div>
 			<div class="group">
@@ -446,13 +454,13 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Nombre del Alumno</label>
 				<div class="col-lg-4">
-					<input id="nombreAlumno" class="form-control" name="nombreAlumno">
+					<input id="nombreAlumno" class="form-control lettersOnly" name="nombreAlumno">
 				</div>
 			</div>
 			<div class="group">
 				<label class="col-lg-2 control-label">Apellido del Alumno</label>
 				<div class="col-lg-4">
-					<input id="apellidoAlumno" class="form-control" name="apellidoAlumno">
+					<input id="apellidoAlumno" class="form-control lettersOnly" name="apellidoAlumno">
 				</div>
 			</div>
 		</div>
@@ -467,7 +475,7 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Adjuntar Voucher</label>
 				<div class="col-lg-4">
-					<input id="uploadfile" name="uploadfile" type="file" class="file form-control" data-show-preview="false">
+					<input id="uploadfile" name="uploadfile" type="file" class="file form-control" data-show-preview="false" accept="application/pdf">
 				</div>
 			</div>
 		</div>

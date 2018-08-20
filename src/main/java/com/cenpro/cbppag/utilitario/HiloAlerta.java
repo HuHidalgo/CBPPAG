@@ -22,7 +22,7 @@ public class HiloAlerta extends TimerTask{
 		
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(fecha1);
-		calendar.add(Calendar.DAY_OF_MONTH, 5);
+		calendar.add(Calendar.DAY_OF_MONTH, enviar.diasVerificacion("ANTES DE VENCER"));
 		
 		fecha1 = calendar.getTime();
 		
@@ -31,7 +31,7 @@ public class HiloAlerta extends TimerTask{
 		
 		System.out.println(fechaAntes);
 		calendar.setTime(fecha2);
-		calendar.add(Calendar.DAY_OF_MONTH, -5);
+		calendar.add(Calendar.DAY_OF_MONTH, -enviar.diasVerificacion("DESPUES DE VENCER"));
 		
 		fecha2 = calendar.getTime();
 		

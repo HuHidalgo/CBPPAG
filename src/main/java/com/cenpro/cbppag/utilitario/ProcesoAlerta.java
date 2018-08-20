@@ -24,8 +24,8 @@ public class ProcesoAlerta {
         horaDespertar = c.getTime();
         System.out.println(horaDespertar);
         System.out.println(c.get(Calendar.DAY_OF_WEEK));
-        // El despertador suena cada 24h (una vez al dia) 86400000
-        int tiempoRepeticion = 180000; 
+        // El despertador suena cada 24h (una vez al dia) 180000  86400000
+        int tiempoRepeticion = 86400000; 
         
         // Programamos el despertador para que "suene" a las 8am todos los dias 
         HiloAlerta hilo = new HiloAlerta();

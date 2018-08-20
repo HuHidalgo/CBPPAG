@@ -205,11 +205,17 @@ $(document).ready(function() {
 			type : "GET",
 			url : $variableUtil.root + "ingresos/matricula/" + codAlumno,
 			success : function(matriculas) {
-				$.each(matriculas, function(i, matricula) {				
-					$local.$apellidos.val(this.apellidoAlumno);
-					$local.$nombres.val(this.nombreAlumno);
-					$local.$correo.val(this.correoAlumno);
-				});
+				if(matriculas.length == 0){
+					$funcionUtil.notificarException($variableUtil.alumnoNoEncontrado, "fa-exclamation-circle", "Información", "danger");
+					return;
+				}
+				else{
+					$.each(matriculas, function(i, matricula) {				
+						$local.$apellidos.val(this.apellidoAlumno);
+						$local.$nombres.val(this.nombreAlumno);
+						$local.$correo.val(this.correoAlumno);
+					});
+				}
 			}
 		});
 	});
@@ -225,7 +231,7 @@ $(document).ready(function() {
 		matricula.idEspecializacion = $local.$especializaciones.val();
 		matricula.nombreEspecializacion = $("#especializaciones option:selected").text().substring(7);
 		matricula.tipoPago = $local.$tiposPago.val();
-		matricula.fechaMatricula = $local.$fechaMatricula.data("daterangepicker").startDate.format("YYYY-MM-DD");			
+		matricula.fechaMatricula = $local.$fechaMatricula.data("daterangepicker").startDate.format("YYYY-MM-DD");		
 		$.ajax({
 			type : "POST",
 			url : $variableUtil.root + "ingresos/matricula",
@@ -294,6 +300,9 @@ $(document).ready(function() {
 		$local.$tiposPago.val(matricula.tipoPago).trigger("change.select2"); 
 		
 		$local.codigoMatricula = matricula.codigoMatricula;
+		
+		var contentType = "application/pdf";
+		var file = b64toBlob (matricula.bytesLeidos,contentType);
 		
 		$funcionUtil.llenarFormulario(matricula, $formMantenimiento);
 		$local.$actualizarMantenimiento.removeClass("hidden");

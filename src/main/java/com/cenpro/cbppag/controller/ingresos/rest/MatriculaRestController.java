@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.cenpro.cbppag.model.registro.Matricula;
 import com.cenpro.cbppag.service.IAlertaService;
 import com.cenpro.cbppag.service.IMatriculaService;
-import com.cenpro.cbppag.utilitario.ConstantesGenerales;
 import com.cenpro.cbppag.utilitario.HiloCorreo;
 
 @RequestMapping("/ingresos/matricula")

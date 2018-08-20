@@ -52,6 +52,7 @@ $(document).ready(function() {
 		claseInsertableOpcionesHtml : "insertable-opciones-html",
 		arregloSiNo : [ "0", "1" ],
 		camposVacios : "Debe escoger algún Filtro para poder realizar la Búsqueda",
+		alumnoNoEncontrado : "No existe datos del alumno"
 	};
 
 	$funcionUtil = {
@@ -182,7 +183,7 @@ $(document).ready(function() {
 			formulario.validate().resetForm();
 		},
 		prepararFormularioRegistro2 : function(formulario) {
-			formulario.find(".elemento-desactivable").prop("disabled", false);
+			formulario.find(".elemento-desactivable").prop("disabled", true);
 			this.limpiarCamposFormulario(formulario);
 			this.limpiarMensajesDeError(formulario);
 			formulario.validate().resetForm();
@@ -254,7 +255,25 @@ $(document).ready(function() {
 					monthNames : [ 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre' ],
 					firstDay : 1
 				},
-				"maxDate" : moment()
+				"minDate" : moment()
+			}, function(start, end, label) {
+			});
+		},
+		crearDatePickerSimple2 : function(input, format) {
+			format = format || "DD MMMM YYYY";
+			input.daterangepicker({
+				"singleDatePicker" : true,
+				"showDropdowns" : true,
+				"locale" : {
+					direction : 'ltr',
+					format : format,
+					separator : ' - ',
+					customRangeLabel : 'Personalizado',
+					daysOfWeek : [ 'Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab' ],
+					monthNames : [ 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre' ],
+					firstDay : 1
+				},
+				"minDate" : moment().add(1, 'd').toDate() 
 			}, function(start, end, label) {
 			});
 		},
@@ -509,14 +528,14 @@ $(document).ready(function() {
 	});
 
 	$(".lettersOnly").on("keyup", function() {
-		if (this.value != this.value.replace(/[^a-z\' ']/g, '')) {
-			this.value = this.value.replace(/[^a-z\' ']/g, '');
+		if (this.value != this.value.replace(/[^a-z\' '\^A-Z]/g, '')) {
+			this.value = this.value.replace(/[^a-z\' '\^A-Z]/g, '');
 		}
 	});
 
 	$(".numbersOnly").on("keyup", function() {
 		if (this.value != this.value.replace(/[^0-9]/g, '')) {
-			this.value = this.value.replace(/[^0-9]/g, '');
+			this.value = this.value.replace(/[^0-9]/g, '');	
 		}
 	});
 

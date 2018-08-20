@@ -1,8 +1,8 @@
 $(document).ready(function() {
 
 	var $local = {
-		tablaReporteDeudaGeneral : "",
-		$tablaReporteDeudaGeneral : $("#tablaReporteDeudas"),
+		tablaReportePagoGeneral : "",
+		$tablaReportePagoGeneral : $("#tablaReportePagos"),
 		$limpiar : $("#limpiar"),
 		$buscar : $("#buscar"),
 		$exportar : $("#exportar"),
@@ -10,22 +10,22 @@ $(document).ready(function() {
 		$modalidades : $("#modalidades")
 	}
 
-	$formReporteDeudas = $("#formReporteDeudas");
+	$formReportePago = $("#formReportePagos");
 	
 	$funcionUtil.crearSelect2($local.$modalidades, "--Selecciona Modalidad--");
 	$funcionUtil.crearSelect2($local.$especializaciones, "--Selecciona Especialización--");
 
-	$local.tablaReporteDeudaGeneral = $local.$tablaReporteDeudaGeneral.DataTable({
+	$local.tablaReportePagoGeneral = $local.$tablaReportePagoGeneral.DataTable({
 		"language" : {
 			"emptyTable" : "No hay resultados para la búsqueda."
 		},
 		"initComplete" : function() {
-			$local.$tablaReporteDeudaGeneral.wrap("<div class='table-responsive'></div>");
-			$tablaFuncion.aniadirFiltroDeBusquedaEnEncabezado(this, $local.$tablaReporteDeudaGeneral);
+			$local.$tablaReportePagoGeneral.wrap("<div class='table-responsive'></div>");
+			$tablaFuncion.aniadirFiltroDeBusquedaEnEncabezado(this, $local.$tablaReportePagoGeneral);
 		},
 		"ordering" : false,
 		"columnDefs" : [ {
-			"targets" : [ 0, 1, 2, 3, 4, 5, 6],
+			"targets" : [ 0, 1, 2, 3, 4, 5, 6, 7],
 			"className" : "all filtrable",
 			"defaultContent" : "-"
 		}],
@@ -48,21 +48,24 @@ $(document).ready(function() {
 			"data" : "numeroCiclo",
 			"title" : "Nro. Ciclo"
 		}, {
-			"data" : "numeroCuota",
-			"title" : "Nro. Cuota"
+			"data" : "cuotasPagadas",
+			"title" : "Cuotas Pagadas"
 		}, {
-			"data" : "montoDeuda",
-			"title" : "Monto Deuda"
+			"data" : "montoPagado",
+			"title" : "Monto Pagado"
+		}, {
+			"data" : "conceptoPago",
+			"title" : "ConceptoPago"
 		}]
 	});
 	
-	$local.$tablaReporteDeudaGeneral.find("thead").on('keyup', 'input.filtrable', function() {
-		$local.tablaReporteDeudaGeneral.column($(this).parent().index() + ':visible').search(this.value).draw();
+	$local.$tablaReportePagoGeneral.find("thead").on('keyup', 'input.filtrable', function() {
+		$local.tablaReportePagoGeneral.column($(this).parent().index() + ':visible').search(this.value).draw();
 	});
 
-	$local.$tablaReporteDeudaGeneral.find("thead").on('change', 'select', function() {
+	$local.$tablaReportePagoGeneral.find("thead").on('change', 'select', function() {
 		var val = $.fn.dataTable.util.escapeRegex($(this).val());
-		$local.tablaReporteDeudaGeneral.column($(this).parent().index() + ':visible').search(val ? '^' + val + '$' : '', true, false).draw();
+		$local.tablaReportePagoGeneral.column($(this).parent().index() + ':visible').search(val ? '^' + val + '$' : '', true, false).draw();
 	});
 	
 	
@@ -102,60 +105,34 @@ $(document).ready(function() {
 	});
 		
 	$local.$buscar.on("click", function() {
-		var reporte = $formReporteDeudas.serializeJSON();
+		var reporte = $formReportePago.serializeJSON();
 		reporte.idModalidad = $local.$modalidades.val();
 		reporte.idEspecializacion = $local.$especializaciones.val();
-		console.log(reporte);
-		/*if ($funcionUtil.camposVacios($formReporteDeudas)) {
+		if(reporte.numeroCiclo == ""){
+			reporte.numeroCiclo = "0";
+		}
+		/*if ($funcionUtil.camposVacios($formReportePago)) {
 			$funcionUtil.notificarException($variableUtil.camposVacios, "fa-exclamation-circle", "Información", "info");
 			return;
 		}
-		if (!$formReporteDeudas.valid()) {
+		if (!$formReportePago.valid()) {
 			return;
 		}*/
-		var cadena;
-		if(reporte.idModalidad == null){
-			cadena = "nulo" +"-";
-		}
-		else{
-			cadena = reporte.idModalidad + "-";
-		}
-		
-		if(reporte.idEspecializacion == null){
-			cadena = cadena  + "nulo" +"-";
-		}
-		else{
-			cadena = cadena  + reporte.idEspecializacion + "-";
-		}
-		
-		if(reporte.codigoAlumno == ""){
-			cadena = cadena  + "nulo" +"-";
-		}
-		else{
-			cadena = cadena  + reporte.codigoAlumno + "-";
-		}
-		
-		if(reporte.numeroCiclo == ""){
-			cadena = cadena  + "nulo";
-		}
-		else{
-			cadena = cadena  + reporte.numeroCiclo;
-		}
-		
+
 		$.ajax({
 			type : "GET",
-			url : $variableUtil.root + "ingresos/reporte/deuda/"+cadena,
+			url : $variableUtil.root + "ingresos/reporte?accion=buscarPago",
+			data : reporte,
 			beforeSend : function() {
-				$local.tablaReporteDeudaGeneral.clear().draw();
+				$local.tablaReportePagoGeneral.clear().draw();
 				$local.$buscar.attr("disabled", true).find("i").removeClass("fa-search").addClass("fa-spinner fa-pulse fa-fw");
 			},
-			success : function(deudas) {
-				console.log(deudas);
-				if (deudas.length == 0) {
+			success : function(pagos) {
+				if (pagos.length == 0) {
 					$funcionUtil.notificarException($variableUtil.busquedaSinResultados, "fa-exclamation-circle", "Información", "info");
 					return;
 				}
-				$local.tablaReporteDeudaGeneral.rows.add(deudas).draw();
+				$local.tablaReportePagoGeneral.rows.add(pagos).draw();
 								
 			},
 			complete : function() {
@@ -199,21 +176,21 @@ $(document).ready(function() {
 	});
 
 	$local.$exportar.on("click", function() {
-		var criterioBusqueda = $formReporteDeudas.serializeJSON();
-		if ($funcionUtil.camposVacios($formReporteIngresosConceptos)) {
+		var reporte = $formReportePago.serializeJSON();
+		reporte.idModalidad = $local.$modalidades.val();
+		reporte.idEspecializacion = $local.$especializaciones.val();
+		if(reporte.numeroCiclo == ""){
+			reporte.numeroCiclo = "0";
+		}
+		/*if ($funcionUtil.camposVacios($formReportePago)) {
 			$funcionUtil.notificarException($variableUtil.camposVacios, "fa-exclamation-circle", "Información", "info");
 			return;
 		}
-		if (!$formReporteIngresosConceptos.valid()) {
+		if (!$formReportePago.valid()) {
 			return;
-		}
-		var rangoFecha = $funcionUtil.obtenerFechasDateRangePicker($local.$rangoFechaBusqueda);
-		criterioBusqueda.fechaInicio = rangoFecha.fechaInicio;
-		criterioBusqueda.fechaFin = rangoFecha.fechaFin;
-		var descripcionRangoFechas = $local.$rangoFechaBusqueda.val();
-		criterioBusqueda.descripcionRangoFecha = descripcionRangoFechas == null || descripcionRangoFechas == undefined || descripcionRangoFechas == "" ? "TODOS" : descripcionRangoFechas;
-		var paramCriterioBusqueda = $.param(criterioBusqueda);
-		window.location.href = $variableUtil.root + "ingresos/reporte?accion=exportar&" + paramCriterioBusqueda;
+		}*/
+		var paramCriterioBusqueda = $.param(reporte);
+		window.location.href = $variableUtil.root + "ingresos/reporte?accion=exportar2&" + paramCriterioBusqueda;
 	});
 
 });
