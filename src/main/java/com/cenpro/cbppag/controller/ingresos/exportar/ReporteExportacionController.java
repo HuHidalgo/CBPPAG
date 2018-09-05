@@ -33,7 +33,7 @@ public @Controller class ReporteExportacionController
         params.put("param2", reporte);
         params.put("param3", reporteGeneral);
 
-        // HOJA DETALLE
+        // HOJA DE REPORTE
         model.addAttribute("rb_titulo", ReporteUtilYarg.buildReportBand("Titulo"));
         model.addAttribute("rb_criterioBusqueda", ReporteUtilYarg.buildReportBand(
                 "CriteriosBusqueda", "CriterioBusqueda", "parameter=param2 $", "json"));
@@ -52,9 +52,9 @@ public @Controller class ReporteExportacionController
                 ReporteUtilYarg.buildReportBand("EncabezadoGeneral"));
         model.addAttribute("rb_datosGeneral", ReporteUtilYarg.buildReportBand("DatosGeneral",
                 "DatosGeneral", "parameter=param3 $", "json"));
-
+        
         model.addAttribute(ReporteUtilYarg.PARAM_TEMPLATE, "reporteDeuda");
-        model.addAttribute(ReporteUtilYarg.PARAM_NOMBRE_REPORTE, "Reporte de Ingresos por Concepto");
+        model.addAttribute(ReporteUtilYarg.PARAM_NOMBRE_REPORTE, "Reporte de Deudas");
         model.addAttribute(ReporteUtilYarg.PARAM_REPORTE_PARAMETERS, params);
         modelAndView = new ModelAndView("yargView", model);
         return modelAndView;

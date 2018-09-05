@@ -18,6 +18,7 @@ public class ReporteDeuda {
 	private String nombreAlumno;
 	private String apellidoAlumno;
 	private int numeroCiclo;
+	private String ciclo;
 	private int numeroCuota;
 	private double montoDeuda;
 }
