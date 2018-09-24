@@ -1,31 +1,33 @@
 $(document).ready(function() {
 
 	var $local = {
-		tablaReportePagoGeneral : "",
-		$tablaReportePagoGeneral : $("#tablaReportePagos"),
+		tablaReporteDeudaGeneral : "",
+		$tablaReporteDeudaGeneral : $("#tablaReporteDeudas"),
 		$limpiar : $("#limpiar"),
 		$buscar : $("#buscar"),
 		$exportar : $("#exportar"),
 		$especializaciones : $("#especializaciones"),
-		$modalidades : $("#modalidades")
+		$modalidades : $("#modalidades"),
+		$codigoAlumno : $("#codigoAlumno"),
+		$numeroCiclo : $("#numeroCiclo")
 	}
 
-	$formReportePago = $("#formReportePagos");
+	$formReporteDeudas = $("#formReporteDeudas");
 	
 	$funcionUtil.crearSelect2($local.$modalidades, "--Selecciona Modalidad--");
 	$funcionUtil.crearSelect2($local.$especializaciones, "--Selecciona Especialización--");
 
-	$local.tablaReportePagoGeneral = $local.$tablaReportePagoGeneral.DataTable({
+	$local.tablaReporteDeudaGeneral = $local.$tablaReporteDeudaGeneral.DataTable({
 		"language" : {
 			"emptyTable" : "No hay resultados para la búsqueda."
 		},
 		"initComplete" : function() {
-			$local.$tablaReportePagoGeneral.wrap("<div class='table-responsive'></div>");
-			$tablaFuncion.aniadirFiltroDeBusquedaEnEncabezado(this, $local.$tablaReportePagoGeneral);
+			$local.$tablaReporteDeudaGeneral.wrap("<div class='table-responsive'></div>");
+			$tablaFuncion.aniadirFiltroDeBusquedaEnEncabezado(this, $local.$tablaReporteDeudaGeneral);
 		},
 		"ordering" : false,
 		"columnDefs" : [ {
-			"targets" : [ 0, 1, 2, 3, 4, 5, 6, 7],
+			"targets" : [ 0, 1, 2, 3, 4, 5, 6],
 			"className" : "all filtrable",
 			"defaultContent" : "-"
 		}],
@@ -48,24 +50,21 @@ $(document).ready(function() {
 			"data" : "numeroCiclo",
 			"title" : "Nro. Ciclo"
 		}, {
-			"data" : "cuotasPagadas",
-			"title" : "Cuotas Pagadas"
+			"data" : "numeroCuota",
+			"title" : "Nro. Cuota"
 		}, {
-			"data" : "montoPagado",
-			"title" : "Monto Pagado"
-		}, {
-			"data" : "conceptoPago",
-			"title" : "ConceptoPago"
+			"data" : "montoDeuda",
+			"title" : "Monto Deuda"
 		}]
 	});
 	
-	$local.$tablaReportePagoGeneral.find("thead").on('keyup', 'input.filtrable', function() {
-		$local.tablaReportePagoGeneral.column($(this).parent().index() + ':visible').search(this.value).draw();
+	$local.$tablaReporteDeudaGeneral.find("thead").on('keyup', 'input.filtrable', function() {
+		$local.tablaReporteDeudaGeneral.column($(this).parent().index() + ':visible').search(this.value).draw();
 	});
 
-	$local.$tablaReportePagoGeneral.find("thead").on('change', 'select', function() {
+	$local.$tablaReporteDeudaGeneral.find("thead").on('change', 'select', function() {
 		var val = $.fn.dataTable.util.escapeRegex($(this).val());
-		$local.tablaReportePagoGeneral.column($(this).parent().index() + ':visible').search(val ? '^' + val + '$' : '', true, false).draw();
+		$local.tablaReporteDeudaGeneral.column($(this).parent().index() + ':visible').search(val ? '^' + val + '$' : '', true, false).draw();
 	});
 	
 	
@@ -105,34 +104,34 @@ $(document).ready(function() {
 	});
 		
 	$local.$buscar.on("click", function() {
-		var reporte = $formReportePago.serializeJSON();
+		var reporte = $formReporteDeudas.serializeJSON();
 		reporte.idModalidad = $local.$modalidades.val();
 		reporte.idEspecializacion = $local.$especializaciones.val();
 		if(reporte.numeroCiclo == ""){
 			reporte.numeroCiclo = "0";
 		}
-		/*if ($funcionUtil.camposVacios($formReportePago)) {
+		/*if ($funcionUtil.camposVacios($formReporteDeudas)) {
 			$funcionUtil.notificarException($variableUtil.camposVacios, "fa-exclamation-circle", "Información", "info");
 			return;
 		}
-		if (!$formReportePago.valid()) {
+		if (!$formReporteDeudas.valid()) {
 			return;
-		}*/
-
+		}
+*/
 		$.ajax({
 			type : "GET",
-			url : $variableUtil.root + "ingresos/reporte?accion=buscarPago",
+			url : $variableUtil.root + "ingresos/reporte?accion=buscarDeuda",
 			data : reporte,
 			beforeSend : function() {
-				$local.tablaReportePagoGeneral.clear().draw();
+				$local.tablaReporteDeudaGeneral.clear().draw();
 				$local.$buscar.attr("disabled", true).find("i").removeClass("fa-search").addClass("fa-spinner fa-pulse fa-fw");
 			},
-			success : function(pagos) {
-				if (pagos.length == 0) {
+			success : function(deudas) {
+				if (deudas.length == 0) {
 					$funcionUtil.notificarException($variableUtil.busquedaSinResultados, "fa-exclamation-circle", "Información", "info");
 					return;
 				}
-				$local.tablaReportePagoGeneral.rows.add(pagos).draw();
+				$local.tablaReporteDeudaGeneral.rows.add(deudas).draw();
 								
 			},
 			complete : function() {
@@ -143,54 +142,78 @@ $(document).ready(function() {
 	});
 	
 	$local.$limpiar.on("click", function() {
-		var criterioBusqueda = $formReporteDeudas.serializeJSON();
-
-		criterioBusqueda.verbo = "DET_LIMPIAR_CONCEPTOS";
+		$local.$codigoAlumno.val("");
+		$local.$numeroCiclo.val("");
+		
 		$.ajax({
 			type : "GET",
-			url : $variableUtil.root + "ingresos/reporte?accion=buscar",
-			data : criterioBusqueda,
-			beforeSend : function() {
-				$local.tablaReporteIngresosDetalle.clear().draw();
-				$local.$limpiar.attr("disabled", true).find("i").removeClass("fa-refresh").addClass("fa-spinner fa-pulse fa-fw");
+			url : $variableUtil.root + "/mantenimiento/modalidad?accion=buscarTodos",
+			beforeSend : function(xhr) {
+				$local.$modalidades.find("option:not(:eq(0))").remove();
+				$local.$modalidades.parent().append("<span class='help-block cargando'><i class='fa fa-spinner fa-pulse fa-fw'></i> Cargando Especializaciones</span>")
 			},
-			
+			statusCode : {
+				400 : function(response) {
+					$funcionUtil.limpiarMensajesDeError($formMantenimiento);
+					$funcionUtil.mostrarMensajeDeError(response.responseJSON, $formMantenimiento);
+				}
+			},
+			success : function(modalidades) {
+				$local.$modalidades.append($("<option />").val("").text("--Selecciona Modalidad--"));
+				$.each(modalidades, function(i, modalidad) {
+					$local.$modalidades.append($("<option />").val(this.idModalidad).text(this.idModalidad + " - " + this.nombreModalidad));
+				});
+			},
 			complete : function() {
-				$local.$limpiar.attr("disabled", false).find("i").removeClass("fa-spinner fa-pulse fa-fw").addClass("fa-refresh");
+				$local.$modalidades.parent().find(".cargando").remove();
 			}
 		});
-
-		criterioBusqueda.verbo = "GEN_LIMPIAR_CONCEPTOS";
+		
 		$.ajax({
 			type : "GET",
-			url : $variableUtil.root + "ingresos/reporte?accion=buscar1",
-			data : criterioBusqueda,
-			beforeSend : function() {
-				$local.tablaReporteIngresosGeneral.clear().draw();
+			url : $variableUtil.root + "/mantenimiento/especializacion?accion=buscarTodos",
+			beforeSend : function(xhr) {
+				$local.$especializaciones.find("option:not(:eq(0))").remove();
+				$local.$especializaciones.parent().append("<span class='help-block cargando'><i class='fa fa-spinner fa-pulse fa-fw'></i> Cargando Especializaciones</span>")
 			},
-			
+			statusCode : {
+				400 : function(response) {
+					$funcionUtil.limpiarMensajesDeError($formMantenimiento);
+					$funcionUtil.mostrarMensajeDeError(response.responseJSON, $formMantenimiento);
+				}
+			},
+			success : function(especializaciones) {
+				$local.$especializaciones.append($("<option />").val("").text("--Selecciona Especialización--"));
+				$.each(especializaciones, function(i, especializacion) {
+					$local.$especializaciones.append($("<option />").val(this.idEspecializacion).text(this.idEspecializacion + " - " + this.nombreEspecializacion));
+				});
+			},
 			complete : function() {
-				$local.$limpiar.attr("disabled", false).find("i").addClass("fa-refresh").removeClass("fa-spinner fa-pulse fa-fw");
+				$local.$especializaciones.parent().find(".cargando").remove();
 			}
 		});
 	});
 
 	$local.$exportar.on("click", function() {
-		var reporte = $formReportePago.serializeJSON();
+		var reporte = $formReporteDeudas.serializeJSON();
 		reporte.idModalidad = $local.$modalidades.val();
 		reporte.idEspecializacion = $local.$especializaciones.val();
 		if(reporte.numeroCiclo == ""){
 			reporte.numeroCiclo = "0";
 		}
-		/*if ($funcionUtil.camposVacios($formReportePago)) {
+		
+		console.log(reporte);
+		if ($funcionUtil.camposVacios($formReporteDeudas)) {
 			$funcionUtil.notificarException($variableUtil.camposVacios, "fa-exclamation-circle", "Información", "info");
 			return;
 		}
-		if (!$formReportePago.valid()) {
+		if (!$formReporteDeudas.valid()) {
 			return;
-		}*/
-		var paramCriterioBusqueda = $.param(reporte);
-		window.location.href = $variableUtil.root + "ingresos/reporte?accion=exportar2&" + paramCriterioBusqueda;
+		}
+		
+		var paramReporte = $.param(reporte);
+		
+		window.location.href = $variableUtil.root + "ingresos/reporte?accion=exportar&" + paramReporte;
 	});
 
 });

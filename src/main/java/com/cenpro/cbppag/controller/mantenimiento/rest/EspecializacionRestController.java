@@ -50,8 +50,9 @@ public @RestController class EspecializacionRestController
     @PutMapping
     public ResponseEntity<?> actualizarEspecializacion(@RequestBody Especializacion especializacion)
     {
+    	String idEspecializacion = especializacion.getIdEspecializacion();
         especializacionService.actualizarEspecializacion(especializacion);
-        return ResponseEntity.ok(ConstantesGenerales.ACTUALIZACION_EXITOSA);
+        return ResponseEntity.ok(especializacionService.buscarPorId(idEspecializacion));
     }
     
     @DeleteMapping

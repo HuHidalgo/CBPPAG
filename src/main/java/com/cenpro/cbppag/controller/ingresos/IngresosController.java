@@ -38,6 +38,7 @@ public @Controller class IngresosController
         model.addAttribute("mantenimiento", mantenimiento);
         model.addAttribute("modalidades", modalidadService.buscarTodos());
         model.addAttribute("especializaciones", especializacionService.buscarTodos());
+        model.addAttribute("numeroCiclo", especializacionService.buscarTodos());
         model.addAttribute("tiposPago", multiService.buscarPorIdTabla(22));
         return "seguras/ingresos/mantenimiento";
     }

@@ -57,41 +57,47 @@ public class EnviarCorreoUtil {
 	
 	public int diasVerificacion(String tipoAlerta) {
 		List<Alerta> alertas = alertaService.buscarMensaje(tipoAlerta);
-		return alertas.get(0).getDiasVerificacion();
+		if(!alertas.isEmpty()) {
+			return alertas.get(0).getDiasVerificacion();
+		}
+		return 0;
 	}
 	
 	public int mensajeRegistroMatricula(Matricula matricula) {
 		List<Alerta> alertas = alertaService.buscarMensaje("REGISTRO MATRICULA");
 
-		estructuraMensaje = "Codigo: " + matricula.getCodigoAlumno() +
-                			"\nAlumno: " + matricula.getNombreAlumno() + " " + matricula.getApellidoAlumno() +
-                			"\nFecha de Pago: " + date.format(matricula.getFechaMatricula()) +
-                			"\nConcepto de Pago: " + matricula.getConceptoPago() +
-                			"\nModalidad: " + matricula.getNombreModalidad() +
-                			"\nEspecializacion: " + matricula.getNombreEspecializacion() +
-                			"\nCiclo: " + matricula.getNumeroCiclo() +
-                			"\nForma de Pago de ciclo: " + matricula.getTipoPago() +
-                			"\n" + alertas.get(0).getDescAlerta();
-		try {
-            Session session = Session.getDefaultInstance(properties,
-                    new javax.mail.Authenticator() {
-                public PasswordAuthentication
-                        getPasswordAuthentication() {
-                    return new PasswordAuthentication(correo, clave);
-                }
-            });
-
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(correo));
-            message.setRecipients(Message.RecipientType.TO,
-                    InternetAddress.parse(matricula.getCorreoAlumno()));
-            message.setSubject("Posgrado - Pago de Matricula");
-            message.setText(estructuraMensaje);
-            Transport.send(message);
-        } catch (Exception e) {
-            System.out.println("error: "+e);
-            return 1;
-        }
+		if(!alertas.isEmpty()) {
+			estructuraMensaje = "Codigo: " + matricula.getCodigoAlumno() +
+        			"\nAlumno: " + matricula.getNombreAlumno() + " " + matricula.getApellidoAlumno() +
+        			"\nFecha de Pago: " + date.format(matricula.getFechaMatricula()) +
+        			"\nConcepto de Pago: " + matricula.getConceptoPago() +
+        			"\nModalidad: " + matricula.getNombreModalidad() +
+        			"\nEspecializacion: " + matricula.getNombreEspecializacion() +
+        			"\nCiclo: " + matricula.getNumeroCiclo() +
+        			"\nForma de Pago de ciclo: " + matricula.getTipoPago() +
+        			"\n" + alertas.get(0).getDescAlerta();
+			try {
+			    Session session = Session.getDefaultInstance(properties,
+			            new javax.mail.Authenticator() {
+			        public PasswordAuthentication
+			                getPasswordAuthentication() {
+			            return new PasswordAuthentication(correo, clave);
+			        }
+			    });
+			
+			    Message message = new MimeMessage(session);
+			    message.setFrom(new InternetAddress(correo));
+			    message.setRecipients(Message.RecipientType.TO,
+			            InternetAddress.parse(matricula.getCorreoAlumno()));
+			    message.setSubject("Posgrado - Pago de Matricula");
+			    message.setText(estructuraMensaje);
+			    Transport.send(message);
+			} catch (Exception e) {
+			    System.out.println("error: "+e);
+			    return 1;
+			}
+		}
+		
         System.out.println("Mensaje de registro de Pago Enviado");
         return 0;
 	}
@@ -99,35 +105,37 @@ public class EnviarCorreoUtil {
 	public int mensajeRegistroPago(Pago pago){
 		List<Alerta> alertas = alertaService.buscarMensaje("REGISTRO PERFECCIONAMIENTO");
 		
-		estructuraMensaje = "Codigo: " + pago.getCodigoAlumno()+
-                			"\nAlumno: " + pago.getNombreAlumno()+" "+pago.getApellidoAlumno()+
-                			"\nFecha de Pago: " + date.format(pago.getFechaPago())+
-                			"\nConcepto de Pago: " + pago.getConceptoPago()+
-                			"\nModalidad: " + pago.getNombreModalidad()+
-                			"\nEspecializacion: " + pago.getNombreEspecializacion()+
-                			"\nNro. Cuotas que está Pagando: " + pago.getNroCuotasAPagar()+
-                			"\nMonto Pagado: " + pago.getMontoPagado()+
-                			"\n" + alertas.get(0).getDescAlerta();
-        try {
-            Session session = Session.getDefaultInstance(properties,
-                    new javax.mail.Authenticator() {
-                public PasswordAuthentication
-                        getPasswordAuthentication() {
-                    return new PasswordAuthentication(correo, clave);
-                }
-            });
-
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(pago.getCorreoAlumno()));
-            message.setRecipients(Message.RecipientType.TO,
-                    InternetAddress.parse(pago.getCorreoAlumno()));
-            message.setSubject("Posgrado - Pago de Perfeccionamiento");
-            message.setText(estructuraMensaje);
-            Transport.send(message);
-        } catch (Exception e) {
-            e.getStackTrace();
-            return 1;
-        }
+		if(!alertas.isEmpty()) {
+			estructuraMensaje = "Codigo: " + pago.getCodigoAlumno()+
+        			"\nAlumno: " + pago.getNombreAlumno()+" "+pago.getApellidoAlumno()+
+        			"\nFecha de Pago: " + date.format(pago.getFechaPago())+
+        			"\nConcepto de Pago: " + pago.getConceptoPago()+
+        			"\nModalidad: " + pago.getNombreModalidad()+
+        			"\nEspecializacion: " + pago.getNombreEspecializacion()+
+        			"\nNro. Cuotas que está Pagando: " + pago.getNroCuotasAPagar()+
+        			"\nMonto Pagado: " + pago.getMontoPagado()+
+        			"\n" + alertas.get(0).getDescAlerta();
+			try {
+			    Session session = Session.getDefaultInstance(properties,
+			            new javax.mail.Authenticator() {
+			        public PasswordAuthentication
+			                getPasswordAuthentication() {
+			            return new PasswordAuthentication(correo, clave);
+			        }
+			    });
+			
+			    Message message = new MimeMessage(session);
+			    message.setFrom(new InternetAddress(pago.getCorreoAlumno()));
+			    message.setRecipients(Message.RecipientType.TO,
+			            InternetAddress.parse(pago.getCorreoAlumno()));
+			    message.setSubject("Posgrado - Pago de Perfeccionamiento");
+			    message.setText(estructuraMensaje);
+			    Transport.send(message);
+			} catch (Exception e) {
+			    e.getStackTrace();
+			    return 1;
+			}
+		}
         System.out.println("Mensaje de registro de Pago Enviado");
         return 0;
     }

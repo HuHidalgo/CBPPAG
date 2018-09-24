@@ -20,6 +20,7 @@ $(document).ready(function() {
 		$costoMatricula : $("#costoMatricula"),
 		$tiposPago : $("#tiposPago"),
 		$especializaciones : $("#especializaciones"),
+		$numeroCiclos : $("#numeroCiclo"),
 		$fechaMatricula : $("#fechaMatricula"),
 		$voucher : $("#uploadfile"),
 		$documento : "",
@@ -30,6 +31,7 @@ $(document).ready(function() {
 
 	$funcionUtil.crearSelect2($local.$modalidades, "--Selecciona Modalidad--");
 	$funcionUtil.crearSelect2($local.$especializaciones, "--Selecciona Especialización--");
+	$funcionUtil.crearSelect2($local.$numeroCiclos, "--Seleccione Ciclo--");
 	$funcionUtil.crearSelect2($local.$tiposPago, "--Seleccione tipo de pago--");
 	$funcionUtil.crearDatePickerSimple($local.$fechaMatricula, "DD/MM/YYYY");
 
@@ -187,10 +189,24 @@ $(document).ready(function() {
 		$.ajax({
 			type : "GET",
 			url : $variableUtil.root + "mantenimiento/especializacion/costo/" + idEspecializacion,
+			beforeSend : function(xhr) {
+				$local.$numeroCiclos.find("option:not(:eq(0))").remove();
+				$local.$numeroCiclos.parent().append("<span class='help-block cargando'><i class='fa fa-spinner fa-pulse fa-fw'></i> Cargando Ciclos</span>")
+			},
 			success : function(especializaciones) {
+				var j = 1;
 				$.each(especializaciones, function(i, especializacion) {
+					console.log(especializacion);
+					while(j<=especializacion.numCiclos){
+						$local.$numeroCiclos.append($("<option />").val(j).text(j));
+						console.log(j);
+						j++;
+					}
 					$local.$costoMatricula.val(this.costoMatricula);
 				});
+			},
+			complete : function() {
+				$local.$numeroCiclos.parent().find(".cargando").remove();
 			}
 		});
 
@@ -198,26 +214,28 @@ $(document).ready(function() {
 	
 	$local.$verificarAlumno.click(function(){		
 		var codAlumno = $local.$codigoAlumno .val();
-		if (codAlumno == null || codAlumno == undefined) {
+		if (codAlumno == null || codAlumno == undefined || codAlumno == "") {
+			$funcionUtil.notificarException($variableUtil.codigoAlumnoVacio, "fa-exclamation-circle", "Información", "danger");
 			return;
+		}else{
+			$.ajax({
+				type : "GET",
+				url : $variableUtil.root + "ingresos/matricula/" + codAlumno,
+				success : function(matriculas) {
+					if(matriculas.length == 0){
+						$funcionUtil.notificarException($variableUtil.alumnoNoEncontrado, "fa-exclamation-circle", "Información", "danger");
+						return;
+					}
+					else{
+						$.each(matriculas, function(i, matricula) {				
+							$local.$apellidos.val(this.apellidoAlumno);
+							$local.$nombres.val(this.nombreAlumno);
+							$local.$correo.val(this.correoAlumno);
+						});
+					}
+				}
+			});
 		}
-		$.ajax({
-			type : "GET",
-			url : $variableUtil.root + "ingresos/matricula/" + codAlumno,
-			success : function(matriculas) {
-				if(matriculas.length == 0){
-					$funcionUtil.notificarException($variableUtil.alumnoNoEncontrado, "fa-exclamation-circle", "Información", "danger");
-					return;
-				}
-				else{
-					$.each(matriculas, function(i, matricula) {				
-						$local.$apellidos.val(this.apellidoAlumno);
-						$local.$nombres.val(this.nombreAlumno);
-						$local.$correo.val(this.correoAlumno);
-					});
-				}
-			}
-		});
 	});
 	
 	$local.$registrarMantenimiento.on("click", function() {
@@ -229,6 +247,7 @@ $(document).ready(function() {
 		matricula.idModalidad = $local.$modalidades.val();
 		matricula.nombreModalidad = $("#modalidades option:selected").text().substring(7);
 		matricula.idEspecializacion = $local.$especializaciones.val();
+		matricula.numeroCiclo = $local.$numeroCiclos.val();
 		matricula.nombreEspecializacion = $("#especializaciones option:selected").text().substring(7);
 		matricula.tipoPago = $local.$tiposPago.val();
 		matricula.fechaMatricula = $local.$fechaMatricula.data("daterangepicker").startDate.format("YYYY-MM-DD");		

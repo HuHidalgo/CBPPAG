@@ -52,7 +52,9 @@ $(document).ready(function() {
 		claseInsertableOpcionesHtml : "insertable-opciones-html",
 		arregloSiNo : [ "0", "1" ],
 		camposVacios : "Debe escoger algún Filtro para poder realizar la Búsqueda",
-		alumnoNoEncontrado : "No existe datos del alumno"
+		alumnoNoEncontrado : "No existe datos del alumno",
+		codigoAlumnoVacio : "No se ha digitado código de alumno",
+		deudaPagada: "El alumno no registra deuda"	
 	};
 
 	$funcionUtil = {

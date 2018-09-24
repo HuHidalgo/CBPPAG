@@ -329,13 +329,13 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Nombre del Alumno</label>
 				<div class="col-lg-4">
-					<input id="nombreAlumno" class="form-control" name="nombreAlumno">
+					<input id="nombreAlumno" class="form-control upperCase" name="nombreAlumno">
 				</div>
 			</div>
 			<div class="group">
 				<label class="col-lg-2 control-label">Apellido del Alumno</label>
 				<div class="col-lg-4">
-					<input id="apellidoAlumno" class="form-control" name="apellidoAlumno">
+					<input id="apellidoAlumno" class="form-control upperCase" name="apellidoAlumno">
 				</div>
 			</div>
 		</div>
@@ -446,7 +446,15 @@
 		<div class="form-group">
 			<label class="col-lg-2 control-label">Ciclo a matricular</label>
 			<div class="col-lg-4">
-				<input class="form-control numbersOnly" name="numeroCiclo">
+				<select id="numeroCiclo" class="form-control select2" name="numeroCiclo">
+						<option value="" disabled="disabled" selected="selected">
+									--Selecciona Especialización--
+						</option>
+						<option th:each="especializacion : ${especializaciones}" th:value="${especializacion.numCiclos}"
+									th:text="|${especializacion.numCiclos}|">
+						</option>
+					</select>
+				
 			</div>
 		</div>
 
@@ -454,13 +462,13 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Nombre del Alumno</label>
 				<div class="col-lg-4">
-					<input id="nombreAlumno" class="form-control lettersOnly" name="nombreAlumno">
+					<input id="nombreAlumno" class="form-control lettersOnly upperCase" name="nombreAlumno">
 				</div>
 			</div>
 			<div class="group">
 				<label class="col-lg-2 control-label">Apellido del Alumno</label>
 				<div class="col-lg-4">
-					<input id="apellidoAlumno" class="form-control lettersOnly" name="apellidoAlumno">
+					<input id="apellidoAlumno" class="form-control lettersOnly upperCase" name="apellidoAlumno">
 				</div>
 			</div>
 		</div>

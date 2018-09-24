@@ -145,33 +145,41 @@ $(document).ready(function() {
 	
 	$local.$verificarAlumno.click(function(){		
 		var codAlumno = $local.$codigoAlumno .val();
-		if (codAlumno == null || codAlumno == undefined) {
+		if (codAlumno == null || codAlumno == undefined || codAlumno == "") {
+			$funcionUtil.notificarException($variableUtil.codigoAlumnoVacio, "fa-exclamation-circle", "Información", "danger");
 			return;
 		}
-		$.ajax({
-			type : "GET",
-			url : $variableUtil.root + "ingresos/pago/" + codAlumno,
-			success : function(pagos) {
-				if(pagos.length == 0){
-					$funcionUtil.notificarException($variableUtil.alumnoNoEncontrado, "fa-exclamation-circle", "Información", "danger");
-					return;
+		else{
+			$.ajax({
+				type : "GET",
+				url : $variableUtil.root + "ingresos/pago/" + codAlumno,
+				success : function(pagos) {
+					if(pagos.length == 0){
+						$funcionUtil.notificarException($variableUtil.alumnoNoEncontrado, "fa-exclamation-circle", "Información", "danger");
+						return;
+					}
+					else{
+						$.each(pagos, function(i, pago) {			
+							if(pago.nroCuotasPendientes != 0){
+								$local.$apellidos.val(this.apellidoAlumno);
+								$local.$nombres.val(this.nombreAlumno);
+								$local.$correo.val(this.correoAlumno);
+								$local.$modalidad.val(this.nombreModalidad);
+								$local.$tipoPago.val(this.tipoPago);
+								$local.$nroCiclo.val(this.numeroCiclo);
+								$local.$costoCuota.val(this.costoCuota);
+								$local.$especializacion.val(this.nombreEspecializacion);
+								$local.$cuotaPendiente.val(this.nroCuotasPendientes);
+								$local.codigoMatricula = this.codigoMatricula;
+							}
+							else{
+								$funcionUtil.notificarException($variableUtil.deudaPagada, "fa-exclamation-circle", "Información", "info");
+							}
+						});
+					}
 				}
-				else{
-					$.each(pagos, function(i, pago) {				
-						$local.$apellidos.val(this.apellidoAlumno);
-						$local.$nombres.val(this.nombreAlumno);
-						$local.$correo.val(this.correoAlumno);
-						$local.$modalidad.val(this.nombreModalidad);
-						$local.$tipoPago.val(this.tipoPago);
-						$local.$nroCiclo.val(this.numeroCiclo);
-						$local.$costoCuota.val(this.costoCuota);
-						$local.$especializacion.val(this.nombreEspecializacion);
-						$local.$cuotaPendiente.val(this.nroCuotasPendientes);
-						$local.codigoMatricula = this.codigoMatricula;
-					});
-				}
-			}
-		});
+			});
+		}
 	});
 	
 	$local.$registrarMantenimiento.on("click", function() {

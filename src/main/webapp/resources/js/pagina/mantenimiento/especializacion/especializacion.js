@@ -127,6 +127,7 @@ $(document).ready(function() {
 			return;
 		}
 		var especializacion = $formMantenimiento.serializeJSON();
+		especializacion.idModalidad = $local.$modalidades.val();
 		especializacion.fechaInicio = $local.$fechaInicio.data("daterangepicker").startDate.format('YYYY-MM-DD');
 		especializacion.fechaFin = $local.$fechaFin.data("daterangepicker").startDate.format('YYYY-MM-DD');
 		$.ajax({
@@ -177,8 +178,9 @@ $(document).ready(function() {
 		}
 		var especializacion = $formMantenimiento.serializeJSON();
 		especializacion.idEspecializacion = $local.codigoEspecializacionSeleccionada;
-		campania.fechaInicio = $local.$fechaInicio.data("daterangepicker").startDate.format('YYYY-MM-DD');
-		campania.fechaFin = $local.$fechaFin.data("daterangepicker").startDate.format('YYYY-MM-DD');
+		especializacion.idModalidad = $local.$modalidades.val();
+		especializacion.fechaInicio = $local.$fechaInicio.data("daterangepicker").startDate.format('YYYY-MM-DD');
+		especializacion.fechaFin = $local.$fechaFin.data("daterangepicker").startDate.format('YYYY-MM-DD');
 		$.ajax({
 			type : "PUT",
 			url : $variableUtil.root + "mantenimiento/especializacion",
@@ -195,6 +197,7 @@ $(document).ready(function() {
 				}
 			},
 			success : function(especializaciones) {
+				console.log(especializaciones[0]);
 				$funcionUtil.notificarException($variableUtil.actualizacionExitosa, "fa-check", "Aviso", "success");
 				var especializacion = especializaciones[0];
 				var row = $local.tablaMantenimiento.row($local.$filaSeleccionada).data(especializacion).draw();
@@ -216,7 +219,7 @@ $(document).ready(function() {
 		$.confirm({
 			icon : "fa fa-info-circle",
 			title : "Aviso",
-			content : "¿Desea eliminar la especializacion <b>'" + especializacion.codigoEspecializacion + " - " + especializacion.nomEspecializacion + "'<b/>?",
+			content : "¿Desea eliminar la especializacion <b>'" + especializacion.idEspecializacion + " - " + especializacion.nombreEspecializacion+ "'<b/>?",
 			theme : "bootstrap",
 			buttons : {
 				Aceptar : {

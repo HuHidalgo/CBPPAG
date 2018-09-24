@@ -120,7 +120,7 @@ $(document).ready(function() {
 				}
 			},
 			success : function(modalidades) {	
-				$funcionUtil.notificarException(response, "fa-check", "Aviso", "success");
+				$funcionUtil.notificarException($variableUtil.registroExitoso, "fa-check", "Aviso", "success");
 				var modalidad = modalidades[0];
 				var row = $local.tablaMantenimiento.row.add(modalidad).draw();
 				row.show().draw(false);
