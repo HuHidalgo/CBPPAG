@@ -116,7 +116,7 @@ $(document).ready(function() {
 	});
 
 	$local.$aniadirMantenimento.on("click", function() {
-		$funcionUtil.prepararFormularioRegistro($formMantenimiento);
+		$funcionUtil.prepararFormularioRegistro2($formMantenimiento);
 		$local.$actualizarMantenimiento.addClass("hidden");
 		$local.$registrarMantenimiento.removeClass("hidden");
 		$local.$modalMantenimiento.PopupWindow("open");

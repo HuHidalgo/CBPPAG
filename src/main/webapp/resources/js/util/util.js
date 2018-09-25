@@ -279,6 +279,23 @@ $(document).ready(function() {
 			}, function(start, end, label) {
 			});
 		},
+		crearDatePickerSimple3 : function(input, format) {
+			format = format || "DD MMMM YYYY";
+			input.daterangepicker({
+				"singleDatePicker" : true,
+				"showDropdowns" : true,
+				"locale" : {
+					direction : 'ltr',
+					format : format,
+					separator : ' - ',
+					customRangeLabel : 'Personalizado',
+					daysOfWeek : [ 'Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab' ],
+					monthNames : [ 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre' ],
+					firstDay : 1
+				}
+			}, function(start, end, label) {
+			});
+		},
 		crearDateRangePickerSimple : function(input) {
 			input.daterangepicker({
 				"alwaysShowCalendars" : true,

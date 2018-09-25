@@ -26,12 +26,13 @@ $(document).ready(function() {
 		$numeroCuotas : $("#numeroCuotas"),
 		$voucher : $("#uploadfile"),
 		$documento : "",
+		$bandera : false,
 		filtrosSeleccionables : {}
 	};
 
 	$formMantenimiento = $("#formMantenimiento");
 
-	$funcionUtil.crearDatePickerSimple($local.$fechaPago, "DD/MM/YYYY");
+	$funcionUtil.crearDatePickerSimple3($local.$fechaPago, "DD/MM/YYYY");
 	$funcionUtil.crearSelect2($local.$numeroCuotas, "Seleccione un número de cuotas");
 
 	$.fn.dataTable.ext.errMode = 'none';
@@ -161,13 +162,32 @@ $(document).ready(function() {
 					else{
 						$.each(pagos, function(i, pago) {			
 							if(pago.nroCuotasPendientes != 0){
+								if(pago.tipoPago == "PAGO AL CONTADO"){
+									$local.$bandera = true;
+									$local.$numeroCuotas.find("option:not(:eq(0))").remove();
+									$local.$numeroCuotas.append($("<option />").val("").text("Seleccione un número de cuotas"));
+									$local.$numeroCuotas.append($("<option />").val("1").text("1 cuota"));
+									$local.$costoCuota.val(pago.costoCuota*4);
+								}
+								else{
+									if(!$local.$bandera){
+										var j = 2;
+										$local.$numeroCuotas.find("option:not(:eq(0))").remove();
+										$local.$numeroCuotas.append($("<option />").val("").text("Seleccione un número de cuotas"));
+										$local.$numeroCuotas.append($("<option />").val("1").text("1 cuota"));
+										while(j<=pago.nroCuotasPendientes){
+											$local.$numeroCuotas.append($("<option />").val(j).text(j + " cuotas"));
+											j++;
+										}
+									}
+									$local.$costoCuota.val(this.costoCuota);
+								}
 								$local.$apellidos.val(this.apellidoAlumno);
 								$local.$nombres.val(this.nombreAlumno);
 								$local.$correo.val(this.correoAlumno);
 								$local.$modalidad.val(this.nombreModalidad);
 								$local.$tipoPago.val(this.tipoPago);
 								$local.$nroCiclo.val(this.numeroCiclo);
-								$local.$costoCuota.val(this.costoCuota);
 								$local.$especializacion.val(this.nombreEspecializacion);
 								$local.$cuotaPendiente.val(this.nroCuotasPendientes);
 								$local.codigoMatricula = this.codigoMatricula;
