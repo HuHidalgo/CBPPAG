@@ -111,8 +111,8 @@ $(document).ready(function() {
 		title : "Registro de Matricula",
 		autoOpen : false,
 		modal : false,
-		height : 640,
-		width : 636,
+		height : 600,
+		width : 900,
 	});
 
 	$local.$aniadirMantenimento.on("click", function() {

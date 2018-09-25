@@ -72,8 +72,8 @@ $(document).ready(function() {
 		title : "Mantenimiento de Alertas",
 		autoOpen : false,
 		modal : false,
-		height : 500,
-		width : 800
+		height : 400,
+		width : 600
 	});
 
 	$local.$aniadirMantenimento.on("click", function() {

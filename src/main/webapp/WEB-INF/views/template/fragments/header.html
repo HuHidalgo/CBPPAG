@@ -54,9 +54,9 @@
 			</li>
 			<li sec:authorize="hasPermission('1','ALL') or hasPermission('2','ALL') or hasPermission('5','ALL')" 
 				class="xn-openable">
-				<a title='Registros' data-tooltip='tooltip'>
+				<a title='Registro de Pagos' data-tooltip='tooltip'>
 					<span class="fa fa-file-text"></span> 
-					<span class="xn-text">Registros</span>
+					<span class="xn-text">Registro de Pagos</span>
 				</a>
 				<ul>
 					<li sec:authorize="hasPermission('1','ALL') or hasPermission('2','ALL')">
@@ -68,7 +68,7 @@
 					<li sec:authorize="hasPermission('1','ALL') or hasPermission('2','ALL') or hasPermission('5','ALL')">
 						<a th:href="@{/ingresos/pago}">
 							<span class="fa fa-usd"></span> 
-							<span>Pagos</span>
+							<span>Mensualidad</span>
 						</a>
 					</li>
 				</ul>
