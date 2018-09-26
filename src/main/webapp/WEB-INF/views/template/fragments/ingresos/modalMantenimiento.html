@@ -53,7 +53,7 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Concepto de Pago</label>
 				<div class="col-lg-4">
-					<input class="form-control" name="conceptoPago">
+					<input class="form-control elemento-desactivable" name="conceptoPago" value="210-011">
 				</div>
 			</div>
 		</div>
@@ -176,7 +176,14 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Concepto de Pago</label>
 				<div class="col-lg-4">
-					<input class="form-control" name="conceptoPago">
+					<select id="conceptosPago" class="form-control select2" name="conceptosPago">
+						<option value="" disabled="disabled" selected="selected">
+									--Selecciona Modalidad--
+						</option>
+						<option th:each="conceptoPago : ${conceptosPago}" th:value="${conceptoPago.descripcionItem}"
+									th:text="|${conceptoPago.idItem} : ${conceptoPago.descripcionItem}|">
+						</option>
+					</select>
 				</div>
 			</div>
 		</div>
@@ -199,7 +206,7 @@
 				<label class="col-lg-2 control-label">Especialización</label>
 				<div class="col-lg-4">
 					<select id="especializaciones" class="form-control select2" name="especializaciones">
-						<option value="" disabled="disabled" selected="selected">
+						<option value="-1"  selected="selected">
 									--Selecciona Especialización--
 						</option>
 					</select>

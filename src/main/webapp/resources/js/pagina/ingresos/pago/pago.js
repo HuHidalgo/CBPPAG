@@ -208,6 +208,7 @@ $(document).ready(function() {
 		}
 		var pago = $formMantenimiento.serializeJSON();
 		pago.codigoMatricula = $local.codigoMatricula;
+		pago.conceptoPago = "210-011";
 		pago.fechaPago = $local.$fechaPago.data("daterangepicker").startDate.format("YYYY-MM-DD");	
 		pago.nroCuotasAPagar =$local.$numeroCuotas.val();  
 		$.ajax({

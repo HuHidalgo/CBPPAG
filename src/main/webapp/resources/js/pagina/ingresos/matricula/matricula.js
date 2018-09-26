@@ -19,6 +19,7 @@ $(document).ready(function() {
 		$modalidades : $("#modalidades"),
 		$costoMatricula : $("#costoMatricula"),
 		$tiposPago : $("#tiposPago"),
+		$conceptosPago : $("#conceptosPago"),
 		$especializaciones : $("#especializaciones"),
 		$numeroCiclos : $("#numeroCiclo"),
 		$fechaMatricula : $("#fechaMatricula"),
@@ -31,9 +32,10 @@ $(document).ready(function() {
 
 	$funcionUtil.crearSelect2($local.$modalidades, "--Selecciona Modalidad--");
 	$funcionUtil.crearSelect2($local.$especializaciones, "--Selecciona Especialización--");
-	$funcionUtil.crearSelect2($local.$numeroCiclos, "--Seleccione Ciclo--");
+	$funcionUtil.crearSelect2($local.$numeroCiclos, "--Seleccione ciclo--");
 	$funcionUtil.crearSelect2($local.$tiposPago, "--Seleccione tipo de pago--");
-	$funcionUtil.crearDatePickerSimple($local.$fechaMatricula, "DD/MM/YYYY");
+	$funcionUtil.crearSelect2($local.$conceptosPago, "--Seleccione concepto de pago--");
+	$funcionUtil.crearDatePickerSimple3($local.$fechaMatricula, "DD/MM/YYYY");
 
 	$.fn.dataTable.ext.errMode = 'none';
 
@@ -180,10 +182,15 @@ $(document).ready(function() {
 
 	});
 	
-	$local.$especializaciones.on("change", function(event, opcionSeleccionada) {
+	//"change", function(event, opcionSeleccionada)
+	$local.$especializaciones.on("change", function(event)  {
 		var idEspecializacion = $(this).val();
-		if (idEspecializacion == null || idEspecializacion == undefined) {
+		console.log("especializacion");
+		console.log(idEspecializacion);
+		if (idEspecializacion == null || idEspecializacion == undefined || idEspecializacion == -1) {
 			$local.$especializaciones.find("option:not(:eq(0))").remove();
+			$local.$costoMatricula.val("");
+			$local.$numeroCiclos.find("option:not(:eq(0))").remove();
 			return;
 		}
 		$.ajax({
@@ -193,17 +200,23 @@ $(document).ready(function() {
 				$local.$numeroCiclos.find("option:not(:eq(0))").remove();
 				$local.$numeroCiclos.parent().append("<span class='help-block cargando'><i class='fa fa-spinner fa-pulse fa-fw'></i> Cargando Ciclos</span>")
 			},
+			statusCode : {
+				400 : function(response) {
+					$funcionUtil.limpiarMensajesDeError($formMantenimiento);
+					$funcionUtil.mostrarMensajeDeError(response.responseJSON, $formMantenimiento);
+				}
+			},
 			success : function(especializaciones) {
-				var j = 1;
+				var contador = 1;
+				var esp;
 				$.each(especializaciones, function(i, especializacion) {
-					console.log(especializacion);
-					while(j<=especializacion.numCiclos){
-						$local.$numeroCiclos.append($("<option />").val(j).text(j));
-						console.log(j);
-						j++;
-					}
-					$local.$costoMatricula.val(this.costoMatricula);
+					esp = especializacion;
 				});
+				while(contador<=esp.numCiclos){
+					$local.$numeroCiclos.append($("<option />").val(contador).text(contador));
+					contador++;
+				}
+				$local.$costoMatricula.val(esp.costoMatricula);
 			},
 			complete : function() {
 				$local.$numeroCiclos.parent().find(".cargando").remove();
@@ -250,6 +263,7 @@ $(document).ready(function() {
 		matricula.numeroCiclo = $local.$numeroCiclos.val();
 		matricula.nombreEspecializacion = $("#especializaciones option:selected").text().substring(7);
 		matricula.tipoPago = $local.$tiposPago.val();
+		matricula.conceptoPago = $local.$conceptosPago.val();
 		matricula.fechaMatricula = $local.$fechaMatricula.data("daterangepicker").startDate.format("YYYY-MM-DD");		
 		$.ajax({
 			type : "POST",
@@ -316,6 +330,8 @@ $(document).ready(function() {
 
 		$local.$modalidades.trigger("change", [ matricula.idEspecializacion ]);
 		
+		$local.$conceptosPago.val(matricula.conceptoPago).trigger("change.select2");
+		
 		$local.$tiposPago.val(matricula.tipoPago).trigger("change.select2"); 
 		
 		$local.codigoMatricula = matricula.codigoMatricula;
@@ -340,6 +356,7 @@ $(document).ready(function() {
 		matricula.idModalidad = $local.$modalidades.val();
 		matricula.idEspecializacion = $local.$especializaciones.val();
 		matricula.tipoPago = $local.$tiposPago.val();
+		matricula.conceptoPago = $local.$conceptosPago.val();
 		matricula.fechaMatricula = $local.$fechaMatricula.data("daterangepicker").startDate.format("YYYY-MM-DD");	
 		$.ajax({
 			type : "PUT",
