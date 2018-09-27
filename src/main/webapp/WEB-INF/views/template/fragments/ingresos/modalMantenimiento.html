@@ -62,13 +62,21 @@
 			<div class="group">
 				<label class="col-lg-2 control-label">Modalidad</label>
 				<div class="col-lg-4">
-					<input id="modalidad" class="form-control elemento-desactivable" name="nombreModalidad">
+					<select id="modalidades" class="form-control select2" name="modalidades">
+						<option value="-1"  selected="selected">
+									--Selecciona Modalidad--
+						</option>
+					</select>
 				</div>
 			</div>
 			<div class="group">
 				<label class="col-lg-2 control-label">Especialización</label>
 				<div class="col-lg-4">
-					<input id="nombreEspecializacion" class="form-control elemento-desactivable" name="nombreEspecializacion">
+					<select id="especializaciones" class="form-control select2" name="especializaciones">
+						<option value="-1"  selected="selected">
+									--Selecciona Especialización--
+						</option>
+					</select>
 				</div>
 			</div>
 		</div>
@@ -239,15 +247,7 @@
 		<div class="form-group">
 			<label class="col-lg-2 control-label">Ciclo a matricular</label>
 			<div class="col-lg-4">
-				<select id="numeroCiclo" class="form-control select2" name="numeroCiclo">
-						<option value="" disabled="disabled" selected="selected">
-									--Selecciona Especialización--
-						</option>
-						<option th:each="especializacion : ${especializaciones}" th:value="${especializacion.numCiclos}"
-									th:text="|${especializacion.numCiclos}|">
-						</option>
-					</select>
-				
+				<input id ="numeroCiclo" class="form-control numbersOnly elemento-desactivable" name="numeroCiclo">
 			</div>
 		</div>
 

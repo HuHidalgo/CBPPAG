@@ -16,17 +16,18 @@ $(document).ready(function() {
 		$nombres : $("#nombreAlumno"),
 		$apellidos : $("#apellidoAlumno"),
 		$correo : $("#correoAlumno"),
-		$modalidad : $("#modalidad"),
+		$modalidades : $("#modalidades"),
 		$cuotaPendiente : $("#nroCuotasPendientes"),
 		$tipoPago : $("#tipoPago"),
 		$nroCiclo : $("#ciclo"),
 		$costoCuota : $("#costoCuota"),
-		$especializacion : $("#nombreEspecializacion"),
+		$especializaciones : $("#especializaciones"),
 		$fechaPago : $("#fechaPago"),
 		$numeroCuotas : $("#numeroCuotas"),
 		$voucher : $("#uploadfile"),
 		$documento : "",
 		$bandera : false,
+		pagos : [],
 		filtrosSeleccionables : {}
 	};
 
@@ -34,6 +35,8 @@ $(document).ready(function() {
 
 	$funcionUtil.crearDatePickerSimple3($local.$fechaPago, "DD/MM/YYYY");
 	$funcionUtil.crearSelect2($local.$numeroCuotas, "Seleccione un número de cuotas");
+	$funcionUtil.crearSelect2($local.$modalidades, "--Selecciona Modalidad--");
+	$funcionUtil.crearSelect2($local.$especializaciones, "--Selecciona Especialización--");
 
 	$.fn.dataTable.ext.errMode = 'none';
 
@@ -144,6 +147,21 @@ $(document).ready(function() {
 		}
 	});
 	
+	function eliminateDuplicates(arr) {
+		 var i,
+		     len=arr.length,
+		     out=[],
+		     obj={};
+
+		 for (i=0;i<len;i++) {
+		    obj[arr[i]]=0;
+		 }
+		 for (i in obj) {
+		    out.push(i);
+		 }
+		 return out;
+	}
+	
 	$local.$verificarAlumno.click(function(){		
 		var codAlumno = $local.$codigoAlumno .val();
 		if (codAlumno == null || codAlumno == undefined || codAlumno == "") {
@@ -160,8 +178,13 @@ $(document).ready(function() {
 						return;
 					}
 					else{
+						$local.pagos = pagos;
+						console.log(pagos);
+						var modalidadesAuxiliar = [];
+						var banderaDeuda = true;
 						$.each(pagos, function(i, pago) {			
 							if(pago.nroCuotasPendientes != 0){
+								banderaDeuda = false;
 								if(pago.tipoPago == "PAGO AL CONTADO"){
 									$local.$bandera = true;
 									$local.$numeroCuotas.find("option:not(:eq(0))").remove();
@@ -170,6 +193,7 @@ $(document).ready(function() {
 									$local.$costoCuota.val(pago.costoCuota*4);
 								}
 								else{
+									$local.$bandera = false;
 									if(!$local.$bandera){
 										var j = 2;
 										$local.$numeroCuotas.find("option:not(:eq(0))").remove();
@@ -182,24 +206,128 @@ $(document).ready(function() {
 									}
 									$local.$costoCuota.val(this.costoCuota);
 								}
+								modalidadesAuxiliar.push(pago.idModalidad + " - "+pago.nombreModalidad);
+								//$local.$modalidades.append($("<option />").val(pago.idModalidad).text(pago.idModalidad + " - "+pago.nombreModalidad));
+								$local.$especializaciones.append($("<option />").val(pago.idEspecializacion).text(pago.idEspecializacion + " - "+pago.nombreEspecializacion));
 								$local.$apellidos.val(this.apellidoAlumno);
 								$local.$nombres.val(this.nombreAlumno);
 								$local.$correo.val(this.correoAlumno);
-								$local.$modalidad.val(this.nombreModalidad);
 								$local.$tipoPago.val(this.tipoPago);
 								$local.$nroCiclo.val(this.numeroCiclo);
-								$local.$especializacion.val(this.nombreEspecializacion);
 								$local.$cuotaPendiente.val(this.nroCuotasPendientes);
 								$local.codigoMatricula = this.codigoMatricula;
 							}
 							else{
-								$funcionUtil.notificarException($variableUtil.deudaPagada, "fa-exclamation-circle", "Información", "info");
+								banderaDeuda = true;
 							}
 						});
+						modalidadesAuxiliar = eliminateDuplicates(modalidadesAuxiliar);
+						$.each(modalidadesAuxiliar, function(i, modalidad) {			
+							$local.$modalidades.append($("<option />").val(modalidad.substring(0, 4)).text(modalidad));
+						});
+						if(banderaDeuda){
+							$funcionUtil.notificarException($variableUtil.deudaPagada, "fa-exclamation-circle", "Información", "info");
+						}
 					}
 				}
 			});
 		}
+	});
+	
+	$local.$modalidades.on("change", function(event, opcionSeleccionada) {
+		var idModalidad = $(this).val();
+		console.log(idModalidad);
+		if (idModalidad == null || idModalidad == undefined) {
+			$local.$especializaciones.find("option:not(:eq(0))").remove();
+			return;
+		}
+		$local.$especializaciones.find("option:not(:eq(0))").remove();
+		$local.$nroCiclo.val("");
+		
+		$.each($local.pagos, function(i, pago) {	
+			if(pago.nroCuotasPendientes != 0){
+				if(idModalidad == pago.idModalidad){
+					if(pago.tipoPago == "PAGO AL CONTADO"){
+						$local.$bandera = true;
+						$local.$numeroCuotas.find("option:not(:eq(0))").remove();
+						$local.$numeroCuotas.append($("<option />").val("").text("Seleccione un número de cuotas"));
+						$local.$numeroCuotas.append($("<option />").val("1").text("1 cuota"));
+						$local.$costoCuota.val(pago.costoCuota*4);
+					}
+					else{
+						$local.$bandera = false;
+						if(!$local.$bandera){
+							var j = 2;
+							$local.$numeroCuotas.find("option:not(:eq(0))").remove();
+							$local.$numeroCuotas.append($("<option />").val("").text("Seleccione un número de cuotas"));
+							$local.$numeroCuotas.append($("<option />").val("1").text("1 cuota"));
+							while(j<=pago.nroCuotasPendientes){
+								$local.$numeroCuotas.append($("<option />").val(j).text(j + " cuotas"));
+								j++;
+							}
+							
+						}
+						$local.$costoCuota.val(this.costoCuota);
+					}
+					$local.$especializaciones.append($("<option />").val(pago.idEspecializacion).text(pago.idEspecializacion + " - "+pago.nombreEspecializacion));
+					$local.$apellidos.val(this.apellidoAlumno);
+					$local.$nombres.val(this.nombreAlumno);
+					$local.$correo.val(this.correoAlumno);
+					$local.$tipoPago.val(this.tipoPago);
+					$local.$nroCiclo.val(this.numeroCiclo);
+					$local.$cuotaPendiente.val(this.nroCuotasPendientes);
+					$local.codigoMatricula = this.codigoMatricula;
+				}
+			}
+			
+		});
+	});
+	
+	
+	$local.$especializaciones.on("change", function(event, opcionSeleccionada)  {
+		var idEspecializacion = $(this).val();
+		if (idEspecializacion == null || idEspecializacion == undefined || idEspecializacion == -1) {
+			$local.$nroCiclo.val("");
+			return;
+		}
+		
+		$.each($local.pagos, function(i, pago) {	
+			if(pago.nroCuotasPendientes != 0){
+				if(idEspecializacion == pago.idEspecializacion){
+					if(pago.tipoPago == "PAGO AL CONTADO"){
+						$local.$bandera = true;
+						$local.$numeroCuotas.find("option:not(:eq(0))").remove();
+						$local.$numeroCuotas.append($("<option />").val("").text("Seleccione un número de cuotas"));
+						$local.$numeroCuotas.append($("<option />").val("1").text("1 cuota"));
+						$local.$costoCuota.val(pago.costoCuota*4);
+					}
+					else{
+						$local.$bandera = false;
+						if(!$local.$bandera){
+							console.log("Especialización : "+ $local.$bandera);
+							var j = 2;
+							$local.$numeroCuotas.find("option:not(:eq(0))").remove();
+							$local.$numeroCuotas.append($("<option />").val("").text("Seleccione un número de cuotas"));
+							$local.$numeroCuotas.append($("<option />").val("1").text("1 cuota"));
+							while(j<=pago.nroCuotasPendientes){
+								$local.$numeroCuotas.append($("<option />").val(j).text(j + " cuotas"));
+								j++;
+							}
+							
+						}
+						$local.$costoCuota.val(this.costoCuota);
+					}
+					$local.$apellidos.val(this.apellidoAlumno);
+					$local.$nombres.val(this.nombreAlumno);
+					$local.$correo.val(this.correoAlumno);
+					$local.$tipoPago.val(this.tipoPago);
+					$local.$nroCiclo.val(this.numeroCiclo);
+					$local.$cuotaPendiente.val(this.nroCuotasPendientes);
+					$local.codigoMatricula = this.codigoMatricula;
+				}
+			}
+		});
+		
 	});
 	
 	$local.$registrarMantenimiento.on("click", function() {
@@ -208,6 +336,9 @@ $(document).ready(function() {
 		}
 		var pago = $formMantenimiento.serializeJSON();
 		pago.codigoMatricula = $local.codigoMatricula;
+		pago.idModalidad = $local.$modalidades.val();
+		pago.idEspecializacion = $local.$especializaciones.val();
+		pago.nombreEspecializacion = $("#especializaciones option:selected").text().substring(7);
 		pago.conceptoPago = "210-011";
 		pago.fechaPago = $local.$fechaPago.data("daterangepicker").startDate.format("YYYY-MM-DD");	
 		pago.nroCuotasAPagar =$local.$numeroCuotas.val();  
@@ -260,6 +391,8 @@ $(document).ready(function() {
 			error : function(response) {
 			},
 			complete : function(response) {
+				$local.$modalidades.find("option:not(:eq(0))").remove();
+				$local.$especializaciones.find("option:not(:eq(0))").remove();
 				$local.$registrarMantenimiento.attr("disabled", false).find("i").addClass("fa-floppy-o").removeClass("fa-spinner fa-pulse fa-fw");
 			}
 		});

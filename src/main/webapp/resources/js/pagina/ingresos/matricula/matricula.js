@@ -25,6 +25,7 @@ $(document).ready(function() {
 		$fechaMatricula : $("#fechaMatricula"),
 		$voucher : $("#uploadfile"),
 		$documento : "",
+		matriculas : [],
 		filtrosSeleccionables : {}
 	};
 
@@ -32,7 +33,6 @@ $(document).ready(function() {
 
 	$funcionUtil.crearSelect2($local.$modalidades, "--Selecciona Modalidad--");
 	$funcionUtil.crearSelect2($local.$especializaciones, "--Selecciona Especialización--");
-	$funcionUtil.crearSelect2($local.$numeroCiclos, "--Seleccione ciclo--");
 	$funcionUtil.crearSelect2($local.$tiposPago, "--Seleccione tipo de pago--");
 	$funcionUtil.crearSelect2($local.$conceptosPago, "--Seleccione concepto de pago--");
 	$funcionUtil.crearDatePickerSimple3($local.$fechaMatricula, "DD/MM/YYYY");
@@ -185,8 +185,6 @@ $(document).ready(function() {
 	//"change", function(event, opcionSeleccionada)
 	$local.$especializaciones.on("change", function(event)  {
 		var idEspecializacion = $(this).val();
-		console.log("especializacion");
-		console.log(idEspecializacion);
 		if (idEspecializacion == null || idEspecializacion == undefined || idEspecializacion == -1) {
 			$local.$especializaciones.find("option:not(:eq(0))").remove();
 			$local.$costoMatricula.val("");
@@ -212,10 +210,18 @@ $(document).ready(function() {
 				$.each(especializaciones, function(i, especializacion) {
 					esp = especializacion;
 				});
-				while(contador<=esp.numCiclos){
-					$local.$numeroCiclos.append($("<option />").val(contador).text(contador));
-					contador++;
-				}
+				$local.$numeroCiclos.val("1");
+				var array = [];
+				$.each($local.matriculas, function(i, matricula) {
+					if(esp.idEspecializacion == matricula.idEspecializacion){
+						array.push(matricula)
+					}
+				});
+				$.each(array, function(i, lista) {
+					if(esp.idEspecializacion == lista.idEspecializacion){
+						$local.$numeroCiclos.val(lista.numeroCiclo + 1);
+					}
+				});
 				$local.$costoMatricula.val(esp.costoMatricula);
 			},
 			complete : function() {
@@ -240,10 +246,15 @@ $(document).ready(function() {
 						return;
 					}
 					else{
+						$local.matriculas = matriculas;
 						$.each(matriculas, function(i, matricula) {				
 							$local.$apellidos.val(this.apellidoAlumno);
 							$local.$nombres.val(this.nombreAlumno);
 							$local.$correo.val(this.correoAlumno);
+							$local.$modalidades.val(matricula.idModalidad).trigger("change.select2"); 
+							$local.$modalidades.trigger("change", [ matricula.idEspecializacion ]);
+							$local.$numeroCiclos.val(matricula.numeroCiclo + 1);
+							$local.$costoMatricula.val(matricula.costoMatricula);
 						});
 					}
 				}
@@ -354,6 +365,7 @@ $(document).ready(function() {
 		matricula.codigoMatricula = $local.codigoMatricula;
 		matricula.nombreArchivo = $local.$voucher.val();
 		matricula.idModalidad = $local.$modalidades.val();
+		matricula.numeroCiclo = $local.$numeroCiclos.val();
 		matricula.idEspecializacion = $local.$especializaciones.val();
 		matricula.tipoPago = $local.$tiposPago.val();
 		matricula.conceptoPago = $local.$conceptosPago.val();
