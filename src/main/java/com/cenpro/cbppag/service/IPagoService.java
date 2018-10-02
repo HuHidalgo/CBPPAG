@@ -16,6 +16,8 @@ public interface IPagoService extends IMantenibleService<Pago>{
     
     public void actualizarPago(Pago pago);
     
+    public void actualizarVoucher(Pago pago);
+    
     public void cargarVoucher(Pago pago);
     
     public List<Pago> recuperarVoucher(String codigoPago);

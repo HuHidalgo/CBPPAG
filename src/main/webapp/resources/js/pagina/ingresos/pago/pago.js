@@ -437,6 +437,29 @@ $(document).ready(function() {
 				var row = $local.tablaMantenimiento.row($local.$filaSeleccionada).data(pagos[0]).draw();
 				row.show().draw(false);
 				$(row.node()).animateHighlight();
+				
+				var form = $("#formMantenimiento")[0];
+				var data = new FormData(form);
+				
+				$.ajax({
+					type : "POST",
+					enctype : 'multipart/form-data',
+					url : $variableUtil.root + "ingresos/pago/uploadfile/"+ $local.codigoPago +"?accion=actualizar",
+					data : data,
+					processData : false,
+					contentType : false,
+					cache : false,
+					beforeSend : function(xhr) {
+						xhr.setRequestHeader("X-CSRF-TOKEN", $variableUtil.csrf);
+						
+					},
+					success : function(response) {
+			
+					},
+					complete : function(response) {
+					}
+				});
+				
 				$local.$modalMantenimiento.PopupWindow("close");
 			},
 			error : function(response) {

@@ -266,6 +266,7 @@ $(document).ready(function() {
 		if (!$formMantenimiento.valid()) {
 			return;
 		}
+		console.log("Voucher : "+$local.$voucher.val());
 		var matricula = $formMantenimiento.serializeJSON();
 		matricula.nombreArchivo = $local.$voucher.val();
 		matricula.idModalidad = $local.$modalidades.val();
@@ -347,9 +348,6 @@ $(document).ready(function() {
 		
 		$local.codigoMatricula = matricula.codigoMatricula;
 		
-		var contentType = "application/pdf";
-		var file = b64toBlob (matricula.bytesLeidos,contentType);
-		
 		$funcionUtil.llenarFormulario(matricula, $formMantenimiento);
 		$local.$actualizarMantenimiento.removeClass("hidden");
 		$local.$registrarMantenimiento.addClass("hidden");
@@ -387,10 +385,34 @@ $(document).ready(function() {
 			},
 			success : function(matriculas) {
 				$funcionUtil.notificarException($variableUtil.actualizacionExitosa, "fa-check", "Aviso", "success");
+				
+				var form = $("#formMantenimiento")[0];
+				var data = new FormData(form);
+				
 				var row = $local.tablaMantenimiento.row($local.$filaSeleccionada).data(matriculas[0]).draw();
 				row.show().draw(false);
 				$(row.node()).animateHighlight();
+				
+				$.ajax({
+					type : "POST",
+					enctype : 'multipart/form-data',
+					url : $variableUtil.root + "ingresos/matricula/uploadfile/"+ $local.codigoMatricula +"?accion=actualizar",
+					data : data,
+					processData : false,
+					contentType : false,
+					cache : false,
+					beforeSend : function(xhr) {
+						xhr.setRequestHeader("X-CSRF-TOKEN", $variableUtil.csrf);
+					},
+					success : function(response) {
+						
+					},
+					complete : function(response) {
+					}
+				});
+
 				$local.$modalMantenimiento.PopupWindow("close");
+				
 			},
 			error : function(response) {
 			},
@@ -445,6 +467,11 @@ $(document).ready(function() {
 		  var blob = new Blob(byteArrays, {type: contentType});
 		  return blob;
 	};
+	
+	function blobToFile(blob, filename){
+		var file = new File([blob], filename, {type: "application/pdf", lastModified: Date.now()});
+		return file;
+	}
 	
 	function download(text, filename){
 		  var blob = new Blob([text], {type: "application/pdf"});

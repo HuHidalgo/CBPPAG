@@ -33,7 +33,7 @@ public @RestController class MatriculaRestController {
 	@GetMapping(params = "accion=buscarTodos")
     public List<Matricula> buscarTodos()
     {
-        return matriculaService.buscarTodos();
+		return matriculaService.buscarTodos();
     }
 	
 	@GetMapping("/{codAlumno}")
@@ -57,7 +57,12 @@ public @RestController class MatriculaRestController {
     public void cargarVoucher(@RequestParam("uploadfile") MultipartFile file) {
 		Blob archivo = null;
 		try {			
-			archivo = new SerialBlob(file.getBytes());
+			if(file.getBytes().length!=0) {
+				archivo = new SerialBlob(file.getBytes());
+				Matricula matricula = Matricula.builder().voucher(archivo).build();
+				matriculaService.cargarVoucher(matricula);
+			}
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -65,8 +70,6 @@ public @RestController class MatriculaRestController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Matricula matricula = Matricula.builder().voucher(archivo).build();
-		matriculaService.cargarVoucher(matricula);
 	}
 	
 	@GetMapping("/voucher/{codigoMatricula}")
@@ -83,5 +86,26 @@ public @RestController class MatriculaRestController {
 	public ResponseEntity<?> actualizarMatricula(@RequestBody Matricula matricula){
 		matriculaService.actualizarMatricula(matricula);
 		return ResponseEntity.ok(matriculaService.buscarPorId(matricula.getCodigoMatricula()));
+	}
+	
+	@PostMapping(value = "/uploadfile/{codigoMatricula}", params = "accion=actualizar")
+    public void actualizarVoucher(@RequestParam("uploadfile") MultipartFile file, @PathVariable String codigoMatricula) {
+		if(file!=null) {
+			Blob archivo = null;
+			try {			
+				if(file.getBytes().length!=0) {
+					archivo = new SerialBlob(file.getBytes());
+					Matricula matricula = Matricula.builder().voucher(archivo).build();
+					matricula.setCodigoMatricula(codigoMatricula);
+					matriculaService.actualizarVoucher(matricula);
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 }

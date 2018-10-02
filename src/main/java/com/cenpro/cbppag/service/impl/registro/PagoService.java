@@ -71,4 +71,10 @@ public class PagoService extends MantenibleService<Pago> implements IPagoService
 		this.actualizar(pago);
 	}
 
+	@Override
+	public void actualizarVoucher(Pago pago) {
+		this.actualizar(pago);
+		
+	}
+
 }

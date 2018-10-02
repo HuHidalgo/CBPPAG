@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cenpro.cbppag.model.registro.Matricula;
 import com.cenpro.cbppag.model.registro.Pago;
 import com.cenpro.cbppag.service.IAlertaService;
 import com.cenpro.cbppag.service.IPagoService;
@@ -60,7 +61,12 @@ public @RestController class PagoRestController {
     public void cargarVoucher(@RequestParam("uploadfile") MultipartFile file) {
 		Blob archivo = null;
 		try {			
-			archivo = new SerialBlob(file.getBytes());
+			if(file.getBytes().length!=0) {
+				archivo = new SerialBlob(file.getBytes());
+				Pago pago = Pago.builder().voucher(archivo).build();
+				pagoService.registrarPago(pago);
+			}
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -68,8 +74,6 @@ public @RestController class PagoRestController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Pago pago = Pago.builder().voucher(archivo).build();
-		pagoService.registrarPago(pago);
 	}
 	
 	@GetMapping("/voucher/{codigoPago}")
@@ -86,6 +90,27 @@ public @RestController class PagoRestController {
 	public ResponseEntity<?> actualizarPago(@RequestBody Pago pago){
 		pagoService.actualizarPago(pago);
 		return ResponseEntity.ok(pagoService.buscarPorId(pago.getCodigoPago()));
+	}
+	
+	@PostMapping(value = "/uploadfile/{codigoPago}", params = "accion=actualizar")
+    public void actualizarVoucher(@RequestParam("uploadfile") MultipartFile file, @PathVariable String codigoPago) {
+		if(file!=null) {
+			Blob archivo = null;
+			try {			
+				if(file.getBytes().length!=0) {
+					archivo = new SerialBlob(file.getBytes());
+					Pago pago = Pago.builder().voucher(archivo).build();
+					pago.setCodigoPago(codigoPago);
+					pagoService.registrarPago(pago);
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 }

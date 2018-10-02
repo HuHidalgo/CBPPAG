@@ -78,4 +78,9 @@ public class MatriculaService extends MantenibleService<Matricula> implements IM
 		
 	}
 
+	@Override
+	public void actualizarVoucher(Matricula matricula) {
+		this.actualizar(matricula);
+	}
+
 }
