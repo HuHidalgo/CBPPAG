@@ -15,12 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.cenpro.cbppag.model.alerta.AlertaPago;
 import com.cenpro.cbppag.model.mantenimiento.Alerta;
 import com.cenpro.cbppag.model.registro.Matricula;
-import com.cenpro.cbppag.model.registro.Pago;
+import com.cenpro.cbppag.model.registro.Perfeccionamiento;
 import com.cenpro.cbppag.service.IAlertaPagoService;
 import com.cenpro.cbppag.service.IAlertaService;
 import com.ibm.icu.text.SimpleDateFormat;
 
 public class EnviarCorreoUtil {
+	
 	private IAlertaService alertaService;
 	private IAlertaPagoService alertaPagoService;
 	private final String correo = "";
@@ -46,7 +47,7 @@ public class EnviarCorreoUtil {
 		this.alertaPagoService = alertaPagoService;
 	}
 	
-	public void enviarCorreo(Matricula matricula, Pago pago) {
+	public void enviarCorreo(Matricula matricula, Perfeccionamiento pago) {
 		if(matricula != null) {
 			mensajeRegistroMatricula(matricula);
 		}
@@ -102,7 +103,7 @@ public class EnviarCorreoUtil {
         return 0;
 	}
 	
-	public int mensajeRegistroPago(Pago pago){
+	public int mensajeRegistroPago(Perfeccionamiento pago){
 		List<Alerta> alertas = alertaService.buscarMensaje("REGISTRO PERFECCIONAMIENTO");
 		
 		if(!alertas.isEmpty()) {

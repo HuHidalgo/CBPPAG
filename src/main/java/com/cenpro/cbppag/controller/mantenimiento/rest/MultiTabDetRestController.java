@@ -53,8 +53,7 @@ public @RestController class MultiTabDetRestController
 
     @Audit(accion = Accion.Registro, comentario = Comentario.Registro)
     @PostMapping
-    public ResponseEntity<?> registrarMultiTabDet(
-            @Validated({ Default.class, IRegistro.class }) @RequestBody MultiTabDet multiTabDet,
+    public ResponseEntity<?> registrarMultiTabDet(@Validated({ Default.class, IRegistro.class }) @RequestBody MultiTabDet multiTabDet,
             Errors error)
     {
         if (error.hasErrors())

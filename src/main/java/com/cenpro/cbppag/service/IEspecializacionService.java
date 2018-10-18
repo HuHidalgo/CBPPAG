@@ -10,9 +10,9 @@ public interface IEspecializacionService extends IMantenibleService<Especializac
     	
     public List<Especializacion> buscarPorId(String idEspecializacion);
     
-    public List<Especializacion> buscarModalidad(String idModalidad);
+    public List<Especializacion> buscarEspecializaciones(String idModalidad, Integer nroCiclo);
     
-    public List<Especializacion> buscarCosto(String idEspecializacion);
+    public List<Especializacion> buscarCosto(String idEspecializacion, Integer nroCiclo);
     
     public String registrarEspecializacion(Especializacion especializacion);
     

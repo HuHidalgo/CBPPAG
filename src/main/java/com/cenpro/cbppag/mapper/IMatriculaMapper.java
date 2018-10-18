@@ -13,10 +13,11 @@ import com.cenpro.cbppag.model.registro.Matricula;
 public interface IMatriculaMapper extends IMantenibleMapper<Matricula> {
 	@Select(value = { "{call MANT_MATRICULA( "
             + "#{verbo, jdbcType = VARCHAR, mode = IN},"
-            + "#{objeto.codigoMatricula, jdbcType = VARCHAR, mode = IN},"
-            + "#{objeto.codigoAlumno, jdbcType = VARCHAR, mode = IN},"
+            + "#{objeto.idMatricula, jdbcType = INTEGER, mode = IN},"
+            + "#{objeto.tipoDocumento, jdbcType = VARCHAR, mode = IN},"
+            + "#{objeto.numeroDocumento, jdbcType = VARCHAR, mode = IN},"
             + "#{objeto.idEspecializacion, jdbcType = VARCHAR, mode = IN},"
-            + "#{objeto.conceptoPago, jdbcType = VARCHAR, mode = IN},"
+            + "#{objeto.idConceptoPago, jdbcType = VARCHAR, mode = IN},"
             + "#{objeto.estadoCiclo, jdbcType = NUMERIC, mode = IN},"
             + "#{objeto.numeroCiclo, jdbcType = NUMERIC, mode = IN},"
             + "#{objeto.fechaMatricula, jdbcType = DATE, mode = IN},"
@@ -24,7 +25,7 @@ public interface IMatriculaMapper extends IMantenibleMapper<Matricula> {
             + "#{objeto.apellidoAlumno, jdbcType = VARCHAR, mode = IN},"
             + "#{objeto.correoAlumno, jdbcType = VARCHAR, mode = IN},"
             + "#{objeto.voucher, jdbcType = BLOB, mode = IN},"
-            + "#{objeto.tipoPago, jdbcType = VARCHAR, mode = IN},"
+            + "#{objeto.idTipoPago, jdbcType = VARCHAR, mode = IN},"
 			+ "#{userAudit, jdbcType = VARCHAR, mode = IN})}" })
     @Options(statementType = StatementType.CALLABLE)
     public List<Matricula> mantener(Parametro parametro);

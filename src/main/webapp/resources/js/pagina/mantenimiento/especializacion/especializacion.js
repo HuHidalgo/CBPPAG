@@ -9,16 +9,12 @@ $(document).ready(function() {
 		$filaSeleccionada : "",
 		$actualizarMantenimiento : $("#actualizarMantenimiento"),
 		codigoEspecializacionSeleccionada : 0,
-		$modalidades : $("#modalidades"),
-		$fechaInicio : $("#fechaInicio"),
-		$fechaFin : $("#fechaFin"),
+		$modalidades : $("#modalidades")
 	};
 
 	$formMantenimiento = $("#formMantenimiento");
 	
 	$funcionUtil.crearSelect2($local.$modalidades, "Seleccione una Modalidad");
-	$funcionUtil.crearDatePickerSimple3($local.$fechaInicio, "DD/MM/YYYY");
-	$funcionUtil.crearDatePickerSimple3($local.$fechaFin, "DD/MM/YYYY");
 	
 	$.fn.dataTable.ext.errMode = 'none';
 
@@ -42,40 +38,25 @@ $(document).ready(function() {
 			$local.$tablaMantenimiento.wrap("<div class='table-responsive'></div>");
 			$tablaFuncion.aniadirFiltroDeBusquedaEnEncabezado(this, $local.$tablaMantenimiento);
 		},
+		order : [[2, "desc"]],
 		"columnDefs" : [ {
-			"targets" : [ 0, 1, 2, 3, 4, 5, 6 ],
+			"targets" : [ 0, 1, 2 ],
 			"className" : "all filtrable",
 		}, {
-			"targets" : 7,
+			"targets" : 3,
 			"className" : "all dt-center",
-			"defaultContent" : $variableUtil.botonActualizar + " " + $variableUtil.botonEliminar
+			"defaultContent" : $variableUtil.botonActualizar + " " + $variableUtil.botonEliminar + " " + $variableUtil.botonAniadirCiclos
 		} ],
 		"columns" : [ {
-			"data" : "idEspecializacion",
-			"title" : "Código de Especialización"
+			"data" : "nombreModalidad",
+			"title" : "Modalidad"
 		}, {
 			"data" : "nombreEspecializacion",
 			"title" : "Especialización"
 		}, {
-			"data" : "nombreModalidad",
-			"title" : "Modalidad"
+			"data" : "numCiclos",
+			"title" : "Número de Ciclos"
 		}, {
-			"data" : "costoMatricula",
-			"title" : "Costo de Matrícula"
-		}, {
-			"data" : "costoCiclo",
-			"title" : "Costo por Ciclo"
-		},{
-			"data" : function(row){
-				return $funcionUtil.convertirDeFormatoAFormato(row.fechaInicio, "YYYY-MM-DD", "DD/MM/YYYY");
-			},
-			"title" : "Fecha de Inicio"
-		},{
-			"data" : function(row){
-				return $funcionUtil.convertirDeFormatoAFormato(row.fechaFin, "YYYY-MM-DD", "DD/MM/YYYY");
-			},
-			"title" : "Fecha de Fin"
-		},{
 			"data" : null,
 			"title" : 'Acción'
 		} ]
@@ -89,8 +70,8 @@ $(document).ready(function() {
 		title : "Mantenimiento de Especializacion",
 		autoOpen : false,
 		modal : false,
-		height : 500,
-		width : 800
+		height : 400,
+		width : 700
 	});
 
 	$local.$aniadirMantenimento.on("click", function() {
@@ -127,9 +108,10 @@ $(document).ready(function() {
 			return;
 		}
 		var especializacion = $formMantenimiento.serializeJSON();
-		especializacion.idModalidad = $local.$modalidades.val();
-		especializacion.fechaInicio = $local.$fechaInicio.data("daterangepicker").startDate.format('YYYY-MM-DD');
-		especializacion.fechaFin = $local.$fechaFin.data("daterangepicker").startDate.format('YYYY-MM-DD');
+		//especializacion.idModalidad = $local.$modalidades.val();
+		//especializacion.fechaInicio = $local.$fechaInicio.data("daterangepicker").startDate.format('YYYY-MM-DD');
+		//especializacion.fechaFin = $local.$fechaFin.data("daterangepicker").startDate.format('YYYY-MM-DD');
+		console.log(especializacion);
 		$.ajax({
 			type : "POST",
 			url : $variableUtil.root + "mantenimiento/especializacion",
@@ -177,10 +159,11 @@ $(document).ready(function() {
 			return;
 		}
 		var especializacion = $formMantenimiento.serializeJSON();
+		console.log(especializacion);
 		especializacion.idEspecializacion = $local.codigoEspecializacionSeleccionada;
-		especializacion.idModalidad = $local.$modalidades.val();
-		especializacion.fechaInicio = $local.$fechaInicio.data("daterangepicker").startDate.format('YYYY-MM-DD');
-		especializacion.fechaFin = $local.$fechaFin.data("daterangepicker").startDate.format('YYYY-MM-DD');
+		//especializacion.idModalidad = $local.$modalidades.val();
+		//especializacion.fechaInicio = $local.$fechaInicio.data("daterangepicker").startDate.format('YYYY-MM-DD');
+		//especializacion.fechaFin = $local.$fechaFin.data("daterangepicker").startDate.format('YYYY-MM-DD');
 		$.ajax({
 			type : "PUT",
 			url : $variableUtil.root + "mantenimiento/especializacion",
@@ -271,5 +254,11 @@ $(document).ready(function() {
 				},
 			}
 		});
+	});
+
+	$local.$tablaMantenimiento.children("tbody").on("click", ".aniadir-ciclos", function() {
+		$local.$filaSeleccionada = $(this).parents("tr");
+		var especializacion = $local.tablaMantenimiento.row($local.$filaSeleccionada).data();
+		$(document).trigger("abrirDetalleMantenimiento",  [especializacion.idEspecializacion, especializacion.nombreEspecializacion, $local.tablaMantenimiento]);
 	});
 });

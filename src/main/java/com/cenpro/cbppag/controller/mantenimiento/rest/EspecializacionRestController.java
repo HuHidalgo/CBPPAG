@@ -22,16 +22,16 @@ public @RestController class EspecializacionRestController
 {
 	private @Autowired IEspecializacionService especializacionService;
 
-	@GetMapping("/modalidad/{idModalidad}")
-    public List<Especializacion> buscarModalidades(@PathVariable String idModalidad)
+	@GetMapping("/modalidad/{idModalidad}/{nroCiclo}")
+    public List<Especializacion> buscarEspecializaciones(@PathVariable String idModalidad, @PathVariable Integer nroCiclo)
     {
-        return especializacionService.buscarModalidad(idModalidad);
+        return especializacionService.buscarEspecializaciones(idModalidad, nroCiclo);
     }
 	
-	@GetMapping("/costo/{idEspecializacion}")
-    public List<Especializacion> buscarCosto(@PathVariable String idEspecializacion)
+	@GetMapping("/costo/{idEspecializacion}/{nroCiclo}")
+    public List<Especializacion> buscarCosto(@PathVariable String idEspecializacion, @PathVariable Integer nroCiclo)
     {
-        return especializacionService.buscarCosto(idEspecializacion);
+        return especializacionService.buscarCosto(idEspecializacion, nroCiclo);
     }
 	
 	@GetMapping(params = "accion=buscarTodos")

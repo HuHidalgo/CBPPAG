@@ -17,12 +17,8 @@ public interface IEspecializacionMapper extends IMantenibleMapper<Especializacio
             + "#{objeto.idEspecializacion, jdbcType = VARCHAR, mode = IN},"
             + "#{objeto.idModalidad, jdbcType = VARCHAR, mode = IN},"
             + "#{objeto.nombreEspecializacion, jdbcType = VARCHAR, mode = IN},"
-            + "#{objeto.costoMatricula, jdbcType = NUMERIC, mode = IN},"
-            + "#{objeto.costoCiclo, jdbcType = NUMERIC, mode = IN},"
             + "#{objeto.numCiclos, jdbcType = INTEGER, mode = IN},"
-            + "#{objeto.diaVencimiento, jdbcType = INTEGER, mode = IN},"
-            + "#{objeto.fechaInicio, jdbcType = DATE, mode = IN},"
-            + "#{objeto.fechaFin, jdbcType = DATE, mode = IN},"
+            + "#{objeto.numCiclo, jdbcType = INTEGER, mode = IN},"
 			+ "#{userAudit, jdbcType = VARCHAR, mode = IN})}" })
     @Options(statementType = StatementType.CALLABLE)
     public List<Especializacion> mantener(Parametro parametro);

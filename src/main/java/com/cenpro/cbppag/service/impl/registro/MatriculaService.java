@@ -35,23 +35,27 @@ public class MatriculaService extends MantenibleService<Matricula> implements IM
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public List<Matricula> buscarPorId(String codigoMatricula) {
-		Matricula matricula = Matricula.builder().codigoMatricula(codigoMatricula).build();
+	public List<Matricula> buscarPorId(int idMatricula) {
+		
+		Matricula matricula = Matricula.builder().idMatricula(idMatricula).build();
         return this.buscar(matricula, Verbo.GET);
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public List<Matricula> buscarAlumno(String documento) {
-		Matricula matricula = Matricula.builder().codigoAlumno(documento).build();
+	public List<Matricula> buscarAlumno(String tipoDocumento, String nroDocumento) {
+		Matricula matricula = Matricula.builder().tipoDocumento(tipoDocumento).numeroDocumento(nroDocumento).build();
 		return this.buscar(matricula, Verbo.VERIFICAR_AM);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public String registrarMatricula(Matricula matricula) {
+	public int registrarMatricula(Matricula matricula) {
+		
 		List<Matricula> matriculas = this.registrarAutoIncrementable(matricula);
-		if (!matriculas.isEmpty() && matriculas.get(matriculas.size()-1).getCodigoMatricula()!= null){
-            return matriculas.get(matriculas.size()-1).getCodigoMatricula();
+		if (!matriculas.isEmpty() && matriculas.get(0).getIdMatricula()!= null){
+			
+            return matriculas.get(0).getIdMatricula();
         } else {
+        	
             throw new MantenimientoException(ConstantesExcepciones.ERROR_REGISTRO);
         }
 	}
@@ -62,8 +66,8 @@ public class MatriculaService extends MantenibleService<Matricula> implements IM
 	}
 	
 	@Override
-	public List<Matricula> recuperarVoucher(String codigoMatricula) {
-		Matricula matricula = Matricula.builder().codigoMatricula(codigoMatricula).build();
+	public List<Matricula> recuperarVoucher(int idMatricula) {
+		Matricula matricula = Matricula.builder().idMatricula(idMatricula).build();
 		return this.buscar(matricula, Verbo.GET_VOUCHER_PAGO);
 	}
 	

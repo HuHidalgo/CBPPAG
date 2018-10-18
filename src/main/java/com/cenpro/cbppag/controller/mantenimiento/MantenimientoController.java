@@ -58,7 +58,7 @@ public @Controller class MantenimientoController
     {
         model.addAttribute("mantenimiento", mantenimiento);
         model.addAttribute("modalidades", modalidadService.buscarTodos());
-        return "seguras/mantenimiento/mantenimiento";
+        return "seguras/mantenimiento/especializacion";
     }
 
     @GetMapping("/{mantenimiento:alerta}")

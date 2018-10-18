@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+	<div id="modalDetalleEspecializacion" class="hidden row" th:fragment="modalDetalleEspecializacion" th:with="tipo=${tipo}">
+		<div class="col-md-4 col-sm-4 col-xs-4">
+			<fieldset class="well">
+				<legend class="well-legend">Detalle de Mantenimiento</legend>
+				<form id="formDetalleMantenimiento" class="form-horizontal" role="form">
+					<th:block th:replace="~{template/fragments/mantenimiento/modalDetalleEspecializacion :: ${tipo}}?:~{}">
+					</th:block>
+					<div class="form-group">
+						<div class="col-lg-12 text-center">
+							<button id="registrarDetalleMantenimiento" type="button" class="btn btn-success">
+								<i class="fa fa-floppy-o"></i> Registrar
+							</button>
+							<button id="actualizarDetalleMantenimiento" type="button" class="btn btn-primary hidden">
+								<i class="fa fa-pencil-square"></i> Actualizar
+							</button>
+						</div>
+					</div>
+				</form>
+			</fieldset>
+		</div>
+		<div class="col-md-8 col-sm-8 col-xs-8">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<ul class="panel-controls">
+						<li>
+							<select size="2" id="filtroParaDetalleTablaMantenimiento"></select>
+						</li>
+						<li>
+							&nbsp;
+						</li>
+						<li>
+							<button id="aniadirDetalleMantenimiento" class="btn btn-primary">
+								<i class="fa fa-plus"></i> <span>Añadir</span>
+							</button>
+						</li>
+					</ul>
+				</div>
+				<div class="panel-body">
+					<table id="tablaDetalleMantenimiento" width="100%"
+						class="table table-bordered dt-responsive table-condensed nowrap display table-hover">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<th:block th:fragment="especializacion">
+		<div class="form-group">
+			<label class="col-lg-5 control-label">Nro. Ciclo</label>
+			<div class="col-lg-5">
+				<input class="form-control numbersOnly" name="numCiclo" autofocus="autofocus" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-lg-5 control-label">Nro. Créditos</label>
+			<div class="col-lg-5">
+				<input class="form-control numbersOnly" name="numCreditos">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-lg-5 control-label">Costo Ciclo</label>
+			<div class="col-lg-5">
+				<input class="form-control numbersOnlyAndDot" name="costoCiclo">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-lg-5 control-label">Costo Matrícula UPG</label>
+			<div class="col-lg-5">
+				<input class="form-control numbersOnlyAndDot" name="costoMatriculaUPG">
+			</div>
+		</div>
+	</th:block>
+
+</body>
+</html>

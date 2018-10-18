@@ -15,22 +15,27 @@ import java.sql.Blob;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Matricula{
-	private String codigoMatricula;
+	
+	private String numeroDocumento;
+	private String tipoDocumento;
     private String codigoAlumno;
     private String idModalidad;
     private String nombreModalidad;
     private String idEspecializacion;
     private String nombreEspecializacion;
-    private String conceptoPago;
-    private int estadoCiclo;
-    private int numeroCiclo;
-    private double costoMatricula;
+    private String idConceptoPago;
+    private String conceptoPago;    
     private String nombreAlumno;
     private String apellidoAlumno;
     private String correoAlumno;
-    private String tipoPago;
+    private String idTipoPago;
     private String descTipoPago;
     private String fechaMatricula3;
+    
+    private int estadoCiclo;
+    private int numeroCiclo;
+    private double costoMatricula;
+	private Integer idMatricula;
     private Blob voucher;
     private String nombreArchivo;
     

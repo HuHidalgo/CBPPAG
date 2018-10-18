@@ -48,27 +48,32 @@
 	
 	<th:block th:fragment="especializacion">
 		<div class="form-group">
-			<label class="col-lg-2 control-label">Modalidad</label>
-			<div class="col-lg-10">
-				<select id="modalidades" class="form-control select2" name="idModalidad">
-					<option value="" disabled="disabled" selected="selected">Elija Unidad</option>
-					<option th:each="modalidad : ${modalidades}" th:value="${modalidad.idModalidad}"
-						th:text="|${modalidad.idModalidad} - ${modalidad.nombreModalidad}|"></option>
-				</select>
+			<div class="group">
+				<label class="col-lg-2 control-label">Modalidad</label>
+				<div class="col-lg-4">
+					<select id="modalidades" class="form-control select2" name="idModalidad">
+						<option value="" disabled="disabled" selected="selected">Seleccione una Modalidad</option>
+						<option th:each="modalidad : ${modalidades}" th:value="${modalidad.idModalidad}"
+							th:text="|${modalidad.nombreModalidad}|"></option>
+					</select>
+				</div>
+			</div>
+			<div class="group">
+				<label class="col-lg-2 control-label">Código de Especialización</label>
+				<div class="col-lg-4">
+					<input class="form-control upperCase elemento-desactivable" name="idEspecializacion">
+				</div>
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="col-lg-2 control-label">Código de Especialización</label>
-			<div class="col-lg-10">
-				<input class="form-control upperCase elemento-desactivable" name="idEspecializacion">
+			<div class="group">
+				<label class="col-lg-2 control-label">Nombre de Especialización</label>
+				<div class="col-lg-10">
+					<input class="form-control upperCase" name="nombreEspecializacion">
+				</div>
 			</div>
 		</div>
-		<div class="form-group">
-			<label class="col-lg-2 control-label">Nombre de Especialización</label>
-			<div class="col-lg-10">
-				<input class="form-control upperCase" name="nombreEspecializacion">
-			</div>
-		</div>
+		<!--  
 		<div class="form-group">
 			<div class="group">
 				<label class="col-lg-2 control-label">Costo de Matrícula</label>
@@ -82,38 +87,12 @@
 					<input class="form-control numbersOnlyAndDot" name="costoCiclo">
 				</div>
 			</div>
-		</div>
+		</div>-->
 		<div class="form-group">
 			<div class="group">
 				<label class="col-lg-2 control-label">Nro. de Ciclos</label>
 				<div class="col-lg-4">
 					<input class="form-control numbersOnlyAndDot" name="numCiclos">
-				</div>
-			</div>
-			<div class="group">
-				<label class="col-lg-2 control-label">Dia de Vencimiento</label>
-				<div class="col-lg-4">
-					<input class="form-control numbersOnlyAndDot" name="diaVencimiento">
-				</div>
-			</div>
-		</div>
-		<div class="form-group">
-			<div class="group">
-				<label class="col-lg-2 control-label">Fecha Inicio</label>
-				<div class="col-lg-4">
-					<div class="input-group">
-						<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-						<input id="fechaInicio" type="text" class="form-control" name="fechaInicio"/>
-					</div>
-				</div>
-			</div>
-			<div class="group">
-				<label class="col-lg-2 control-label">Fecha Fin</label>
-				<div class="col-lg-4">
-					<div class="input-group">
-						<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-						<input id="fechaFin" type="text" class="form-control" name="fechaFin"/>
-					</div>
 				</div>
 			</div>
 		</div>

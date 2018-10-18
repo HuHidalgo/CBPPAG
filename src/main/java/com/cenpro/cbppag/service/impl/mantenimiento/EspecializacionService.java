@@ -61,14 +61,14 @@ public class EspecializacionService extends MantenibleService<Especializacion> i
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public List<Especializacion> buscarModalidad(String idModalidad) {
-		Especializacion especializacion = Especializacion.builder().idModalidad(idModalidad).build();
+	public List<Especializacion> buscarEspecializaciones(String idModalidad, Integer nroCiclo) {
+		Especializacion especializacion = Especializacion.builder().idModalidad(idModalidad).numCiclo(nroCiclo).build();
 		return this.buscar(especializacion, Verbo.GET_MODA);
 	}
 
 	@Override
-	public List<Especializacion> buscarCosto(String idEspecializacion) {
-		Especializacion especializacion = Especializacion.builder().idEspecializacion(idEspecializacion).build();
+	public List<Especializacion> buscarCosto(String idEspecializacion, Integer nroCiclo) {
+		Especializacion especializacion = Especializacion.builder().idEspecializacion(idEspecializacion).numCiclo(nroCiclo).build();
 		return this.buscar(especializacion, Verbo.GET_COSTO);
 	}
 	

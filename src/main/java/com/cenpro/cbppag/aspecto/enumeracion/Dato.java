@@ -6,8 +6,8 @@ public enum Dato
     Persona("Tipo_de_Documento = #persona.idTipoDocumento, Número_de_Documento = #persona.numeroDocumento, "
     		+ "Apellido_Paterno = #persona.apellidoPaterno"), 
     
-    Ingresos("Nombre_de_Cliente = #ingresos.nombresCliente, Apellidos_de_Cliente = #ingresos.apellidosCliente, "
-    		+ "Numero_de_Documento = #ingresos.nroDocCliente"),
+    Ingresos("Nombre_de_Cliente = #registro.nombresCliente, Apellidos_de_Cliente = #registro.apellidosCliente, "
+    		+ "Numero_de_Documento = #registro.nroDocCliente"),
     MultiTabCab("Id_de_Tabla = #multiTabCab.idTabla, Descripción = #multiTabCab.descripcion"),
     MultiTabDet("Id_Detalle = #multiTabDet.idItem,Id_Tabla = #multiTabDet.idTabla, "
     		+ "Descripción = #multiTabDet.descripcionItem"),
