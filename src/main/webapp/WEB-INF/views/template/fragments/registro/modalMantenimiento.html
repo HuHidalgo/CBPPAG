@@ -55,7 +55,7 @@
 				</div>
 				<div class="form-group">
 					<div class="group">
-						<label class="col-lg-2 control-label">Nombre del Alumno</label>
+						<label class="col-lg-2 control-label">Nombres del Alumno</label>
 						<div class="col-lg-4">
 							<input id="nombreAlumno" class="form-control lettersOnly upperCase" name="nombreAlumno">
 						</div>
@@ -92,11 +92,10 @@
 						<label class="col-lg-2 control-label">Concepto de Pago</label>
 						<div class="col-lg-4">
 							<select id="conceptosPago" class="form-control select2" name="idConceptoPago">
-								<option value="" disabled="disabled" selected="selected">
-											Seleccione un Concepto de Pago
-								</option>
+								<option value="" disabled="disabled" selected="selected">Seleccione un Concepto de Pago</option>
 								<option th:each="conceptoPago : ${conceptosPago}" th:value="${conceptoPago.idItem}"
-											th:text="|${conceptoPago.descripcionItem} : ${conceptoPago.abreviatura}|">
+										th:if="${conceptoPago.idItem != 'PD' && conceptoPago.idItem != 'PDM'}"
+										th:text="|${conceptoPago.descripcionItem} : ${conceptoPago.abreviatura}|">
 								</option>
 							</select>
 						</div>
@@ -197,7 +196,7 @@
 				</div>
 				<div class="form-group">
 					<div class="group">
-						<label class="col-lg-2 control-label">Nombre del Alumno</label>
+						<label class="col-lg-2 control-label">Nombres del Alumno</label>
 						<div class="col-lg-4">
 							<input id="nombreAlumno" class="form-control lettersOnly upperCase" name="nombreAlumno">
 						</div>
@@ -239,7 +238,8 @@
 											Seleccione un Concepto de Pago
 								</option>
 								<option th:each="conceptoPago : ${conceptosPago}" th:value="${conceptoPago.idItem}"
-											th:text="|${conceptoPago.descripcionItem} : ${conceptoPago.abreviatura}|">
+										th:if="${conceptoPago.idItem != 'UPG' && conceptoPago.idItem != 'EPG'}"
+										th:text="|${conceptoPago.descripcionItem} : ${conceptoPago.abreviatura}|">
 								</option>
 							</select>
 						</div>
@@ -284,24 +284,24 @@
 						</div>
 					</div>
 					<div class="group">
-						<label class="col-lg-2 control-label">Ciclo a Pagar</label>
+						<label class="col-lg-2 control-label">Monto (S/)</label>
 						<div class="col-lg-4">
-							<input id="numCiclo" class="form-control elemento-desactivable" name="numeroCiclo">
+							<input id="montoAPagar" class="form-control elemento-desactivable" name="montoAPagar">
 						</div>
 					</div>
 				</div>
 		
 				<div class="form-group">
 					<div class="group">
-						<label class="col-lg-2 control-label">Nro. Cuotas Pendientes de Pago</label>
+						<label class="col-lg-2 control-label">Ciclo a Pagar</label>
 						<div class="col-lg-4">
-							<input id="nroCuotasPendientes" class="form-control elemento-desactivable" name="nroCuotasPendientes">
+							<input id="numCiclo" class="form-control elemento-desactivable" name="numeroCiclo">
 						</div>
 					</div>
 					<div class="group">
-						<label class="col-lg-2 control-label">Costo por cada cuota</label>
+						<label class="col-lg-2 control-label">Nro. Cuotas Pendientes de Pago</label>
 						<div class="col-lg-4">
-							<input id="costoCuota" class="form-control elemento-desactivable" name="costoCuota">
+							<input id="nroCuotasPendientes" class="form-control elemento-desactivable" name="nroCuotasPendientes">
 						</div>
 					</div>
 				</div>
@@ -310,11 +310,7 @@
 					<div class="group">
 						<label class="col-lg-2 control-label">Nro. Cuota a Pagar</label>
 						<div class="col-lg-4">
-							<select id="numeroCuotas" class="form-control select2">
-									<option value="" disabled="disabled" selected="selected">
-												Seleccione un número de cuotas
-									</option>
-							</select>
+							<input id="numCiclo" class="form-control elemento-desactivable" name="nroCuotasAPagar">
 						</div>
 					</div>
 					<div class="group">

@@ -48,9 +48,7 @@ public @RestController class PerfeccionamientoRestController {
 	@PostMapping
     public ResponseEntity<?> registrarPerfeccionamiento(@RequestBody Perfeccionamiento pago)
     {
-		pago.setMontoPagado(pago.getNroCuotasAPagar()*pago.getCostoCuota());
 		int idPerfeccionamiento = pagoService.registrarPerfeccionamiento(pago);
-
 		correo = new HiloCorreo(alertaService, null, pago);
         correo.start();
 		

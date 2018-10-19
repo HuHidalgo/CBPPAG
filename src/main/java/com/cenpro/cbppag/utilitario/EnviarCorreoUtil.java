@@ -75,7 +75,7 @@ public class EnviarCorreoUtil {
         			"\nModalidad: " + matricula.getNombreModalidad() +
         			"\nEspecializacion: " + matricula.getNombreEspecializacion() +
         			"\nCiclo: " + matricula.getNumeroCiclo() +
-        			"\nForma de Pago de ciclo: " + matricula.getTipoPago() +
+        			"\nForma de Pago de ciclo: " + matricula.getIdTipoPago() +
         			"\n" + alertas.get(0).getDescAlerta();
 			try {
 			    Session session = Session.getDefaultInstance(properties,
@@ -114,7 +114,7 @@ public class EnviarCorreoUtil {
         			"\nModalidad: " + pago.getNombreModalidad()+
         			"\nEspecializacion: " + pago.getNombreEspecializacion()+
         			"\nNro. Cuotas que está Pagando: " + pago.getNroCuotasAPagar()+
-        			"\nMonto Pagado: " + pago.getMontoPagado()+
+        			"\nMonto Pagado: " + pago.getMontoAPagar()+
         			"\n" + alertas.get(0).getDescAlerta();
 			try {
 			    Session session = Session.getDefaultInstance(properties,

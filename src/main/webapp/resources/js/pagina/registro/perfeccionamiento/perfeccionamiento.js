@@ -11,6 +11,7 @@ $(document).ready(function() {
 		idTipoDocumento : "",
 		numeroDocumento : "",
 		idPerfeccionamiento : "",
+		idMatricula : "",
 		$verificarAlumno : $("#verificarDatos"),
 		$codigoAlumno : $("#codigoAlumno"),
 		$nombres : $("#nombreAlumno"),
@@ -22,7 +23,7 @@ $(document).ready(function() {
 		$tiposDocumento : $("#tiposDocumento"),
 		$conceptosPago : $("#conceptosPago"),
 		$nroCiclo : $("#ciclo"),
-		$costoCuota : $("#costoCuota"),
+		$montoAPagar : $("#montoAPagar"),
 		$especializaciones : $("#especializaciones"),
 		$fechaPago : $("#fechaPago"),
 		$numCiclo : $("#numCiclo"),
@@ -60,7 +61,7 @@ $(document).ready(function() {
 			"dataSrc" : ""
 		},
 		"language" : {
-			"emptyTable" : "No hay Pagos registrados"
+			"emptyTable" : "No hay Pagos de perfeccionamiento registrados"
 		},
 		"initComplete" : function() {
 			$local.$tablaMantenimiento.wrap("<div class='table-responsive'></div>");
@@ -70,16 +71,27 @@ $(document).ready(function() {
 			"targets" : [ 0, 1, 2, 3, 4, 5, 6 ],
 			"className" : "all filtrable",
 		}, {
+			"targets" : 4,
+			"className" : "all dt-center",
+			"render" : function(data, type, row, meta) {
+				if (row.idTipoPago == "PC")
+					return "<label class='label label-info label-size-12'>PAGO AL CONTADO</label>";
+				else
+					return "<label class='label label-info label-size-12'>PAGO EN CUOTAS</label>";
+			}
+		}, {
 			"targets" : 7,
 			"className" : "all dt-center",
 			"defaultContent" : $variableUtil.botonActualizar + " " + $variableUtil.botonDescargar
 		} ],
 		"columns" : [ {
-			"data" : 'idPerfeccionamiento',
-			"title" : "Pago"
+			"data" : 'fechaPago',
+			"title" : "Fecha de Pago"
 		}, {
-			"data" : 'codigoAlumno',
-			"title" : "Código"
+			"data" : function(row) {
+				return row.tipoDocumento + " - " + row.numeroDocumento;
+			},
+			"title" : "Documento"
 		},{
 			"data" : function(row) {
 				return row.apellidoAlumno+ ", " + row.nombreAlumno;
@@ -91,13 +103,13 @@ $(document).ready(function() {
 			},
 			"title" : "Modalidad - Especialización"
 		}, {
-			"data" : 'tipoPago',
+			"data" : null,
 			"title" : "Tipo Pago"
 		},{
 			"data" : 'numeroCiclo',
 			"title" : "Ciclo"
 		}, {
-			"data" : 'costoMatricula',
+			"data" : 'montoAPagar',
 			"title" : "Monto(Soles)"
 		},{
 			"data" : null,
@@ -189,8 +201,13 @@ $(document).ready(function() {
 					$funcionUtil.notificarException($variableUtil.alumnoNoEncontrado, "fa-exclamation-circle", "Información", "danger");
 					return;
 				}
-
-				$funcionUtil.llenarFormulario(pago, $formMantenimiento);
+				
+				if (pago.idTipoPago == "PC"){
+					$local.$numeroCuotas.append($("<option />").val("4").text("TODAS (4 cuotas)"));
+				}
+				$local.idMatricula = pago.idMatricula;
+				$funcionUtil.llenarFormulario(pago, $formMantenimiento); 
+				$local.$modalidades.trigger("change", [ pago.idEspecializacion ]);
 				/*
 				$local.pagos = pagos;
 				var modalidadesAuxiliar = [];
@@ -203,7 +220,7 @@ $(document).ready(function() {
 							$local.$numeroCuotas.find("option:not(:eq(0))").remove();
 							$local.$numeroCuotas.append($("<option />").val("").text("Seleccione un número de cuotas"));
 							$local.$numeroCuotas.append($("<option />").val("1").text("1 cuota"));
-							$local.$costoCuota.val(pago.costoCuota*4);
+							$local.$montoAPagar.val(pago.montoAPagar*4);
 						}
 						else{
 							$local.$bandera = false;
@@ -217,7 +234,7 @@ $(document).ready(function() {
 									j++;
 								}
 							}
-							$local.$costoCuota.val(this.costoCuota);
+							$local.$montoAPagar.val(this.montoAPagar);
 						}
 						modalidadesAuxiliar.push(pago.nombreModalidad);
 						//$local.$modalidades.append($("<option />").val(pago.idModalidad).text(pago.idModalidad + " - "+pago.nombreModalidad));
@@ -292,12 +309,12 @@ $(document).ready(function() {
 		$.each($local.pagos, function(i, pago) {	
 			if(pago.nroCuotasPendientes != 0){
 				if(idEspecializacion == pago.idEspecializacion){
-					if(pago.tipoPago == "PAGO AL CONTADO"){
+					if(pago.tipoPago == "PC"){
 						$local.$bandera = true;
 						$local.$numeroCuotas.find("option:not(:eq(0))").remove();
 						$local.$numeroCuotas.append($("<option />").val("").text("Seleccione un número de cuotas"));
 						$local.$numeroCuotas.append($("<option />").val("1").text("1 cuota"));
-						$local.$costoCuota.val(pago.costoCuota*4);
+						$local.$montoAPagar.val(pago.montoAPagar*4);
 					}
 					else{
 						$local.$bandera = false;
@@ -313,7 +330,7 @@ $(document).ready(function() {
 							}
 							
 						}
-						$local.$costoCuota.val(this.costoCuota);
+						$local.$montoAPagar.val(this.montoAPagar);
 					}
 					$local.$apellidos.val(this.apellidoAlumno);
 					$local.$nombres.val(this.nombreAlumno);
@@ -333,16 +350,18 @@ $(document).ready(function() {
 			return;
 		}
 		var pago = $formMantenimiento.serializeJSON();
-		pago.idMatricula = $local.idMatricula;
-		pago.idModalidad = $local.$modalidades.val();
-		pago.idEspecializacion = $local.$especializaciones.val();
-		pago.nombreEspecializacion = $("#especializaciones option:selected").text().substring(7);
-		pago.conceptoPago = "210-011";
+		//pago.idMatricula = $local.idMatricula;
+		//pago.idModalidad = $local.$modalidades.val();
+		//pago.idEspecializacion = $local.$especializaciones.val();
+		//pago.nombreEspecializacion = $("#especializaciones option:selected").text().substring(7);
+		//pago.conceptoPago = "210-011";
 		pago.fechaPago = $local.$fechaPago.data("daterangepicker").startDate.format("YYYY-MM-DD");	
-		pago.nroCuotasAPagar =$local.$numeroCuotas.val();  
+		pago.idMatricula = $local.idMatricula;
+		//pago.nroCuotasAPagar =$local.$numeroCuotas.val();  
+		console.log(pago);
 		$.ajax({
 			type : "POST",
-			url : $variableUtil.root + "registro/pago",
+			url : $variableUtil.root + "registro/perfeccionamiento",
 			data : JSON.stringify(pago),
 			beforeSend : function(xhr) {
 				$local.$registrarMantenimiento.attr("disabled", true).find("i").removeClass("fa-floppy-o").addClass("fa-spinner fa-pulse fa-fw");
@@ -368,22 +387,19 @@ $(document).ready(function() {
 				$.ajax({
 					type : "POST",
 					enctype : 'multipart/form-data',
-					url : $variableUtil.root + "registro/pago/uploadfile/"+"?accion=cargar",
+					url : $variableUtil.root + "registro/perfeccionamiento/uploadfile/"+"?accion=cargar",
 					data : data,
 					processData : false,
 					contentType : false,
 					cache : false,
 					beforeSend : function(xhr) {
-						xhr.setRequestHeader("X-CSRF-TOKEN", $variableUtil.csrf);
-						
+						xhr.setRequestHeader("X-CSRF-TOKEN", $variableUtil.csrf);						
 					},
-					success : function(response) {
-			
+					success : function(response) {			
 					},
 					complete : function(response) {
 					}
-				});
-				
+				});				
 				$local.$modalMantenimiento.PopupWindow("close");
 			},
 			error : function(response) {
@@ -417,7 +433,7 @@ $(document).ready(function() {
 		pago.nroCuotasAPagar =$local.$numeroCuotas.val();  
 		$.ajax({
 			type : "PUT",
-			url : $variableUtil.root + "registro/pago",
+			url : $variableUtil.root + "registro/perfeccionamiento",
 			data : JSON.stringify(pago),
 			beforeSend : function(xhr) {
 				$local.$actualizarMantenimiento.attr("disabled", true).find("i").removeClass("fa-pencil-square").addClass("fa-spinner fa-pulse fa-fw");
@@ -442,7 +458,7 @@ $(document).ready(function() {
 				$.ajax({
 					type : "POST",
 					enctype : 'multipart/form-data',
-					url : $variableUtil.root + "registro/pago/uploadfile/"+ $local.idPerfeccionamiento +"?accion=actualizar",
+					url : $variableUtil.root + "registro/perfeccionamiento/uploadfile/"+ $local.idPerfeccionamiento +"?accion=actualizar",
 					data : data,
 					processData : false,
 					contentType : false,
@@ -474,7 +490,7 @@ $(document).ready(function() {
 		
 		$.ajax({
 			type : "GET",
-			url : $variableUtil.root + "registro/pago/voucher/" + pago.idPerfeccionamiento,
+			url : $variableUtil.root + "registro/perfeccionamiento/voucher/" + pago.idPerfeccionamiento,
 			beforeSend : function(xhr) {
 				$local.$registrarMantenimiento.attr("disabled", true).find("i").removeClass("fa-floppy-o").addClass("fa-spinner fa-pulse fa-fw");
 				xhr.setRequestHeader('Content-Type', 'application/json');

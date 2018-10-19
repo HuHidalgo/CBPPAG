@@ -38,7 +38,7 @@ public class Perfeccionamiento {
     private Integer idMatricula;   
 	private Integer idPerfeccionamiento;   
     private int nroCuotasPendientes;
-    private double costoCuota;
+    private double montoAPagar;
     private int nroCuotasAPagar;
     private double montoPagado;
     

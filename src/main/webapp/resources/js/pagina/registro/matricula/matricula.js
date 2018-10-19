@@ -274,17 +274,17 @@ $(document).ready(function() {
 		if (!$formMantenimiento.valid()) {
 			return;
 		}
-		console.log("Voucher : "+$local.$voucher.val());
 		var matricula = $formMantenimiento.serializeJSON();
-		matricula.nombreArchivo = $local.$voucher.val();
-		matricula.idModalidad = $local.$modalidades.val();
-		matricula.nombreModalidad = $("#modalidades option:selected").text().substring(7);
-		matricula.idEspecializacion = $local.$especializaciones.val();
-		matricula.numeroCiclo = $local.$numeroCiclos.val();
-		matricula.nombreEspecializacion = $("#especializaciones option:selected").text().substring(7);
-		matricula.tipoPago = $local.$tiposPago.val();
-		matricula.conceptoPago = $local.$conceptosPago.val();
-		matricula.fechaMatricula = $local.$fechaMatricula.data("daterangepicker").startDate.format("YYYY-MM-DD");		
+		matricula.fechaMatricula = $local.$fechaMatricula.data("daterangepicker").startDate.format("YYYY-MM-DD");
+		console.log(matricula);
+		//matricula.nombreArchivo = $local.$voucher.val();
+		//matricula.idModalidad = $local.$modalidades.val();
+		//matricula.nombreModalidad = $("#modalidades option:selected").text().substring(7);
+		//matricula.idEspecializacion = $local.$especializaciones.val();
+		//matricula.numeroCiclo = $local.$numeroCiclos.val();
+		//matricula.nombreEspecializacion = $("#especializaciones option:selected").text().substring(7);
+		//matricula.tipoPago = $local.$tiposPago.val();
+		//matricula.conceptoPago = $local.$conceptosPago.val();		
 		$.ajax({
 			type : "POST",
 			url : $variableUtil.root + "registro/matricula",
@@ -336,9 +336,7 @@ $(document).ready(function() {
 				$local.$registrarMantenimiento.attr("disabled", false).find("i").addClass("fa-floppy-o").removeClass("fa-spinner fa-pulse fa-fw");
 			}
 		});
-		
-		
-		
+			
 	});
 	
 	$local.$tablaMantenimiento.children("tbody").on("click", ".actualizar", function() {
