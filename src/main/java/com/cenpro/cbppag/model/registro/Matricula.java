@@ -38,6 +38,7 @@ public class Matricula{
 	private Integer idMatricula;
     private Blob voucher;
     private String nombreArchivo;
+    private String uploadfile;
     
     private byte[] bytesLeidos;
     

@@ -11,7 +11,7 @@ $(document).ready(function() {
 			numeroDocumento : {
 				required : true,
 				notOnlySpace : true,
-				rangelength : [ 9, 12 ]
+				rangelength : [ 8, 12 ]
 			},
 			nombreAlumno : {
 				required : true,
@@ -33,23 +33,19 @@ $(document).ready(function() {
 			},
 			idConceptoPago : {
 				required : true,
-				notOnlySpace : true,
-				rangelength : [ 2, 3 ]
+				notOnlySpace : true
 			},
 			idModalidad : {
 				required : true,
-				notOnlySpace : true,
-				rangelength : [ 2, 5 ]
+				notOnlySpace : true
 			},
 			idEspecializacion : {
 				required : true,
-				notOnlySpace : true,
-				rangelength : [ 2, 5 ]
+				notOnlySpace : true
 			},
 			idTipoPago : {
 				required : true,
-				notOnlySpace : true,
-				rangelength : [ 2, 3 ]
+				notOnlySpace : true
 			},
 			uploadfile : {
 				required : true
@@ -63,8 +59,8 @@ $(document).ready(function() {
 			},
 			numeroDocumento : {
 				required : "Ingrese el N&uacute;mero de Documento.",
-				notOnlySpace : "El N&uacute;umero de Documento no debe contener solo espacios en blanco.",
-				rangelength : "El N&uacute;umero de Documento debe contener entre 3 y 12 car&aacute;cteres."
+				notOnlySpace : "El N&uacute;mero de Documento no debe contener solo espacios en blanco.",
+				rangelength : "El N&uacute;mero de Documento debe contener entre 8 y 12 car&aacute;cteres."
 			},
 			nombreAlumno : {
 				required : "Ingrese Nombres del alumno.",
@@ -86,26 +82,22 @@ $(document).ready(function() {
 			},
 			idConceptoPago : {
 				required : "Ingrese un concepto de pago.",
-				notOnlySpace : "El concepto de pago no puede contener solo espacios en blanco.",
-				rangelength : "El concepto de pago debe contener entre 2 y 3 car&aacute;cteres."
+				notOnlySpace : "El concepto de pago no puede contener solo espacios en blanco."
 			},
 			idModalidad : {
 				required : "Ingrese una modalidad.",
-				notOnlySpace : "La modalidad no puede contener solo espacios en blanco.",
-				rangelength : "La modalidad debe contener entre 2 y 5 car&aacute;cteres."
+				notOnlySpace : "La modalidad no puede contener solo espacios en blanco."
 			},
 			idEspecializacion : {
 				required : "Ingrese una especializaci&oacute;n.",
-				notOnlySpace : "La especializaci&oacute;n no puede contener solo espacios en blanco.",
-				rangelength : "La correo debe contener entre 2 y 5 car&aacute;cteres."
+				notOnlySpace : "La especializaci&oacute;n no puede contener solo espacios en blanco."
 			},
 			idTipoPago : {
 				required : "Ingrese el tipo de pago.",
-				notOnlySpace : "El tipo de pago no puede contener solo espacios en blanco.",
-				rangelength : "El tipo de pago debe contener entre 2 y 3 car&aacute;cteres."
+				notOnlySpace : "El tipo de pago no puede contener solo espacios en blanco."
 			},
 			uploadfile : {
-				required : "Ingrese correo del alumno."
+				required : "Adjuntar voucher de pago."
 			}
 		}
 	});

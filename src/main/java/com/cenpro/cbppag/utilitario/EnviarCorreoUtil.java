@@ -113,7 +113,7 @@ public class EnviarCorreoUtil {
         			"\nConcepto de Pago: " + pago.getConceptoPago()+
         			"\nModalidad: " + pago.getNombreModalidad()+
         			"\nEspecializacion: " + pago.getNombreEspecializacion()+
-        			"\nNro. Cuotas que está Pagando: " + pago.getNroCuotasAPagar()+
+        			"\nNro. Cuotas que está Pagando: " + pago.getNroCuotaAPagar()+
         			"\nMonto Pagado: " + pago.getMontoAPagar()+
         			"\n" + alertas.get(0).getDescAlerta();
 			try {

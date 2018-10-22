@@ -39,8 +39,9 @@ public class Perfeccionamiento {
 	private Integer idPerfeccionamiento;   
     private int nroCuotasPendientes;
     private double montoAPagar;
-    private int nroCuotasAPagar;
+    private int nroCuotaAPagar;
     private double montoPagado;
+    private String uploadfile;
     
     private byte[] bytesLeidos;
     private Blob voucher;

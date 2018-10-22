@@ -22,7 +22,7 @@ public interface IPerfeccionamientoMapper extends IMantenibleMapper<Perfeccionam
             + "#{objeto.idConceptoPago, jdbcType = VARCHAR, mode = IN},"
             + "#{objeto.idTipoPago, jdbcType = VARCHAR, mode = IN},"
             + "#{objeto.numeroCiclo, jdbcType = NUMERIC, mode = IN},"
-            + "#{objeto.nroCuotasAPagar, jdbcType = NUMERIC, mode = IN},"
+            + "#{objeto.nroCuotaAPagar, jdbcType = NUMERIC, mode = IN},"
             + "#{objeto.voucher, jdbcType = BLOB, mode = IN},"
             + "#{objeto.idMatricula, jdbcType = INTEGER, mode = IN},"
 			+ "#{userAudit, jdbcType = VARCHAR, mode = IN})}" })

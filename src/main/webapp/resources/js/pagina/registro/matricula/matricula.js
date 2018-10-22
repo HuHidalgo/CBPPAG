@@ -426,7 +426,7 @@ $(document).ready(function() {
 		$local.$filaSeleccionada = $(this).parents("tr");
 		
 		var matricula = $local.tablaMantenimiento.row($local.$filaSeleccionada).data();
-		
+		console.log(matricula);
 		$.ajax({
 			type : "GET",
 			url : $variableUtil.root + "registro/matricula/voucher/" + matricula.idMatricula,

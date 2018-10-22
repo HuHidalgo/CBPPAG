@@ -183,7 +183,7 @@ $(document).ready(function() {
 	$local.$verificarAlumno.click(function(){		
 		var codAlumno = $local.$codigoAlumno .val();		
 		var tipoDoc = $local.$tiposDocumento.val();
-		if (codAlumno == null || codAlumno == undefined || codAlumno == "") {
+		if ((codAlumno == null && tipoDoc == null) || (codAlumno == "" && tipoDoc == "")) {
 			$funcionUtil.notificarException($variableUtil.codigoAlumnoVacio, "fa-exclamation-circle", "Información", "danger");
 			return;
 		}
@@ -380,6 +380,7 @@ $(document).ready(function() {
 				
 				$funcionUtil.notificarException($variableUtil.registroExitoso, "fa-check", "Aviso", "success");
 				var pago = pagos[0];
+				console.log(pago);
 				var row = $local.tablaMantenimiento.row.add(pago).draw();
 				row.show().draw(false);
 				$(row.node()).animateHighlight();
@@ -487,7 +488,7 @@ $(document).ready(function() {
 	$local.$tablaMantenimiento.children("tbody").on("click", ".descargar", function() {
 		$local.$filaSeleccionada = $(this).parents("tr");
 		var pago = $local.tablaMantenimiento.row($local.$filaSeleccionada).data();
-		
+		//console.log(pago);
 		$.ajax({
 			type : "GET",
 			url : $variableUtil.root + "registro/perfeccionamiento/voucher/" + pago.idPerfeccionamiento,
