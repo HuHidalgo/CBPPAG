@@ -11,7 +11,7 @@ $(document).ready(function() {
 		idTipoDocumento : "",
 		numeroDocumento : "",
 		idPerfeccionamiento : "",
-		idMatricula : "0",
+		idMatricula : "",
 		$verificarAlumno : $("#verificarDatos"),
 		$codigoAlumno : $("#codigoAlumno"),
 		$nombres : $("#nombreAlumno"),
@@ -32,9 +32,6 @@ $(document).ready(function() {
 		$documento : "",
 		$bandera : false,
 		$banderaDeudas : false,
-		$arregloEspecializacion : [],
-		$arregloDiplomatura : [],
-		$especializacionesDiplomaturas : [],
 		$montoPagar : 0.0,
 		pagos : [],
 		filtrosSeleccionables : {}
@@ -193,105 +190,61 @@ $(document).ready(function() {
 			return;
 		}
 		
-	    matriculaDiplomatura();
-	    devolverDiplomaturas("M102");
-		
 		$.ajax({
 			type : "GET",
-			url : $variableUtil.root + "registro/perfeccionamiento/" + tipoDoc + "/" + codAlumno,
+			url : $variableUtil.root + "registro/diplomatura/" + tipoDoc + "/" + codAlumno,
 			beforeSend : function(xhr) {
 				$local.$verificarAlumno.attr("disabled", true).find("i").removeClass("fa-check-square-o").addClass("fa-spinner fa-pulse fa-fw");
 			},
 			success : function(pagos) {
-				$local.$banderaDeudas = false;
 				var pago = pagos[0];
 				$local.$modalidades.trigger("change");
-				$local.$especializaciones.trigger("change");
-				console.log("Cantidad de deudas : "+pagos.length);
+
 				if(pagos.length == 0){
 					$local.$banderaDeudas = false;
-					$local.$modalidades.find('option[value="'+"M100"+'"]').remove();
-					$local.$modalidades.find('option[value="'+"M101"+'"]').remove();
-					mostrarDiplomaturas();
-					$local.$modalidades.val("M102").trigger("change");
+					$local.$modalidades.val("M102").trigger("change.select2");
+					$local.$modalidades.trigger("change");
 					$funcionUtil.notificarException($variableUtil.alumnoNoEncontrado, "fa-exclamation-circle", "Información", "danger");
 					return;
 				}
 				else{
-					if(pago.idConceptoPago == null){
-						$local.$banderaDeudas = false;
-						$local.$tiposDocumento.val(pago.tipoDocumento).trigger("change.select2");
-						$local.$modalidades.find('option[value="'+"M100"+'"]').remove();
-						$local.$modalidades.find('option[value="'+"M101"+'"]').remove();
-						mostrarDiplomaturas();
-						$local.$modalidades.val("M102").trigger("change");
-						$local.$apellidos.val(pago.apellidoAlumno);
-						$local.$nombres.val(pago.nombreAlumno);
-						$local.$correo.val(pago.correoAlumno);
-					}
-					else{
-						/*if(pago.idConceptoPago == "PD"){
-							$local.$banderaDeudas = false;
-							$local.$tiposDocumento.val(pago.tipoDocumento).trigger("change.select2");
-							$local.$apellidos.val(pago.apellidoAlumno);
-							$local.$nombres.val(pago.nombreAlumno);
-							$local.$correo.val(pago.correoAlumno);
-							$local.$tiposPago.val('PC').trigger("change.select2");	
-						}
-						else{*/
-							$local.idMatricula = pago.idMatricula;
-							
-							$local.$tiposDocumento.val(pago.tipoDocumento).trigger("change.select2");
-							$local.$apellidos.val(pago.apellidoAlumno);
-							$local.$nombres.val(pago.nombreAlumno);
-							$local.$correo.val(pago.correoAlumno);
-							
-							$local.$modalidades.find("option:not(:eq(0))").remove();
-							$local.$modalidades.trigger("change");
-							$local.$especializaciones.find("option:not(:eq(0))").remove();
-							$local.$especializaciones.trigger("change");				
-							$local.$modalidades.val(pago.idModalidad).trigger("change.select2");
-							$local.$modalidades.trigger("change", [ pago.idEspecializacion ]);
-							
-							$local.$tiposPago.val(pago.idTipoPago).trigger("change.select2");					
-							$local.$montoAPagar.val(pago.montoAPagar);
-							$local.$numCiclo.val(pago.numeroCiclo);
-							$local.$cuotaPendiente.val(pago.nroCuotasPendientes);
-							$local.$numeroCuotas.val(4-pago.nroCuotasPendientes+1);
-							
-							$local.$banderaDeudas = true;
-							$local.pagos = pagos;
-							var modalidadesAuxiliar = [];
-							var especializacionesAuxiliar = [];
-							
-							$.each(pagos, function(i, pago) {			
-								modalidadesAuxiliar.push(pago.idModalidad + " - " +pago.nombreModalidad);
-								especializacionesAuxiliar.push(pago.idEspecializacion + " - " +pago.nombreEspecializacion);
-							});			
-							
-							modalidadesAuxiliar = eliminateDuplicates(modalidadesAuxiliar);
-							
-							var posicion1 = 0;
-							$.each(modalidadesAuxiliar, function(i, modalidad) {		
-								posicion1 = modalidad.indexOf("-");
-								$local.$modalidades.append($("<option />").val(modalidad.substring(0, posicion1-1)).text(modalidad.substring(posicion1+2, modalidad.length)));
-							});
-							
-							especializacionesAuxiliar = eliminateDuplicates(especializacionesAuxiliar);
-							var posicion2 = 0;
-							$.each(especializacionesAuxiliar, function(i, especializacion) {	
-								posicion2 = especializacion.indexOf("-");
-								$local.$especializaciones.append($("<option />").val(especializacion.substring(0, posicion2-1)).text(especializacion.substring(posicion2+2, especializacion.length)));
-							});
-							
-							if(pago.idModalidad == "M100" || pago.idModalidad == "M101"){
-								$local.$conceptosPago.val("PDM").trigger("change.select2");
-							}
-						//}
-					}
+					$local.$banderaDeudas = true;
+					$local.$modalidades.trigger("change");
+					$local.$modalidades.find("option:not(:eq(0))").remove();
+					$local.$conceptosPago.val(pago.idConceptoPago).trigger("change.select2");				
+					$local.idMatricula = pago.idMatricula;
+					$funcionUtil.llenarFormulario(pago, $formMantenimiento);
+					//$local.$modalidades.trigger("change", [ pago.idEspecializacion ]);
 					
+					$local.pagos = pagos;
+					var modalidadesAuxiliar = [];
+					var especializacionesAuxiliar = [];
+					$.each(pagos, function(i, pago) {			
+						modalidadesAuxiliar.push(pago.idModalidad + " - " +pago.nombreModalidad);
+						especializacionesAuxiliar.push(pago.idEspecializacion + " - " +pago.nombreEspecializacion);
+						$local.$apellidos.val(this.apellidoAlumno);
+						$local.$nombres.val(this.nombreAlumno);
+						$local.$correo.val(this.correoAlumno);
+						$local.$tiposPago.val(this.idTipoPago);
+						$local.$numeroCuotas.val("1");
+					});			
+					
+					modalidadesAuxiliar = eliminateDuplicates(modalidadesAuxiliar);
+					$.each(modalidadesAuxiliar, function(i, modalidad) {			
+						$local.$modalidades.append($("<option />").val(modalidad.substring(0, 4)).text(modalidad.substring(7, modalidad.length)));
+					});
+					
+					especializacionesAuxiliar = eliminateDuplicates(especializacionesAuxiliar);
+					$.each(especializacionesAuxiliar, function(i, especializacion) {			
+						$local.$especializaciones.append($("<option />").val(especializacion.substring(0, 3)).text(especializacion.substring(6, especializacion.length)));
+					});
 				}
 				
+				/*if (pago.idTipoPago == "PC"){
+					$local.$numeroCuotas.append($("<option />").val("4").text("TODAS (4 cuotas)"));
+				}
+				
+				*/
 				
 				if(!$local.$banderaDeudas){
 					$funcionUtil.notificarException($variableUtil.deudaPagada, "fa-exclamation-circle", "Información", "info");
@@ -307,43 +260,34 @@ $(document).ready(function() {
 	
 	$local.$modalidades.on("change", function(event, opcionSeleccionada) {
 		var idModalidad = $(this).val();
+		console.log("MODALIDAD : "+idModalidad);
 		var nroCiclo = $local.$numCiclo.val();	
 		
 		if (nroCiclo == "")
 			nroCiclo = 0;
 		
-		
 		if (idModalidad == null || idModalidad == undefined) {
 			$local.$especializaciones.find("option:not(:eq(0))").remove();
 			return;
 		}
-		
-		if(idModalidad == "M100" || idModalidad == "M101"){
-			$local.$conceptosPago.val("PDM").trigger("change.select2");
-		}
-		else{
-			$local.$conceptosPago.val("PD").trigger("change.select2");
-		}
-		
 		if($local.$banderaDeudas){
-			$local.$especializaciones.find("option:not(:eq(0))").remove();
-			
-			if(idModalidad == "M102"){
-				$local.$banderaDeudas = false;
-				$local.$modalidades.trigger("change");
-				$local.$banderaDeudas = true;
-				
-			}
-			
 			$.each($local.pagos, function(i, pago) {
 				if(pago.nroCuotasPendientes != 0){
-					if(idModalidad != "M102" && idModalidad == pago.idModalidad){
-						$local.$especializaciones.append($("<option />").val(pago.idEspecializacion).text(pago.nombreEspecializacion));
+					if(idModalidad == pago.idModalidad){
+						$local.$especializaciones.append($("<option />").val(pago.idEspecializacion).text(pago.idEspecializacion + " - "+pago.nombreEspecializacion));
+						$local.$apellidos.val(this.apellidoAlumno);
+						$local.$nombres.val(this.nombreAlumno);
+						$local.$correo.val(this.correoAlumno);
+						$local.$nroCiclo.val(this.numeroCiclo);
+						$local.$cuotaPendiente.val(this.nroCuotasPendientes);
+						$local.$numeroCuotas.val(4-pago.nroCuotasPendientes+1);
+						$local.codigoMatricula = this.codigoMatricula;
 					}
 				}
 			});
 		}
 		else{
+
 			$.ajax({
 				type : "GET",
 				url : $variableUtil.root + "mantenimiento/especializacion/modalidad/" + idModalidad + "/" + nroCiclo,
@@ -358,8 +302,6 @@ $(document).ready(function() {
 					}
 				},
 				success : function(especializaciones) {
-					$local.$arregloEspecializacion = especializaciones;
-					
 					$.each(especializaciones, function(i, especializacion) {
 						$local.$especializaciones.append($("<option />").val(this.idEspecializacion).text(this.nombreEspecializacion));
 					});
@@ -376,49 +318,54 @@ $(document).ready(function() {
 	
 	
 	$local.$especializaciones.on("change", function(event, opcionSeleccionada)  {
-		var idModalidad = $local.$modalidades.val();
 		var idEspecializacion = $(this).val();
+		console.log("ESPECIALIZACIONES");
 		if (idEspecializacion == null || idEspecializacion == undefined || idEspecializacion == -1) {
 			$local.$nroCiclo.val("");
 			return;
 		}
 		
 		if($local.$banderaDeudas){
-			var banderas = false;
 			$.each($local.pagos, function(i, pago) {	
 				if(pago.nroCuotasPendientes != 0){
 					if(idEspecializacion == pago.idEspecializacion){
-						console.log("DATA TRUE");
-						$local.$tiposPago.val(pago.idTipoPago).trigger("change.select2");
-						$local.$nroCiclo.val(pago.numeroCiclo);
-						$local.$cuotaPendiente.val(pago.nroCuotasPendientes);
-						$local.$numeroCuotas.val(4-pago.nroCuotasPendientes+1);
-						$local.idMatricula = pago.idMatricula;
-						$local.$montoAPagar.val(pago.montoAPagar);
-						banderas = true;
+						if(pago.idTipoPago == "PC"){
+							console.log("Al contado");
+							$local.$bandera = true;
+							/*$local.$numeroCuotas.find("option:not(:eq(0))").remove();
+							$local.$numeroCuotas.append($("<option />").val("").text("Seleccione un número de cuotas"));
+							$local.$numeroCuotas.append($("<option />").val("1").text("1 cuota"));*/
+							$local.$montoAPagar.val(pago.montoAPagar*4);
+							$local.$numeroCuotas.val(1);
+						}
+						else{
+							$local.$bandera = false;
+							if(!$local.$bandera){
+								var j = 2;
+								/*$local.$numeroCuotas.find("option:not(:eq(0))").remove();
+								$local.$numeroCuotas.append($("<option />").val("").text("Seleccione un número de cuotas"));
+								$local.$numeroCuotas.append($("<option />").val("1").text("1 cuota"));
+								while(j<=pago.nroCuotasPendientes){
+									$local.$numeroCuotas.append($("<option />").val(j).text(j + " cuotas"));
+									j++;
+								}*/
+								
+							}
+							console.log("Fraccionario");
+							$local.$montoAPagar.val(this.montoAPagar);
+							$local.$numeroCuotas.val(4-pago.nroCuotasPendientes+1);
+						}
+						$local.$apellidos.val(this.apellidoAlumno);
+						$local.$nombres.val(this.nombreAlumno);
+						$local.$correo.val(this.correoAlumno);
+						$local.$nroCiclo.val(this.numeroCiclo);
+						$local.$cuotaPendiente.val(this.nroCuotasPendientes);
+						$local.idMatricula = this.idMatricula;
 					}
 				}
 			});
-			if(!banderas){
-				$.each($local.pagos, function(i, pago) {	
-					if(pago.nroCuotasPendientes != 0){
-						$.each($local.$arregloEspecializacion, function(i, especialidad) {
-							if(idEspecializacion == especialidad.idEspecializacion){
-								$local.$montoPagar = especialidad.costoCiclo; 
-								$local.$montoAPagar.val(especialidad.costoCiclo);
-								$local.$nroCiclo.val("1");
-								$local.$cuotaPendiente.val("");
-								$local.$numeroCuotas.val("");
-								//$local.$tiposPago.trigger("change");
-							}
-							
-						});
-					}
-				});
-			}
 		}
 		else{
-			console.log("Entro en especializacion P");
 			$.ajax({
 				type : "GET",
 				url : $variableUtil.root + "mantenimiento/especializacion/costo/" + idEspecializacion + "/" + 0,
@@ -438,29 +385,8 @@ $(document).ready(function() {
 						esp = especializacion;
 					});
 					$local.$montoPagar = esp.costoCiclo; 
-					//$local.$montoAPagar.val(esp.costoCiclo);
+					$local.$montoAPagar.val(esp.costoCiclo);
 					$local.$numCiclo.val("1");
-					
-					if(idModalidad == "M102"){
-						$.each($local.$arregloEspecializacion, function(i, especialidad) {
-							if(idEspecializacion == especialidad.idEspecializacion){
-								var contador2 = 0;
-								$.each($local.$arregloDiplomatura, function(i, diplomatura) {
-									if(idEspecializacion == diplomatura.idEspecializacion){
-										contador2++;
-									}
-								});
-								$local.$montoPagar = especialidad.costoCiclo; 
-								//$local.$montoAPagar.val(especialidad.costoCiclo);
-								contador2++;
-								console.log(contador2);
-								$local.$numCiclo.val(contador2);
-								$local.$cuotaPendiente.val("");
-								$local.$numeroCuotas.val("");
-							}
-							
-						});
-					}	
 				},
 				complete : function() {
 					
@@ -476,12 +402,15 @@ $(document).ready(function() {
 		if (idTipoPago == null || idTipoPago == undefined || idTipoPago == -1) {
 			return;
 		}
+		console.log(idTipoPago);
 		if(idTipoPago == 'PC'){
+			console.log("PAGO CONTADO");
 			$local.$cuotaPendiente.val("4");
 			$local.$numeroCuotas.val("4");
 			$local.$montoAPagar.val($local.$montoPagar);
 		}
 		else{
+			console.log("PAGO FRACCIONARIO");
 			$local.$cuotaPendiente.val("4");
 			$local.$numeroCuotas.val("1");
 			$local.$montoAPagar.val($local.$montoPagar/4);
@@ -501,13 +430,11 @@ $(document).ready(function() {
 		//pago.conceptoPago = "210-011";
 		pago.fechaPago = $local.$fechaPago.data("daterangepicker").startDate.format("YYYY-MM-DD");	
 		pago.idMatricula = $local.idMatricula;
-		
-		console.log("pago ");
-		console.log(pago);
 		//pago.nroCuotasAPagar =$local.$numeroCuotas.val();  
+		console.log(pago);
 		$.ajax({
 			type : "POST",
-			url : $variableUtil.root + "registro/perfeccionamiento",
+			url : $variableUtil.root + "registro/diplomatura",
 			data : JSON.stringify(pago),
 			beforeSend : function(xhr) {
 				$local.$registrarMantenimiento.attr("disabled", true).find("i").removeClass("fa-floppy-o").addClass("fa-spinner fa-pulse fa-fw");
@@ -526,6 +453,7 @@ $(document).ready(function() {
 				
 				$funcionUtil.notificarException($variableUtil.registroExitoso, "fa-check", "Aviso", "success");
 				var pago = pagos[0];
+				console.log(pago);
 				var row = $local.tablaMantenimiento.row.add(pago).draw();
 				row.show().draw(false);
 				$(row.node()).animateHighlight();
@@ -533,7 +461,7 @@ $(document).ready(function() {
 				$.ajax({
 					type : "POST",
 					enctype : 'multipart/form-data',
-					url : $variableUtil.root + "registro/perfeccionamiento/uploadfile/"+"?accion=cargar",
+					url : $variableUtil.root + "registro/diplomatura/uploadfile/"+"?accion=cargar",
 					data : data,
 					processData : false,
 					contentType : false,
@@ -546,7 +474,6 @@ $(document).ready(function() {
 					complete : function(response) {
 					}
 				});				
-				$local.idMatricula = 0;
 				$local.$modalMantenimiento.PopupWindow("close");
 			},
 			error : function(response) {
@@ -637,6 +564,7 @@ $(document).ready(function() {
 	$local.$tablaMantenimiento.children("tbody").on("click", ".descargar", function() {
 		$local.$filaSeleccionada = $(this).parents("tr");
 		var pago = $local.tablaMantenimiento.row($local.$filaSeleccionada).data();
+		//console.log(pago);
 		$.ajax({
 			type : "GET",
 			url : $variableUtil.root + "registro/perfeccionamiento/voucher/" + pago.idPerfeccionamiento,
@@ -687,77 +615,4 @@ $(document).ready(function() {
 		  a.click();
 		  a.remove();
 	};
-	
-	function matriculaDiplomatura(){
-		var codAlumno = $local.$codigoAlumno .val();		
-		var tipoDoc = $local.$tiposDocumento.val();
-		
-		$.ajax({
-			type : "GET",
-			url : $variableUtil.root + "registro/matricula/diplomatura/" + tipoDoc + "/" + codAlumno,
-			success : function(matriculas) {
-				$local.$arregloDiplomatura =  matriculas;
-			}
-		});
-	};
-	
-	/**
-	 * Este método se encargará de devolver todas las especializaciones
-	 * que se encuentran en la modalidad de Diplomatura
-	 */
-	function devolverDiplomaturas(idModalidad){
-		$.ajax({
-			type : "GET",
-			url : $variableUtil.root + "mantenimiento/especializacion/modalidad/" + idModalidad + "/1",
-			beforeSend : function(xhr) {
-				
-			},
-			statusCode : {
-				400 : function(response) {
-					$funcionUtil.limpiarMensajesDeError($formMantenimiento);
-					$funcionUtil.mostrarMensajeDeError(response.responseJSON, $formMantenimiento);
-				}
-			},
-			success : function(especializaciones) {
-				$especializacionesDiplomaturas = especializaciones;
-			},
-			complete : function() {
-				$local.$especializaciones.parent().find(".cargando").remove();
-			}
-		});
-	}
-	
-	/**
-	 * Método encargado de mostrar solo las especializaciones de la modalidad
-	 * Diplomatura
-	 */
-	function mostrarDiplomaturas(){
-		$.ajax({
-			type : "GET",
-			url : $variableUtil.root + "mantenimiento/especializacion/modalidad/M102/1",
-			beforeSend : function(xhr) {
-				$local.$especializaciones.find("option:not(:eq(0))").remove();
-				$local.$modalidades.find("option:not(:eq(0))").remove();
-				$local.$especializaciones.parent().append("<span class='help-block cargando'><i class='fa fa-spinner fa-pulse fa-fw'></i> Cargando Especializaciones</span>")
-			},
-			statusCode : {
-				400 : function(response) {
-					$funcionUtil.limpiarMensajesDeError($formMantenimiento);
-					$funcionUtil.mostrarMensajeDeError(response.responseJSON, $formMantenimiento);
-				}
-			},
-			success : function(especializaciones) {
-				$local.$arregloEspecializacion = especializaciones;
-				
-				$local.$modalidades.append($("<option />").val("M102").text("DIPLOMATURA"));
-				$.each(especializaciones, function(i, especializacion) {
-					$local.$especializaciones.append($("<option />").val(this.idEspecializacion).text(this.nombreEspecializacion));
-				});
-			},
-			complete : function() {
-				$local.$especializaciones.parent().find(".cargando").remove();
-			}
-		});
-	}
-	
 });

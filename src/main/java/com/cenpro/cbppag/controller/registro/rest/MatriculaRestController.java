@@ -42,6 +42,12 @@ public @RestController class MatriculaRestController {
         return matriculaService.buscarAlumno(tipoDoc, codAlumno);
     }
 	
+	@GetMapping("/diplomatura/{tipoDoc}/{codAlumno}")
+    public List<Matricula> verificarDiplomatura(@PathVariable String tipoDoc, @PathVariable String codAlumno)
+    {
+        return matriculaService.buscarDiplomatura(tipoDoc, codAlumno);
+    }
+	
 	@PostMapping
     public ResponseEntity<?> registrarMatricula(@RequestBody Matricula matricula)
     {

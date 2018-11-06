@@ -70,13 +70,17 @@ $(document).ready(function() {
 	
 	$local.$modalidades.on("change", function(event, opcionSeleccionada) {
 		var idModalidad = $(this).val();
+		var nroCiclo = $local.$numeroCiclo.val();	
+		if (nroCiclo == "")
+			nroCiclo = 0;
+		
 		if (idModalidad == null || idModalidad == undefined) {
 			$local.$especializaciones.find("option:not(:eq(0))").remove();
 			return;
 		}
 		$.ajax({
 			type : "GET",
-			url : $variableUtil.root + "mantenimiento/especializacion/modalidad/" + idModalidad,
+			url : $variableUtil.root + "mantenimiento/especializacion/modalidad/" + idModalidad + "/" + nroCiclo,
 			beforeSend : function(xhr) {
 				$local.$especializaciones.find("option:not(:eq(0))").remove();
 				$local.$especializaciones.parent().append("<span class='help-block cargando'><i class='fa fa-spinner fa-pulse fa-fw'></i> Cargando Especializaciones</span>")
@@ -89,10 +93,9 @@ $(document).ready(function() {
 			},
 			success : function(especializaciones) {
 				$.each(especializaciones, function(i, especializacion) {
-					$local.$especializaciones.append($("<option />").val(this.idEspecializacion).text(this.idEspecializacion + " - " + this.nombreEspecializacion));
+					$local.$especializaciones.append($("<option />").val(this.idEspecializacion).text(this.nombreEspecializacion));
 				});
 				if (opcionSeleccionada != null && opcionSeleccionada != undefined) {
-					console.log(" 123 "+opcionSeleccionada);
 					$local.$especializaciones.val(opcionSeleccionada).trigger("change.select2");
 				}
 			},
@@ -203,13 +206,13 @@ $(document).ready(function() {
 		}
 		
 		console.log(reporte);
-		if ($funcionUtil.camposVacios($formReporteDeudas)) {
+		/*if ($funcionUtil.camposVacios($formReporteDeudas)) {
 			$funcionUtil.notificarException($variableUtil.camposVacios, "fa-exclamation-circle", "Información", "info");
 			return;
 		}
 		if (!$formReporteDeudas.valid()) {
 			return;
-		}
+		}*/
 		
 		var paramReporte = $.param(reporte);
 		

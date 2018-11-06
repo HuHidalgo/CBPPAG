@@ -109,6 +109,7 @@
 							<select id="modalidades" class="form-control select2" name="idModalidad">
 								<option value="" disabled="disabled" selected="selected">Seleccione una Modalidad</option>
 								<option th:each="modalidad : ${modalidades}" th:value="${modalidad.idModalidad}"
+											th:if="${modalidad.idModalidad != 'M102'}"
 											th:text="|${modalidad.nombreModalidad}|">
 								</option>
 							</select>
@@ -276,7 +277,7 @@
 						<label class="col-lg-2 control-label">Tipo de Pago del Ciclo</label>
 						<div class="col-lg-4">
 							<select id="tiposPago" class="form-control select2" name="idTipoPago">
-								<option value="" disabled="disabled" selected="selected">Seleccione tipo de pago</option>
+								<option value=""  selected="selected">Seleccione tipo de pago</option>
 								<option th:each="tipoPago : ${tiposPago}" th:value="${tipoPago.idItem}"
 											th:text="|${tipoPago.idItem} - ${tipoPago.descripcionItem}|">
 								</option>
@@ -310,7 +311,7 @@
 					<div class="group">
 						<label class="col-lg-2 control-label">Nro. Cuota a Pagar</label>
 						<div class="col-lg-4">
-							<input id="numCiclo" class="form-control" readonly="true" name="nroCuotaAPagar">
+							<input id="nroCuotaAPagar" class="form-control" readonly="true" name="nroCuotaAPagar">
 						</div>
 					</div>
 					<div class="group">

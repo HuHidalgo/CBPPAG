@@ -10,6 +10,8 @@ public interface IMatriculaService extends IMantenibleService<Matricula>{
     
     public List<Matricula> buscarAlumno(String tipoDocumento, String nroDocumento);
     
+    public List<Matricula> buscarDiplomatura(String tipoDocumento, String nroDocumento);
+    
     public List<Matricula> buscarPorId(int idMatricula);
     
     public int registrarMatricula(Matricula matricula);

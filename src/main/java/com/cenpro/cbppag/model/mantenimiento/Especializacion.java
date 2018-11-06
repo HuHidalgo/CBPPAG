@@ -17,6 +17,7 @@ public class Especializacion
     private String nombreEspecializacion;
     
     private Double costoMatriculaUPG;
+    private Double costoCiclo; //Solo para diplomatura
     private Integer numCiclo;
     private Integer numCiclos;
 }

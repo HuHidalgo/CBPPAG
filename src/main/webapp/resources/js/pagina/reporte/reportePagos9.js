@@ -25,11 +25,19 @@ $(document).ready(function() {
 			$local.$tablaReportePagoGeneral.wrap("<div class='table-responsive'></div>");
 			$tablaFuncion.aniadirFiltroDeBusquedaEnEncabezado(this, $local.$tablaReportePagoGeneral);
 		},
-		"ordering" : false,
 		"columnDefs" : [ {
 			"targets" : [ 0, 1, 2, 3, 4, 5, 6, 7],
 			"className" : "all filtrable",
 			"defaultContent" : "-"
+		}, {
+			"targets" : 7,
+			"className" : "all dt-center",
+			"render" : function(data, type, row, meta) {
+				if (row.conceptoPago == "PDM" || row.conceptoPago == "PD")
+					return "<label class='label label-info label-size-12'>PERFECCIONAMIENTO</label>";
+				else
+					return "<label class='label label-info label-size-12'>MATRICULA</label>";
+			}
 		}],
 		"columns" : [ 
 			{
@@ -56,8 +64,8 @@ $(document).ready(function() {
 			"data" : "montoPagado",
 			"title" : "Monto Pagado"
 		}, {
-			"data" : "conceptoPago",
-			"title" : "ConceptoPago"
+			"data" : null,
+			"title" : "Tipo Pago"
 		}]
 	});
 	
@@ -73,13 +81,10 @@ $(document).ready(function() {
 	
 	$local.$modalidades.on("change", function(event, opcionSeleccionada) {
 		var idModalidad = $(this).val();
-		if (idModalidad == null || idModalidad == undefined) {
-			$local.$especializaciones.find("option:not(:eq(0))").remove();
-			return;
-		}
+		console.log("modalidad");
 		$.ajax({
 			type : "GET",
-			url : $variableUtil.root + "mantenimiento/especializacion/modalidad/" + idModalidad,
+			url : $variableUtil.root + "mantenimiento/especializacion/modalidad/" + idModalidad + "/" + 0,
 			beforeSend : function(xhr) {
 				$local.$especializaciones.find("option:not(:eq(0))").remove();
 				$local.$especializaciones.parent().append("<span class='help-block cargando'><i class='fa fa-spinner fa-pulse fa-fw'></i> Cargando Especializaciones</span>")
@@ -92,10 +97,9 @@ $(document).ready(function() {
 			},
 			success : function(especializaciones) {
 				$.each(especializaciones, function(i, especializacion) {
-					$local.$especializaciones.append($("<option />").val(this.idEspecializacion).text(this.idEspecializacion + " - " + this.nombreEspecializacion));
+					$local.$especializaciones.append($("<option />").val(this.idEspecializacion).text(this.nombreEspecializacion));
 				});
 				if (opcionSeleccionada != null && opcionSeleccionada != undefined) {
-					console.log(" 123 "+opcionSeleccionada);
 					$local.$especializaciones.val(opcionSeleccionada).trigger("change.select2");
 				}
 			},
@@ -204,13 +208,13 @@ $(document).ready(function() {
 		if(reporte.numeroCiclo == ""){
 			reporte.numeroCiclo = "0";
 		}
-		if ($funcionUtil.camposVacios($formReportePago)) {
+		/*if ($funcionUtil.camposVacios($formReportePago)) {
 			$funcionUtil.notificarException($variableUtil.camposVacios, "fa-exclamation-circle", "Información", "info");
 			return;
 		}
 		if (!$formReportePago.valid()) {
 			return;
-		}
+		}*/
 		var paramCriterioBusqueda = $.param(reporte);
 		window.location.href = $variableUtil.root + "registro/reporte?accion=exportar2&" + paramCriterioBusqueda;
 	});

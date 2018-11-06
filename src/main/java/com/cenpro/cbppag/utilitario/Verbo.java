@@ -37,6 +37,7 @@ public class Verbo
     public static final String GET_PAR = "GET_PAR";
     public static final String GET_META = "GET_META";
     public static final String VERIFICAR_AM = "VERIFICAR_AM";
+    public static final String MATRICULA_DIPLOMATURA = "MATRICULA_DIPLOMATURA";
     public static final String GET_MODA = "GET_MODA";
     public static final String GET_COSTO = "GET_COSTO";
     public static final String GET_MENSAJE = "GET_MENSAJE";

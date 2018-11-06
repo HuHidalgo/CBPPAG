@@ -87,4 +87,10 @@ public class MatriculaService extends MantenibleService<Matricula> implements IM
 		this.actualizar(matricula);
 	}
 
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public List<Matricula> buscarDiplomatura(String tipoDocumento, String nroDocumento) {
+		Matricula matricula = Matricula.builder().tipoDocumento(tipoDocumento).numeroDocumento(nroDocumento).build();
+		return this.buscar(matricula, Verbo.MATRICULA_DIPLOMATURA);
+	}
+
 }
