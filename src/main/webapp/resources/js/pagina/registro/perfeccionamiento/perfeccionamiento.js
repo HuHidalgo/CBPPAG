@@ -194,7 +194,6 @@ $(document).ready(function() {
 		}
 		
 	    matriculaDiplomatura();
-	    devolverDiplomaturas("M102");
 		
 		$.ajax({
 			type : "GET",
@@ -203,91 +202,89 @@ $(document).ready(function() {
 				$local.$verificarAlumno.attr("disabled", true).find("i").removeClass("fa-check-square-o").addClass("fa-spinner fa-pulse fa-fw");
 			},
 			success : function(pagos) {
+				$local.idMatricula = 0;
 				$local.$banderaDeudas = false;
 				var pago = pagos[0];
-				$local.$modalidades.trigger("change");
-				$local.$especializaciones.trigger("change");
-				console.log("Cantidad de deudas : "+pagos.length);
+				mostrarDiplomaturas("M102", "1");
+				/*$local.$modalidades.trigger("change");
+				$local.$especializaciones.trigger("change");*/
+				
+				
 				if(pagos.length == 0){
-					$local.$banderaDeudas = false;
-					$local.$modalidades.find('option[value="'+"M100"+'"]').remove();
-					$local.$modalidades.find('option[value="'+"M101"+'"]').remove();
-					mostrarDiplomaturas();
-					$local.$modalidades.val("M102").trigger("change");
+					//mostrarDiplomaturas("M102", "1");
+					
+					$local.$conceptosPago.val("PD").trigger("change.select2");
+					$local.$modalidades.val("M102").trigger("change.select2");
+					
 					$funcionUtil.notificarException($variableUtil.alumnoNoEncontrado, "fa-exclamation-circle", "Información", "danger");
 					return;
 				}
 				else{
 					if(pago.idConceptoPago == null){
 						$local.$banderaDeudas = false;
-						$local.$tiposDocumento.val(pago.tipoDocumento).trigger("change.select2");
-						$local.$modalidades.find('option[value="'+"M100"+'"]').remove();
-						$local.$modalidades.find('option[value="'+"M101"+'"]').remove();
-						mostrarDiplomaturas();
-						$local.$modalidades.val("M102").trigger("change");
+						//mostrarDiplomaturas("M102", "1");
 						$local.$apellidos.val(pago.apellidoAlumno);
 						$local.$nombres.val(pago.nombreAlumno);
 						$local.$correo.val(pago.correoAlumno);
+						$local.$tiposDocumento.val(pago.tipoDocumento).trigger("change.select2");
+						$local.$conceptosPago.val("PD").trigger("change.select2");
+						$local.$modalidades.val("M102").trigger("change.select2");
 					}
 					else{
-						/*if(pago.idConceptoPago == "PD"){
-							$local.$banderaDeudas = false;
-							$local.$tiposDocumento.val(pago.tipoDocumento).trigger("change.select2");
-							$local.$apellidos.val(pago.apellidoAlumno);
-							$local.$nombres.val(pago.nombreAlumno);
-							$local.$correo.val(pago.correoAlumno);
-							$local.$tiposPago.val('PC').trigger("change.select2");	
-						}
-						else{*/
-							$local.idMatricula = pago.idMatricula;
+						$local.idMatricula = pago.idMatricula;
 							
-							$local.$tiposDocumento.val(pago.tipoDocumento).trigger("change.select2");
-							$local.$apellidos.val(pago.apellidoAlumno);
-							$local.$nombres.val(pago.nombreAlumno);
-							$local.$correo.val(pago.correoAlumno);
-							
-							$local.$modalidades.find("option:not(:eq(0))").remove();
-							$local.$modalidades.trigger("change");
-							$local.$especializaciones.find("option:not(:eq(0))").remove();
-							$local.$especializaciones.trigger("change");				
-							$local.$modalidades.val(pago.idModalidad).trigger("change.select2");
-							$local.$modalidades.trigger("change", [ pago.idEspecializacion ]);
-							
-							$local.$tiposPago.val(pago.idTipoPago).trigger("change.select2");					
-							$local.$montoAPagar.val(pago.montoAPagar);
-							$local.$numCiclo.val(pago.numeroCiclo);
-							$local.$cuotaPendiente.val(pago.nroCuotasPendientes);
-							$local.$numeroCuotas.val(4-pago.nroCuotasPendientes+1);
-							
-							$local.$banderaDeudas = true;
-							$local.pagos = pagos;
-							var modalidadesAuxiliar = [];
-							var especializacionesAuxiliar = [];
-							
-							$.each(pagos, function(i, pago) {			
-								modalidadesAuxiliar.push(pago.idModalidad + " - " +pago.nombreModalidad);
-								especializacionesAuxiliar.push(pago.idEspecializacion + " - " +pago.nombreEspecializacion);
-							});			
-							
-							modalidadesAuxiliar = eliminateDuplicates(modalidadesAuxiliar);
-							
-							var posicion1 = 0;
-							$.each(modalidadesAuxiliar, function(i, modalidad) {		
-								posicion1 = modalidad.indexOf("-");
+						$local.$tiposDocumento.val(pago.tipoDocumento).trigger("change.select2");
+						$local.$apellidos.val(pago.apellidoAlumno);
+						$local.$nombres.val(pago.nombreAlumno);
+						$local.$correo.val(pago.correoAlumno);
+						
+						$local.pagos = pagos;
+						var modalidadesAuxiliar = [];
+						var especializacionesAuxiliar = [];
+						
+						$.each(pagos, function(i, pago) {			
+							modalidadesAuxiliar.push(pago.idModalidad + " - " +pago.nombreModalidad);
+							especializacionesAuxiliar.push(pago.idEspecializacion + " - " +pago.nombreEspecializacion);
+						});			
+						
+						modalidadesAuxiliar = eliminateDuplicates(modalidadesAuxiliar);
+						
+						var posicion1 = 0;
+						$.each(modalidadesAuxiliar, function(i, modalidad) {		
+							posicion1 = modalidad.indexOf("-");
+							if(modalidad.substring(0, posicion1-1)!="M102"){
 								$local.$modalidades.append($("<option />").val(modalidad.substring(0, posicion1-1)).text(modalidad.substring(posicion1+2, modalidad.length)));
-							});
-							
-							especializacionesAuxiliar = eliminateDuplicates(especializacionesAuxiliar);
-							var posicion2 = 0;
-							$.each(especializacionesAuxiliar, function(i, especializacion) {	
-								posicion2 = especializacion.indexOf("-");
-								$local.$especializaciones.append($("<option />").val(especializacion.substring(0, posicion2-1)).text(especializacion.substring(posicion2+2, especializacion.length)));
-							});
-							
-							if(pago.idModalidad == "M100" || pago.idModalidad == "M101"){
-								$local.$conceptosPago.val("PDM").trigger("change.select2");
 							}
-						//}
+						});
+						
+						especializacionesAuxiliar = eliminateDuplicates(especializacionesAuxiliar);
+						var posicion2 = 0;
+						$.each(especializacionesAuxiliar, function(i, especializacion) {	
+							posicion2 = especializacion.indexOf("-");
+							if(especializacion.substring(0, posicion2-1) != 'ASTI' && especializacion.substring(0, posicion2-1) != 'GPGE' && especializacion.substring(0, posicion2-1) != 'GPTI'){
+								$local.$especializaciones.append($("<option />").val(especializacion.substring(0, posicion2-1)).text(especializacion.substring(posicion2+2, especializacion.length)));
+							}
+						});
+						
+						if(pago.idModalidad == "M100" || pago.idModalidad == "M101"){
+							$local.$conceptosPago.val("PDM").trigger("change.select2");
+						}
+						else{
+							$local.$conceptosPago.val("PD").trigger("change.select2");
+						}
+						
+						$local.$modalidades.val(pago.idModalidad).trigger("change.select2");
+						//$local.$modalidades.trigger("change", [ pago.idEspecializacion ]);
+							
+						$local.$tiposPago.val(pago.idTipoPago).trigger("change.select2");					
+						$local.$montoAPagar.val(pago.montoAPagar);
+						$local.$numCiclo.val(pago.numeroCiclo);
+						$local.$cuotaPendiente.val(pago.nroCuotasPendientes);
+						$local.$numeroCuotas.val(4-pago.nroCuotasPendientes+1);
+						
+						//mostrarDiplomaturas("M102", "1");
+						
+						$local.$banderaDeudas = true;
 					}
 					
 				}
@@ -329,48 +326,23 @@ $(document).ready(function() {
 			$local.$especializaciones.find("option:not(:eq(0))").remove();
 			
 			if(idModalidad == "M102"){
-				$local.$banderaDeudas = false;
-				$local.$modalidades.trigger("change");
-				$local.$banderaDeudas = true;
-				
+				$.each($local.$arregloEspecializacion, function(i, especializacion) {
+					$local.$especializaciones.append($("<option />").val(especializacion.idEspecializacion).text(especializacion.nombreEspecializacion));
+				});	
 			}
 			
 			$.each($local.pagos, function(i, pago) {
 				if(pago.nroCuotasPendientes != 0){
 					if(idModalidad != "M102" && idModalidad == pago.idModalidad){
+						console.log("entro M102 FOR");
 						$local.$especializaciones.append($("<option />").val(pago.idEspecializacion).text(pago.nombreEspecializacion));
 					}
 				}
 			});
+			//mostrarDiplomaturas("M102", "1");
 		}
 		else{
-			$.ajax({
-				type : "GET",
-				url : $variableUtil.root + "mantenimiento/especializacion/modalidad/" + idModalidad + "/" + nroCiclo,
-				beforeSend : function(xhr) {
-					$local.$especializaciones.find("option:not(:eq(0))").remove();
-					$local.$especializaciones.parent().append("<span class='help-block cargando'><i class='fa fa-spinner fa-pulse fa-fw'></i> Cargando Especializaciones</span>")
-				},
-				statusCode : {
-					400 : function(response) {
-						$funcionUtil.limpiarMensajesDeError($formMantenimiento);
-						$funcionUtil.mostrarMensajeDeError(response.responseJSON, $formMantenimiento);
-					}
-				},
-				success : function(especializaciones) {
-					$local.$arregloEspecializacion = especializaciones;
-					
-					$.each(especializaciones, function(i, especializacion) {
-						$local.$especializaciones.append($("<option />").val(this.idEspecializacion).text(this.nombreEspecializacion));
-					});
-					if (opcionSeleccionada != null && opcionSeleccionada != undefined) {
-						$local.$especializaciones.val(opcionSeleccionada).trigger("change.select2");
-					}
-				},
-				complete : function() {
-					$local.$especializaciones.parent().find(".cargando").remove();
-				}
-			});
+			mostrarDiplomaturas("M102", "1");
 		}
 	});
 	
@@ -386,6 +358,7 @@ $(document).ready(function() {
 		if($local.$banderaDeudas){
 			var banderas = false;
 			$.each($local.pagos, function(i, pago) {	
+				console.log(pago);
 				if(pago.nroCuotasPendientes != 0){
 					if(idEspecializacion == pago.idEspecializacion){
 						console.log("DATA TRUE");
@@ -415,6 +388,19 @@ $(document).ready(function() {
 						});
 					}
 				});
+				$local.idMatricula = 0;
+			}
+			if($local.$arregloDiplomatura.length != 0 && idModalidad == "M102"){
+				var contador2 = 0;
+				$.each($local.$arregloDiplomatura, function(i, diplomatura) {
+					if(idEspecializacion == diplomatura.idEspecializacion){
+						contador2++;
+					}
+				});
+				contador2++;
+				console.log(contador2);
+				$local.$numCiclo.val(contador2);
+				obtenerCostoCicloEspecializacion(idEspecializacion, contador2);
 			}
 		}
 		else{
@@ -545,8 +531,7 @@ $(document).ready(function() {
 					},
 					complete : function(response) {
 					}
-				});				
-				$local.idMatricula = 0;
+				});
 				$local.$modalMantenimiento.PopupWindow("close");
 			},
 			error : function(response) {
@@ -702,39 +687,13 @@ $(document).ready(function() {
 	};
 	
 	/**
-	 * Este método se encargará de devolver todas las especializaciones
-	 * que se encuentran en la modalidad de Diplomatura
-	 */
-	function devolverDiplomaturas(idModalidad){
-		$.ajax({
-			type : "GET",
-			url : $variableUtil.root + "mantenimiento/especializacion/modalidad/" + idModalidad + "/1",
-			beforeSend : function(xhr) {
-				
-			},
-			statusCode : {
-				400 : function(response) {
-					$funcionUtil.limpiarMensajesDeError($formMantenimiento);
-					$funcionUtil.mostrarMensajeDeError(response.responseJSON, $formMantenimiento);
-				}
-			},
-			success : function(especializaciones) {
-				$especializacionesDiplomaturas = especializaciones;
-			},
-			complete : function() {
-				$local.$especializaciones.parent().find(".cargando").remove();
-			}
-		});
-	}
-	
-	/**
 	 * Método encargado de mostrar solo las especializaciones de la modalidad
 	 * Diplomatura
 	 */
-	function mostrarDiplomaturas(){
+	function mostrarDiplomaturas(idModalidad, numeroCiclo){
 		$.ajax({
 			type : "GET",
-			url : $variableUtil.root + "mantenimiento/especializacion/modalidad/M102/1",
+			url : $variableUtil.root + "mantenimiento/especializacion/modalidad/" + idModalidad + "/" + numeroCiclo,
 			beforeSend : function(xhr) {
 				$local.$especializaciones.find("option:not(:eq(0))").remove();
 				$local.$modalidades.find("option:not(:eq(0))").remove();
@@ -760,4 +719,31 @@ $(document).ready(function() {
 		});
 	}
 	
+	/**
+	 * Esta función se encargará de traer el costo de la matrícula 
+	 * dependiendo de la especialización y del ciclo
+	 */
+	function obtenerCostoCicloEspecializacion(idEspecializacion, numeroCiclo){
+		$.ajax({
+			type : "GET",
+			url : $variableUtil.root + "mantenimiento/especializacion/costo/" + idEspecializacion + "/" + numeroCiclo,
+			beforeSend : function(xhr) {
+				
+			},
+			statusCode : {
+				400 : function(response) {
+					$funcionUtil.limpiarMensajesDeError($formMantenimiento);
+					$funcionUtil.mostrarMensajeDeError(response.responseJSON, $formMantenimiento);
+				}
+			},
+			success : function(especializaciones) {
+				var contador = 1;
+				var esp = especializaciones[0];
+				$local.$montoPagar = esp.costoCiclo; 
+			},
+			complete : function() {
+				
+			}
+		});
+	}
 });
