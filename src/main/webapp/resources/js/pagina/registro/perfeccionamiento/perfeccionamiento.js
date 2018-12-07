@@ -206,13 +206,8 @@ $(document).ready(function() {
 				$local.$banderaDeudas = false;
 				var pago = pagos[0];
 				mostrarDiplomaturas("M102", "1");
-				/*$local.$modalidades.trigger("change");
-				$local.$especializaciones.trigger("change");*/
-				
 				
 				if(pagos.length == 0){
-					//mostrarDiplomaturas("M102", "1");
-					
 					$local.$conceptosPago.val("PD").trigger("change.select2");
 					$local.$modalidades.val("M102").trigger("change.select2");
 					
@@ -222,7 +217,6 @@ $(document).ready(function() {
 				else{
 					if(pago.idConceptoPago == null){
 						$local.$banderaDeudas = false;
-						//mostrarDiplomaturas("M102", "1");
 						$local.$apellidos.val(pago.apellidoAlumno);
 						$local.$nombres.val(pago.nombreAlumno);
 						$local.$correo.val(pago.correoAlumno);
@@ -258,14 +252,14 @@ $(document).ready(function() {
 						});
 						
 						especializacionesAuxiliar = eliminateDuplicates(especializacionesAuxiliar);
-						var posicion2 = 0;
+						/*var posicion2 = 0;
 						$.each(especializacionesAuxiliar, function(i, especializacion) {	
 							posicion2 = especializacion.indexOf("-");
 							if(especializacion.substring(0, posicion2-1) != 'ASTI' && especializacion.substring(0, posicion2-1) != 'GPGE' && especializacion.substring(0, posicion2-1) != 'GPTI'){
 								$local.$especializaciones.append($("<option />").val(especializacion.substring(0, posicion2-1)).text(especializacion.substring(posicion2+2, especializacion.length)));
 							}
 						});
-						
+						*/
 						if(pago.idModalidad == "M100" || pago.idModalidad == "M101"){
 							$local.$conceptosPago.val("PDM").trigger("change.select2");
 						}
@@ -274,17 +268,15 @@ $(document).ready(function() {
 						}
 						
 						$local.$modalidades.val(pago.idModalidad).trigger("change.select2");
-						//$local.$modalidades.trigger("change", [ pago.idEspecializacion ]);
 							
 						$local.$tiposPago.val(pago.idTipoPago).trigger("change.select2");					
 						$local.$montoAPagar.val(pago.montoAPagar);
 						$local.$numCiclo.val(pago.numeroCiclo);
 						$local.$cuotaPendiente.val(pago.nroCuotasPendientes);
 						$local.$numeroCuotas.val(4-pago.nroCuotasPendientes+1);
-						
-						//mostrarDiplomaturas("M102", "1");
-						
 						$local.$banderaDeudas = true;
+						$local.$especializaciones.find("option:not(:eq(0))").remove();
+						//$local.$modalidades.trigger("change");
 					}
 					
 				}
@@ -326,6 +318,7 @@ $(document).ready(function() {
 			$local.$especializaciones.find("option:not(:eq(0))").remove();
 			
 			if(idModalidad == "M102"){
+				console.log("entro M102");
 				$.each($local.$arregloEspecializacion, function(i, especializacion) {
 					$local.$especializaciones.append($("<option />").val(especializacion.idEspecializacion).text(especializacion.nombreEspecializacion));
 				});	
@@ -339,7 +332,6 @@ $(document).ready(function() {
 					}
 				}
 			});
-			//mostrarDiplomaturas("M102", "1");
 		}
 		else{
 			mostrarDiplomaturas("M102", "1");
@@ -487,9 +479,11 @@ $(document).ready(function() {
 		//pago.conceptoPago = "210-011";
 		pago.fechaPago = $local.$fechaPago.data("daterangepicker").startDate.format("YYYY-MM-DD");	
 		pago.idMatricula = $local.idMatricula;
-		
-		console.log("pago ");
-		console.log(pago);
+		pago.conceptoPago = $("#conceptosPago option:selected").text();
+		pago.nombreModalidad = $("#modalidades option:selected").text();
+		pago.nombreEspecializacion = $("#especializaciones option:selected").text();
+		pago.montoAPagar = $local.$montoAPagar.val();
+
 		//pago.nroCuotasAPagar =$local.$numeroCuotas.val();  
 		$.ajax({
 			type : "POST",

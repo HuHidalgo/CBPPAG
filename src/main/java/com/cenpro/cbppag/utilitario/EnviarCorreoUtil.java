@@ -68,14 +68,15 @@ public class EnviarCorreoUtil {
 		List<Alerta> alertas = alertaService.buscarMensaje("REGISTRO MATRICULA");
 
 		if(!alertas.isEmpty()) {
-			estructuraMensaje = "Codigo: " + matricula.getCodigoAlumno() +
+			estructuraMensaje = "Tipo de documento: " + matricula.getTipoDocumento() +
+					"\nNúmero de documento: " + matricula.getNumeroDocumento() +
         			"\nAlumno: " + matricula.getNombreAlumno() + " " + matricula.getApellidoAlumno() +
         			"\nFecha de Pago: " + date.format(matricula.getFechaMatricula()) +
         			"\nConcepto de Pago: " + matricula.getConceptoPago() +
         			"\nModalidad: " + matricula.getNombreModalidad() +
         			"\nEspecializacion: " + matricula.getNombreEspecializacion() +
         			"\nCiclo: " + matricula.getNumeroCiclo() +
-        			"\nForma de Pago de ciclo: " + matricula.getIdTipoPago() +
+        			"\nForma de Pago de ciclo: " + matricula.getDescTipoPago() +
         			"\n" + alertas.get(0).getDescAlerta();
 			try {
 			    Session session = Session.getDefaultInstance(properties,
@@ -107,7 +108,8 @@ public class EnviarCorreoUtil {
 		List<Alerta> alertas = alertaService.buscarMensaje("REGISTRO PERFECCIONAMIENTO");
 		
 		if(!alertas.isEmpty()) {
-			estructuraMensaje = "Codigo: " + pago.getCodigoAlumno()+
+			estructuraMensaje = "Tipo de documento: " + pago.getTipoDocumento()+
+					"\nNúmero de documento: " + pago.getNumeroDocumento() +
         			"\nAlumno: " + pago.getNombreAlumno()+" "+pago.getApellidoAlumno()+
         			"\nFecha de Pago: " + date.format(pago.getFechaPago())+
         			"\nConcepto de Pago: " + pago.getConceptoPago()+

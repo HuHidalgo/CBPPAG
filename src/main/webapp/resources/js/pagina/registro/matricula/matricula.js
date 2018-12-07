@@ -330,6 +330,12 @@ $(document).ready(function() {
 		//matricula.nombreEspecializacion = $("#especializaciones option:selected").text().substring(7);
 		//matricula.tipoPago = $local.$tiposPago.val();
 		//matricula.conceptoPago = $local.$conceptosPago.val();		
+		
+		
+		matricula.nombreModalidad = $("#modalidades option:selected").text();
+		matricula.nombreEspecializacion = $("#especializaciones option:selected").text();
+		matricula.conceptoPago = $("#conceptosPago option:selected").text();	
+		matricula.descTipoPago = $("#tiposPago option:selected").text().substring(5);
 		$.ajax({
 			type : "POST",
 			url : $variableUtil.root + "registro/matricula",
