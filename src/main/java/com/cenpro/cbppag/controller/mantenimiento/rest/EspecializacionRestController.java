@@ -28,6 +28,12 @@ public @RestController class EspecializacionRestController
         return especializacionService.buscarEspecializaciones(idModalidad, nroCiclo);
     }
 	
+	@GetMapping("/{idEspecializacion}")
+    public List<Especializacion> buscarEspecializacionPorId(@PathVariable String idEspecializacion)
+    {
+        return especializacionService.buscarPorId(idEspecializacion);
+    }
+	
 	@GetMapping("/costo/{idEspecializacion}/{nroCiclo}")
     public List<Especializacion> buscarCosto(@PathVariable String idEspecializacion, @PathVariable Integer nroCiclo)
     {

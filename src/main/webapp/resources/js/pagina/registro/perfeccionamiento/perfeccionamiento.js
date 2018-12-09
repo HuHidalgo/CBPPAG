@@ -260,6 +260,7 @@ $(document).ready(function() {
 							}
 						});
 						*/
+						
 						if(pago.idModalidad == "M100" || pago.idModalidad == "M101"){
 							$local.$conceptosPago.val("PDM").trigger("change.select2");
 						}
@@ -391,8 +392,19 @@ $(document).ready(function() {
 				});
 				contador2++;
 				console.log(contador2);
-				$local.$numCiclo.val(contador2);
-				obtenerCostoCicloEspecializacion(idEspecializacion, contador2);
+				var esp = $local.$arregloEspecializacion.find(function(especializacion) {
+					  return especializacion.idEspecializacion == idEspecializacion;
+				});
+				
+				if(contador2<=esp.numCiclos){
+					$local.$numCiclo.val(contador2);
+					obtenerCostoCicloEspecializacion(idEspecializacion, contador2);
+				}
+				else{
+					$local.$numCiclo.val("");
+					$funcionUtil.notificarException($variableUtil.ciclosCompletos, "fa-exclamation-circle", "Información", "info");
+				}
+				
 			}
 		}
 		else{
@@ -430,11 +442,25 @@ $(document).ready(function() {
 								});
 								$local.$montoPagar = especialidad.costoCiclo; 
 								//$local.$montoAPagar.val(especialidad.costoCiclo);
+								
 								contador2++;
 								console.log(contador2);
-								$local.$numCiclo.val(contador2);
-								$local.$cuotaPendiente.val("");
-								$local.$numeroCuotas.val("");
+								
+								var esp = $local.$arregloEspecializacion.find(function(especializacion) {
+									  return especializacion.idEspecializacion == idEspecializacion;
+								});
+								
+								if(contador2<=esp.numCiclos){
+									$local.$numCiclo.val(contador2);
+									$local.$cuotaPendiente.val("");
+									$local.$numeroCuotas.val("");
+								}
+								else{
+									$local.$numCiclo.val("");
+									$local.$cuotaPendiente.val("");
+									$local.$numeroCuotas.val("");
+									$funcionUtil.notificarException($variableUtil.ciclosCompletos, "fa-exclamation-circle", "Información", "info");
+								}
 							}
 							
 						});

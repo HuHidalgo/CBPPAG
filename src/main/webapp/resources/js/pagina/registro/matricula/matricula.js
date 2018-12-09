@@ -28,6 +28,7 @@ $(document).ready(function() {
 		$documento : "",
 		$costoMatriculaCiclo : 0.0,
 		matriculas : [],
+		especializaciones : [],
 		filtrosSeleccionables : {}
 	};
 
@@ -174,10 +175,10 @@ $(document).ready(function() {
 						$local.$nombres.val(matricula.nombreAlumno);
 						$local.$correo.val(matricula.correoAlumno);
 						
-						if(matricula.idModalidad == 'M100'){
+						/*if(matricula.idModalidad == 'M100'){
 							console.log("Entro en bandera M100" );
+							banderaDoctorado = true;
 							if(matricula.estadoCiclo == 0){
-								banderaDoctorado = true;
 								$local.$numeroCiclos.val(matricula.numeroCiclo + 1);
 								devolverCosto(matricula.idEspecializacion, matricula.numeroCiclo+1);
 								$local.matriculas.push(matricula);
@@ -197,20 +198,22 @@ $(document).ready(function() {
 								$local.$modalidades.val(matricula.idModalidad).trigger("change.select2"); 
 								$local.$modalidades.trigger("change", [ matricula.idEspecializacion ]);
 							}
-						}
+						}*/
 						
 						console.log("Cantidad de matriculas : "+matriculas.length);
 						$.each(matriculas, function(i, matricula) {		
 							if(matricula.idModalidad == 'M100'){
-								console.log("Entro en bandera M100" );
 								if(matricula.estadoCiclo == 0){
 									banderaDoctorado = true;
 								}
+								
 							}
 							
 							if(matricula.idModalidad == 'M101'){
 								console.log("Entro en bandera M101");
-								banderaMaestria = true;
+								if(matricula.estadoCiclo == 0){
+									banderaMaestria = true;
+								}
 							}
 						});
 						
@@ -265,7 +268,10 @@ $(document).ready(function() {
 				}
 			},
 			success : function(especializaciones) {
+				$local.especializaciones = especializaciones;
+				console.log("Entro en modalidad "+idModalidad+ " " +nroCiclo);
 				$.each(especializaciones, function(i, especializacion) {
+					console.log("Entro en modalidad2");
 					$local.$especializaciones.append($("<option />").val(this.idEspecializacion).text(this.nombreEspecializacion));
 				});
 				if (opcionSeleccionada != null && opcionSeleccionada != undefined) {
@@ -295,23 +301,43 @@ $(document).ready(function() {
 		else{
 			var array = [];
 			$.each($local.matriculas, function(i, matricula) {
+				console.log(matricula);
 				if(idEspecializacion == matricula.idEspecializacion){
 					array.push(matricula)
 				}
 			});
-			var bandera = false;
-			$.each(array, function(i, lista) {
-				if(idEspecializacion == lista.idEspecializacion){
-					console.log("Matricula : "+lista.idEspecializacion);
-					$local.$numeroCiclos.val(lista.numeroCiclo + 1);
-					bandera = true;
-				}
+			var bandera = 1;
+			
+			var matriculaAuxiliar = $local.matriculas.pop();
+			var esp = $local.especializaciones.find(function(especializacion) {
+				  return especializacion.idEspecializacion == matriculaAuxiliar.idEspecializacion;
 			});
 			
-			if(!bandera){
-				$local.$numeroCiclos.val("1");
+			if(matriculaAuxiliar.estadoCiclo == 1){
+				if(idEspecializacion == matriculaAuxiliar.idEspecializacion){
+					if(matriculaAuxiliar.numeroCiclo+1<=esp.numCiclos){
+						console.log("Matricula : "+matriculaAuxiliar.idEspecializacion + " " + matriculaAuxiliar.numeroCiclo);
+						$local.$numeroCiclos.val(matriculaAuxiliar.numeroCiclo + 1);
+						devolverCosto(idEspecializacion, $local.$numeroCiclos.val());
+						bandera = 2;
+					}
+					else{
+						$local.$numeroCiclos.val("");
+						$funcionUtil.notificarException($variableUtil.ciclosCompletos, "fa-exclamation-circle", "Información", "info");
+						bandera = 3;
+					}
+				}
 			}
-			devolverCosto(idEspecializacion, $local.$numeroCiclos.val());
+			else{
+				bandera = 4;
+				$funcionUtil.notificarException($variableUtil.cicloEnProceso, "fa-exclamation-circle", "Información", "danger");
+			}
+			
+			if(bandera==1){
+				$local.$numeroCiclos.val("1");
+				devolverCosto(idEspecializacion, $local.$numeroCiclos.val());
+			}
+			
 		}
 	});
 	
@@ -556,6 +582,29 @@ $(document).ready(function() {
 			success : function(especializaciones) {
 				var esp = especializaciones[0];
 				$local.$costoMatricula.val(esp.costoMatriculaUPG);
+			},
+			complete : function() {
+			}
+		});
+	}
+	
+	function devolverNumeroCiclo(idEspecializacion){
+		var numCiclo = 0;
+		return $.ajax({
+			type : "GET",
+			url : $variableUtil.root + "mantenimiento/especializacion/" + idEspecializacion,
+			beforeSend : function(xhr) {
+				xhr.setRequestHeader('Content-Type', 'application/json');
+				xhr.setRequestHeader("X-CSRF-TOKEN", $variableUtil.csrf);
+			},
+			statusCode : {
+				400 : function(response) {
+					$funcionUtil.limpiarMensajesDeError($formMantenimiento);
+					$funcionUtil.mostrarMensajeDeError(response.responseJSON, $formMantenimiento);
+				}
+			},
+			success : function(especializaciones) {
+				var esp = especializaciones[0];
 			},
 			complete : function() {
 			}

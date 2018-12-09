@@ -55,6 +55,8 @@ $(document).ready(function() {
 		camposVacios : "Debe escoger algún Filtro para poder realizar la Búsqueda",
 		alumnoNoEncontrado : "No existe datos del alumno",
 		codigoAlumnoVacio : "No se ha digitado código de alumno",
+		ciclosCompletos : "Usted ya ha completado los ciclos necesarios",
+		cicloEnProceso : "No puede matricularse en el siguiente ciclo, sin acabar el actual.",
 		deudaPagada: "El alumno no registra deuda"	
 	};
 
