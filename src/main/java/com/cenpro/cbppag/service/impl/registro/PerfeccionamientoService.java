@@ -77,4 +77,10 @@ public class PerfeccionamientoService extends MantenibleService<Perfeccionamient
 		
 	}
 
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public List<Perfeccionamiento> buscarPerfeccionamiento(String tipoDocumento, String numDocumento) {
+		Perfeccionamiento pago = Perfeccionamiento.builder().tipoDocumento(tipoDocumento).numeroDocumento(numDocumento).build();
+		return this.buscar(pago, Verbo.GETS_PERFEC);
+	}
+
 }

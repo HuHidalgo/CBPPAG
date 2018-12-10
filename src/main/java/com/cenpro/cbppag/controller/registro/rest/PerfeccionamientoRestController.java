@@ -45,6 +45,12 @@ public @RestController class PerfeccionamientoRestController {
         return pagoService.buscarAlumno(tipoDoc, codAlumno);
     }
 	
+	@GetMapping("/buscar/{tipoDoc}/{codAlumno}")
+    public List<Perfeccionamiento> buscarPerfeccionamiento(@PathVariable String tipoDoc, @PathVariable String codAlumno)
+    {
+        return pagoService.buscarPerfeccionamiento(tipoDoc, codAlumno);
+    }
+	
 	@PostMapping
     public ResponseEntity<?> registrarPerfeccionamiento(@RequestBody Perfeccionamiento pago)
     {

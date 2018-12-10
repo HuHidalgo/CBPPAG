@@ -43,6 +43,7 @@ public class Verbo
     public static final String GET_MENSAJE = "GET_MENSAJE";
     public static final String GET_VOUCHER_PAGO = "GET_VOUCHER_PAGO";
     public static final String GET_ALERTA_PAGO = "GET_ALERTA_PAGO";
+    public static final String GETS_PERFEC = "GETS_PERFEC";
     
     // Verbo de Reporte
     public static final String COMISION_BANCO_ADMINISTRADOR = "COMISION_BANCO_ADMINISTRADOR";

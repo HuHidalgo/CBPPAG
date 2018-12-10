@@ -57,7 +57,8 @@ $(document).ready(function() {
 		codigoAlumnoVacio : "No se ha digitado código de alumno",
 		ciclosCompletos : "Usted ya ha completado los ciclos necesarios",
 		cicloEnProceso : "No puede matricularse en el siguiente ciclo, sin acabar el actual.",
-		deudaPagada: "El alumno no registra deuda"	
+		deudaPagada: "El alumno no registra deuda"	,
+		matriculaPrimero : "Primero debe matricularse antes de poder realizar los pagos"
 	};
 
 	$funcionUtil = {

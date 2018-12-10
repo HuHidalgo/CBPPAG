@@ -10,6 +10,8 @@ public interface IPerfeccionamientoService extends IMantenibleService<Perfeccion
     
     public List<Perfeccionamiento> buscarAlumno(String tipoDocumento, String numDocumento);
     
+    public List<Perfeccionamiento> buscarPerfeccionamiento(String tipoDocumento, String numDocumento);
+    
     public List<Perfeccionamiento> buscarPorId(int idPerfeccionamiento);
 	
     public int registrarPerfeccionamiento(Perfeccionamiento pago);
