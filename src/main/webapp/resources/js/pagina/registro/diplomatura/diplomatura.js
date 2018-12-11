@@ -52,6 +52,7 @@ $(document).ready(function() {
 		switch (xhr.status) {
 		case 500:
 			$local.tablaMantenimiento.clear().draw();
+			console.log();
 			break;
 		}
 	});
