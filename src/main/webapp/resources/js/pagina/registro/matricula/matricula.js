@@ -161,15 +161,12 @@ $(document).ready(function() {
 				type : "GET",
 				url : $variableUtil.root + "registro/matricula/" + tipoDoc + "/" + codAlumno,
 				success : function(matriculas) {
-					if(matriculas.length == 0){
-						$funcionUtil.notificarException($variableUtil.alumnoNoEncontrado, "fa-exclamation-circle", "Información", "danger");
-						return;
-					}
-					else{
+					
 						if(matriculas[0].estadoCiclo == 0){
 							$funcionUtil.notificarException($variableUtil.NoMatricula, "fa-exclamation-circle", "Información", "danger");
 							return;
-						}						
+						}	
+						
 						$local.matriculas = matriculas;
 						$.each(matriculas, function(i, matricula) {				
 							$local.$apellidos.val(this.apellidoAlumno);
@@ -182,40 +179,25 @@ $(document).ready(function() {
 							$local.$costoMatricula.val(matricula.costoMatricula);
 						});
 						
-						/*
+						var datos;
+						$local.matriculas = matriculas;
+						var banderaDoctorado = false;
+						var banderaMaestria = false;
+						
+						$.each(matriculas, function(i, matricula) {				
+							$local.$apellidos.val(this.apellidoAlumno);
+							$local.$nombres.val(this.nombreAlumno);
+							$local.$correo.val(this.correoAlumno);
+							$local.$modalidades.val(matricula.idModalidad).trigger("change.select2");
+							$local.$conceptosPago.val(matricula.idConceptoPago).trigger("change.select2");
+							$local.$modalidades.trigger("change", [ matricula.idEspecializacion ]);
+							$local.$numeroCiclos.val(matricula.numeroCiclo + 1);
+							$local.$costoMatricula.val(matricula.costoMatricula);
+						});
+						
 						var banderaDoctorado = false;
 						var banderaMaestria = false;
 						$local.matriculas = matriculas;
-						var matricula = matriculas[matriculas.length-1];
-						
-						$local.$apellidos.val(matricula.apellidoAlumno);
-						$local.$nombres.val(matricula.nombreAlumno);
-						$local.$correo.val(matricula.correoAlumno);
-						
-						if(matricula.idModalidad == 'M100'){
-							console.log("Entro en bandera M100" );
-							banderaDoctorado = true;
-							if(matricula.estadoCiclo == 0){
-								$local.$numeroCiclos.val(matricula.numeroCiclo + 1);
-								devolverCosto(matricula.idEspecializacion, matricula.numeroCiclo+1);
-								$local.matriculas.push(matricula);
-								$local.$modalidades.val(matricula.idModalidad).trigger("change.select2"); 
-								$local.$modalidades.trigger("change", [ matricula.idEspecializacion ]);
-								
-							}
-						}
-						
-						if(matricula.idModalidad == 'M101'){
-							console.log("Entro en bandera M101");
-							banderaMaestria = true;
-							if(matricula.estadoCiclo == 0){
-								$local.$numeroCiclos.val(matricula.numeroCiclo + 1);
-								$local.$costoMatricula.val(matricula.costoMatricula);
-								devolverCosto(matricula.idEspecializacion, matricula.numeroCiclo+1);
-								$local.$modalidades.val(matricula.idModalidad).trigger("change.select2"); 
-								$local.$modalidades.trigger("change", [ matricula.idEspecializacion ]);
-							}
-						}
 						
 						console.log("Cantidad de matriculas : "+matriculas.length);
 						$.each(matriculas, function(i, matricula) {		
@@ -234,14 +216,18 @@ $(document).ready(function() {
 							}
 						});
 						
+						
 						if(banderaDoctorado){
 							$local.$modalidades.find('option[value="'+"M101"+'"]').remove();
 						}
 						if(banderaMaestria){
 							$local.$modalidades.find('option[value="'+"M100"+'"]').remove();
-						}*/
+						}
+						
+					
+						
 					}
-				}
+				
 			});
 		}
 	});
@@ -316,6 +302,7 @@ $(document).ready(function() {
 			devolverCosto(idEspecializacion, 1);
 		}
 		else{
+			
 			var array = [];
 			$.each($local.matriculas, function(i, matricula) {
 				console.log(matricula);
@@ -323,9 +310,11 @@ $(document).ready(function() {
 					array.push(matricula)
 				}
 			});
+			
 			var bandera = 1;
 			
-			var matriculaAuxiliar = $local.matriculas.pop();
+			var matriculaAuxiliar = $local.matriculas[$local.matriculas.length - 1];
+			//console.log(matriculaAuxiliar);
 			var esp = $local.especializaciones.find(function(especializacion) {
 				  return especializacion.idEspecializacion == matriculaAuxiliar.idEspecializacion;
 			});
@@ -346,8 +335,10 @@ $(document).ready(function() {
 				}
 			}
 			else{
-				bandera = 4;
-				$funcionUtil.notificarException($variableUtil.cicloEnProceso, "fa-exclamation-circle", "Información", "danger");
+				if(idEspecializacion == matriculaAuxiliar.idEspecializacion){
+					bandera = 4;
+					$funcionUtil.notificarException($variableUtil.cicloEnProceso, "fa-exclamation-circle", "Información", "danger");
+				}
 			}
 			
 			if(bandera==1){

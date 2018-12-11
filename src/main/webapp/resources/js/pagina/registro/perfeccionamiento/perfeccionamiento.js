@@ -210,7 +210,6 @@ $(document).ready(function() {
 				mostrarDiplomaturas("M102", "1");
 				
 				if(pagos.length == 0){
-					console.log("Pagos 0 ");
 					mostrarDiplomaturas2("M102", "1");
 					$local.$conceptosPago.val("PD").trigger("change.select2");
 					$local.$modalidades.val("M102").trigger("change.select2");	
@@ -219,7 +218,6 @@ $(document).ready(function() {
 				}
 				else{
 					if(pago.idConceptoPago == null){
-						console.log("Nulo ");
 						mostrarDiplomaturas2("M102", "1");
 						$local.$banderaDeudas = false;
 						$local.$apellidos.val(pago.apellidoAlumno);
@@ -233,7 +231,6 @@ $(document).ready(function() {
 						}
 						
 						$.each($local.$arregloPerfeccionamiento, function(i, perfec) {	
-							console.log("Perfeccionamiento" + perfec.idModalidad + " " + perfec.nombreModalidad );
 							$local.$modalidades.append($("<option />").val(perfec.idModalidad).text(perfec.nombreModalidad));
 						});
 					}
@@ -283,6 +280,7 @@ $(document).ready(function() {
 						
 						$local.$modalidades.val(pago.idModalidad).trigger("change.select2");
 							
+						
 						$local.$tiposPago.val(pago.idTipoPago).trigger("change.select2");					
 						$local.$montoAPagar.val(pago.montoAPagar);
 						$local.$numCiclo.val(pago.numeroCiclo);
@@ -319,7 +317,6 @@ $(document).ready(function() {
 		
 		if (nroCiclo == "")
 			nroCiclo = 0;
-		console.log("Modalidaes entro");
 		
 		if (idModalidad == null || idModalidad == undefined) {
 			$local.$especializaciones.find("option:not(:eq(0))").remove();
@@ -340,7 +337,6 @@ $(document).ready(function() {
 			
 			if(idModalidad == "M102"){
 				$.each($local.$arregloEspecializacion, function(i, especializacion) {
-					console.log("entro M102");
 					$local.$especializaciones.append($("<option />").val(especializacion.idEspecializacion).text(especializacion.nombreEspecializacion));
 				});	
 			}
@@ -348,7 +344,6 @@ $(document).ready(function() {
 				$.each($local.pagos, function(i, pago) {
 					if(pago.nroCuotasPendientes != 0){
 						if(idModalidad != "M102" && idModalidad == pago.idModalidad){
-							console.log("entro M100");
 							$local.$especializaciones.append($("<option />").val(pago.idEspecializacion).text(pago.nombreEspecializacion));
 						}
 					}
@@ -444,7 +439,6 @@ $(document).ready(function() {
 							$local.idMatricula = pago.idMatricula;
 							$local.$montoAPagar.val(pago.montoAPagar);
 							banderas = true;
-							console.log("Banderas : "+banderas);
 						}
 					}
 				});
@@ -475,7 +469,6 @@ $(document).ready(function() {
 					}
 				});
 				contador2++;
-				console.log(contador2);
 				var esp = $local.$arregloEspecializacion.find(function(especializacion) {
 					  return especializacion.idEspecializacion == idEspecializacion;
 				});
@@ -528,7 +521,6 @@ $(document).ready(function() {
 								//$local.$montoAPagar.val(especialidad.costoCiclo);
 								
 								contador2++;
-								console.log(contador2);
 								
 								var esp = $local.$arregloEspecializacion.find(function(especializacion) {
 									  return especializacion.idEspecializacion == idEspecializacion;
@@ -907,11 +899,9 @@ $(document).ready(function() {
 				}
 			},
 			success : function(perfeccionamientos) {
-				console.log("Perfeccionamientois "+perfeccionamientos.length);
 				$local.$arregloPerfeccionamiento = perfeccionamientos;
 			},
 			complete : function() {
-				console.log("Completo 4987");
 			}
 		});
 	}
