@@ -166,6 +166,23 @@ $(document).ready(function() {
 						return;
 					}
 					else{
+						if(matriculas[0].estadoCiclo == 0){
+							$funcionUtil.notificarException($variableUtil.NoMatricula, "fa-exclamation-circle", "Información", "danger");
+							return;
+						}						
+						$local.matriculas = matriculas;
+						$.each(matriculas, function(i, matricula) {				
+							$local.$apellidos.val(this.apellidoAlumno);
+							$local.$nombres.val(this.nombreAlumno);
+							$local.$correo.val(this.correoAlumno);
+							$local.$modalidades.val(matricula.idModalidad).trigger("change.select2");
+							$local.$conceptosPago.val(matricula.idConceptoPago).trigger("change.select2");
+							$local.$modalidades.trigger("change", [ matricula.idEspecializacion ]);
+							$local.$numeroCiclos.val(matricula.numeroCiclo + 1);
+							$local.$costoMatricula.val(matricula.costoMatricula);
+						});
+						
+						/*
 						var banderaDoctorado = false;
 						var banderaMaestria = false;
 						$local.matriculas = matriculas;
@@ -175,7 +192,7 @@ $(document).ready(function() {
 						$local.$nombres.val(matricula.nombreAlumno);
 						$local.$correo.val(matricula.correoAlumno);
 						
-						/*if(matricula.idModalidad == 'M100'){
+						if(matricula.idModalidad == 'M100'){
 							console.log("Entro en bandera M100" );
 							banderaDoctorado = true;
 							if(matricula.estadoCiclo == 0){
@@ -198,7 +215,7 @@ $(document).ready(function() {
 								$local.$modalidades.val(matricula.idModalidad).trigger("change.select2"); 
 								$local.$modalidades.trigger("change", [ matricula.idEspecializacion ]);
 							}
-						}*/
+						}
 						
 						console.log("Cantidad de matriculas : "+matriculas.length);
 						$.each(matriculas, function(i, matricula) {		
@@ -222,7 +239,7 @@ $(document).ready(function() {
 						}
 						if(banderaMaestria){
 							$local.$modalidades.find('option[value="'+"M100"+'"]').remove();
-						}
+						}*/
 					}
 				}
 			});

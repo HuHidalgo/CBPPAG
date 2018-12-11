@@ -58,7 +58,8 @@ $(document).ready(function() {
 		ciclosCompletos : "Usted ya ha completado los ciclos necesarios",
 		cicloEnProceso : "No puede matricularse en el siguiente ciclo, sin acabar el actual.",
 		deudaPagada: "El alumno no registra deuda"	,
-		matriculaPrimero : "Primero debe matricularse antes de poder realizar los pagos"
+		matriculaPrimero : "Primero debe matricularse antes de poder realizar los pagos",
+		NoMatricula: "Aún no puede matricularse para el siguiente ciclo. Tiene que terminar de pagar las cuotas del ciclo anterior. "
 	};
 
 	$funcionUtil = {
