@@ -235,6 +235,7 @@ $(document).ready(function() {
 						});
 					}
 					else{
+						mostrarDiplomaturas2("M102", "1");
 						$local.idMatricula = pago.idMatricula;
 						//$local.$modalidades.find("option:not(:eq(0))").remove();
 						//$local.$modalidades.append($("<option />").val("M102").text("DIPLOMATURA"));
@@ -462,18 +463,27 @@ $(document).ready(function() {
 			}
 			
 			if($local.$arregloDiplomatura.length != 0 && idModalidad == "M102"){
+				console.log("Arreglo diplomatura");
 				var contador2 = 0;
 				$.each($local.$arregloDiplomatura, function(i, diplomatura) {
 					if(idEspecializacion == diplomatura.idEspecializacion){
 						contador2++;
 					}
 				});
-				contador2++;
+				
+				//contador2++;
+				console.log("contador : "+contador2);
+				$.each($local.$arregloEspecializacion, function(i, esp) {
+					console.log(esp);
+				});
 				var esp = $local.$arregloEspecializacion.find(function(especializacion) {
 					  return especializacion.idEspecializacion == idEspecializacion;
 				});
-				
+				console.log("Numero ciclos : "+esp.numCiclos);
 				if(contador2<=esp.numCiclos){
+					if(contador2 == 0){
+						contador2++;
+					}
 					$local.$numCiclo.val(contador2);
 					obtenerCostoCicloEspecializacion(idEspecializacion, contador2);
 				}
