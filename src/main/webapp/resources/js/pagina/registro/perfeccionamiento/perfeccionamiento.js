@@ -463,7 +463,7 @@ $(document).ready(function() {
 			}
 			
 			if($local.$arregloDiplomatura.length != 0 && idModalidad == "M102"){
-				console.log("Arreglo diplomatura");
+				
 				var contador2 = 0;
 				$.each($local.$arregloDiplomatura, function(i, diplomatura) {
 					if(idEspecializacion == diplomatura.idEspecializacion){
