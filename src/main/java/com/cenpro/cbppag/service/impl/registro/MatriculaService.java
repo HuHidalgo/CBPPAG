@@ -1,5 +1,6 @@
 package com.cenpro.cbppag.service.impl.registro;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,7 +37,6 @@ public class MatriculaService extends MantenibleService<Matricula> implements IM
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public List<Matricula> buscarPorId(int idMatricula) {
-		
 		Matricula matricula = Matricula.builder().idMatricula(idMatricula).build();
         return this.buscar(matricula, Verbo.GET);
 	}
@@ -44,7 +44,22 @@ public class MatriculaService extends MantenibleService<Matricula> implements IM
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public List<Matricula> buscarAlumno(String tipoDocumento, String nroDocumento) {
 		Matricula matricula = Matricula.builder().tipoDocumento(tipoDocumento).numeroDocumento(nroDocumento).build();
-		return this.buscar(matricula, Verbo.VERIFICAR_AM);
+		List<Matricula> listaMatricula = this.buscar(matricula, Verbo.VERIFICAR_AM);
+		if(!listaMatricula.isEmpty()) {
+			List<Matricula> listaMatriculaAuxiliar = new ArrayList<>();
+			Matricula matriculaAuxiliar = listaMatricula.get(0);
+			if(matriculaAuxiliar.getIdEspecializacion() != null) {
+				for(Matricula auxiliar : listaMatricula) {
+					if(!auxiliar.getIdEspecializacion().equals(matriculaAuxiliar.getIdEspecializacion())) {
+						listaMatriculaAuxiliar.add(matriculaAuxiliar);
+					}
+					matriculaAuxiliar = auxiliar;
+				}
+				listaMatriculaAuxiliar.add(matriculaAuxiliar);
+				return listaMatriculaAuxiliar;
+			}
+		}
+		return listaMatricula;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)

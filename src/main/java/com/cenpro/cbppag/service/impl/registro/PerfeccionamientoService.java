@@ -1,5 +1,6 @@
 package com.cenpro.cbppag.service.impl.registro;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -80,7 +81,19 @@ public class PerfeccionamientoService extends MantenibleService<Perfeccionamient
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public List<Perfeccionamiento> buscarPerfeccionamiento(String tipoDocumento, String numDocumento) {
 		Perfeccionamiento pago = Perfeccionamiento.builder().tipoDocumento(tipoDocumento).numeroDocumento(numDocumento).build();
-		return this.buscar(pago, Verbo.GETS_PERFEC);
+		List<Perfeccionamiento> listaPago = this.buscar(pago, Verbo.GETS_PERFEC);
+		List<Perfeccionamiento> listaPagoAuxiliar = new ArrayList<>();
+		if(!listaPago.isEmpty()) {
+			Perfeccionamiento pagoAuxiliar = listaPago.get(0);
+			for(Perfeccionamiento auxiliar : listaPago) {
+				if(!auxiliar.getIdEspecializacion().equals(pagoAuxiliar.getIdEspecializacion())) {
+					listaPagoAuxiliar.add(pagoAuxiliar);
+				}
+				pagoAuxiliar = auxiliar;
+			}
+			listaPagoAuxiliar.add(pagoAuxiliar);
+		}
+		return listaPagoAuxiliar;
 	}
 
 }

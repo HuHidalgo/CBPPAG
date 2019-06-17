@@ -75,6 +75,7 @@ $(document).ready(function() {
 		$local.$actualizarMantenimiento.addClass("hidden");
 		$local.$registrarMantenimiento.removeClass("hidden");
 		$local.$modalMantenimiento.PopupWindow("open");
+		console.log("Valor : " + $variableUtil.csrf);
 	});
 
 	$local.$modalMantenimiento.on("open.popupwindow", function() {

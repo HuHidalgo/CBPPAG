@@ -18,6 +18,7 @@ public class ReportePago {
 	private String nombreAlumno;
 	private String apellidoAlumno;
 	private String conceptoPago;
+	private String ciclo;
 	private int numeroCiclo;
 	private int cuotasPagadas;
 	private double montoPagado;

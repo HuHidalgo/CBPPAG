@@ -52,7 +52,7 @@ import nz.net.ultraq.thymeleaf.LayoutDialect;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class MvcConfiguration extends WebMvcConfigurerAdapter implements ApplicationContextAware
 {
-    private ApplicationContext applicationContext;
+	private ApplicationContext applicationContext;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException

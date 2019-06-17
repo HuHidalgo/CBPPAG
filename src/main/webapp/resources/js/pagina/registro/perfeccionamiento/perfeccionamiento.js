@@ -206,11 +206,17 @@ $(document).ready(function() {
 			success : function(pagos) {
 				$local.idMatricula = 0;
 				$local.$banderaDeudas = false;
-				var pago = pagos[0];
-				mostrarDiplomaturas("M102", "1");
 				
+				var pago = pagos[0];
 				if(pagos.length == 0){
-					mostrarDiplomaturas2("M102", "1");
+					mostrarDiplomaturas2("M102", "1", "");
+					$local.$apellidos.val("");
+					$local.$nombres.val("");
+					$local.$correo.val("");
+					$local.$numCiclo.val("");
+					$local.$cuotaPendiente.val("");
+					$local.$numeroCuotas.val("");
+					$local.$montoAPagar.val("");
 					$local.$conceptosPago.val("PD").trigger("change.select2");
 					$local.$modalidades.val("M102").trigger("change.select2");	
 					$funcionUtil.notificarException($variableUtil.alumnoNoEncontrado, "fa-exclamation-circle", "Información", "danger");
@@ -218,27 +224,42 @@ $(document).ready(function() {
 				}
 				else{
 					if(pago.idConceptoPago == null){
-						mostrarDiplomaturas2("M102", "1");
+						mostrarDiplomaturas2("M102", "1", "");
 						$local.$banderaDeudas = false;
 						$local.$apellidos.val(pago.apellidoAlumno);
 						$local.$nombres.val(pago.nombreAlumno);
 						$local.$correo.val(pago.correoAlumno);
 						$local.$tiposDocumento.val(pago.tipoDocumento).trigger("change.select2");
 						$local.$conceptosPago.val("PD").trigger("change.select2");
-						//$local.$modalidades.val("M102").trigger("change.select2");
 						if($local.$arregloPerfeccionamiento.length!=1){
 							$local.$arregloPerfeccionamiento = eliminateDuplicates($local.$arregloPerfeccionamiento);
 						}
 						
-						$.each($local.$arregloPerfeccionamiento, function(i, perfec) {	
-							$local.$modalidades.append($("<option />").val(perfec.idModalidad).text(perfec.nombreModalidad));
+						$.each($local.$arregloPerfeccionamiento, function(i, perfec) {
+							console.log(perfec);
+							var esp = $local.$arregloEspecializacion.find(function(especializacion) {
+								  return especializacion.idEspecializacion == perfec.idEspecializacion;
+							});
+							console.log("asfas");
+							console.log(esp);
+							if(!(typeof esp === "undefined")){
+								if(perfec.ciclo <= esp.numCiclos){
+									$local.$modalidades.append($("<option />").val(perfec.idModalidad).text(perfec.nombreModalidad));
+								}
+							}
 						});
 					}
 					else{
-						mostrarDiplomaturas2("M102", "1");
+						//mostrarDiplomaturas2("M102", "1", pago.idEspecializacion);
+						
+						if(pago.idModalidad == "M102"){
+							mostrarDiplomaturas2("M102", "1", pago.idEspecializacion);	
+						}
+						else{
+							mostrarDiplomaturas("M102", "1");
+						}
+						
 						$local.idMatricula = pago.idMatricula;
-						//$local.$modalidades.find("option:not(:eq(0))").remove();
-						//$local.$modalidades.append($("<option />").val("M102").text("DIPLOMATURA"));
 						$local.$tiposDocumento.val(pago.tipoDocumento).trigger("change.select2");
 						$local.$apellidos.val(pago.apellidoAlumno);
 						$local.$nombres.val(pago.nombreAlumno);
@@ -248,7 +269,8 @@ $(document).ready(function() {
 						var modalidadesAuxiliar = [];
 						var especializacionesAuxiliar = [];
 						
-						$.each(pagos, function(i, pago) {			
+						$.each(pagos, function(i, pago) {
+							console.log(pago);
 							modalidadesAuxiliar.push(pago.idModalidad + " - " +pago.nombreModalidad);
 							especializacionesAuxiliar.push(pago.idEspecializacion + " - " +pago.nombreEspecializacion);
 						});			
@@ -264,13 +286,6 @@ $(document).ready(function() {
 						});
 						
 						especializacionesAuxiliar = eliminateDuplicates(especializacionesAuxiliar);
-						/*var posicion2 = 0;
-						$.each(especializacionesAuxiliar, function(i, especializacion) {	
-							posicion2 = especializacion.indexOf("-");
-							if(especializacion.substring(0, posicion2-1) != 'ASTI' && especializacion.substring(0, posicion2-1) != 'GPGE' && especializacion.substring(0, posicion2-1) != 'GPTI'){
-								$local.$especializaciones.append($("<option />").val(especializacion.substring(0, posicion2-1)).text(especializacion.substring(posicion2+2, especializacion.length)));
-							}
-						});*/
 						
 						if(pago.idModalidad == "M100" || pago.idModalidad == "M101"){
 							$local.$conceptosPago.val("PDM").trigger("change.select2");
@@ -281,16 +296,16 @@ $(document).ready(function() {
 						
 						$local.$modalidades.val(pago.idModalidad).trigger("change.select2");
 							
-						
 						$local.$tiposPago.val(pago.idTipoPago).trigger("change.select2");					
 						$local.$montoAPagar.val(pago.montoAPagar);
 						$local.$numCiclo.val(pago.numeroCiclo);
 						$local.$cuotaPendiente.val(pago.nroCuotasPendientes);
 						$local.$numeroCuotas.val(4-pago.nroCuotasPendientes+1);
 						$local.$banderaDeudas = true;
-						modalidades();
+						
+						modalidades(pago.idEspecializacion);
+						
 						$local.$especializaciones.val(pago.idEspecializacion).trigger("change.select2");
-						//$local.$modalidades.trigger("change");
 					}
 					
 				}
@@ -309,10 +324,14 @@ $(document).ready(function() {
 	});
 	
 	$local.$modalidades.on("change", function(event, opcionSeleccionada) {
-		modalidades();
+		$local.$montoAPagar.val("");
+		$local.$numCiclo.val("");
+		$local.$cuotaPendiente.val("");
+		$local.$numeroCuotas.val("");
+		modalidades("");
 	});
 	
-	function modalidades(){
+	function modalidades(idEspecialidad){
 		var idModalidad = $local.$modalidades.val();
 		var nroCiclo = $local.$numCiclo.val();	
 		
@@ -323,9 +342,7 @@ $(document).ready(function() {
 			$local.$especializaciones.find("option:not(:eq(0))").remove();
 			return;
 		}
-		
-		$local.$especializaciones.find("option:not(:eq(0))").remove();
-		
+	
 		if(idModalidad == "M100" || idModalidad == "M101"){
 			$local.$conceptosPago.val("PDM").trigger("change.select2");
 		}
@@ -333,15 +350,21 @@ $(document).ready(function() {
 			$local.$conceptosPago.val("PD").trigger("change.select2");
 		}
 		
+		console.log("Valor13 : "+ $local.$banderaDeudas + " " + idModalidad);
 		if($local.$banderaDeudas){
-			$local.$especializaciones.find("option:not(:eq(0))").remove();
-			
 			if(idModalidad == "M102"){
-				$.each($local.$arregloEspecializacion, function(i, especializacion) {
+				console.log("entro");
+				$local.$especializaciones.find("option:not(:eq(0))").remove();
+				$.each($local.$arregloEspecializacion, function(i, especializacion) {					
 					$local.$especializaciones.append($("<option />").val(especializacion.idEspecializacion).text(especializacion.nombreEspecializacion));
 				});	
+				if(idEspecialidad != ""){					
+					$local.$especializaciones.val(idEspecialidad).trigger("change.select2");				
+				}
 			}
 			else{
+				$local.$especializaciones.find("option:not(:eq(0))").remove();
+				
 				$.each($local.pagos, function(i, pago) {
 					if(pago.nroCuotasPendientes != 0){
 						if(idModalidad != "M102" && idModalidad == pago.idModalidad){
@@ -362,8 +385,11 @@ $(document).ready(function() {
 							}
 						});
 						
-						console.log("M,odasd : "+idModalidad + " " +banPerfect);
-						if(perfec.idModalidad == idModalidad && !banPerfect){
+						var esp = $local.$arregloEspecializacion.find(function(especializacion) {
+							  return especializacion.idEspecializacion == perfec.idEspecializacion;
+						});
+						console.log(esp);
+						if(perfec.idModalidad == idModalidad && !banPerfect && perfec.ciclo <= esp.numCiclos){
 							$local.$especializaciones.append($("<option />").val(perfec.idEspecializacion).text(perfec.nombreEspecializacion));
 						}
 					});
@@ -373,16 +399,26 @@ $(document).ready(function() {
 		}
 		else{
 			if(idModalidad == "M102"){
-				mostrarDiplomaturas2("M102", "1");
+				mostrarDiplomaturas2("M102", "1", "");
 				$local.$modalidades.append($("<option />").val("M102").text("DIPLOMATURA"));
+				
 				$.each($local.$arregloPerfeccionamiento, function(i, perfec) {	
-					$local.$modalidades.append($("<option />").val(perfec.idModalidad).text(perfec.nombreModalidad));
+					var esp = $local.$arregloEspecializacion.find(function(especializacion) {
+						  return especializacion.idEspecializacion == perfec.idEspecializacion;
+					});
+					
+					if(perfec.ciclo <= esp.numCiclos){
+						$local.$modalidades.append($("<option />").val(perfec.idModalidad).text(perfec.nombreModalidad));
+					}
 				});
 			}
 			else{
 				$local.$especializaciones.find("option:not(:eq(0))").remove();
 				$.each($local.$arregloPerfeccionamiento, function(i, perfec) {	
-					if(perfec.idModalidad == idModalidad){
+					var esp = $local.$arregloEspecializacion.find(function(especializacion) {
+						  return especializacion.idEspecializacion == perfec.idEspecializacion;
+					});
+					if(perfec.idModalidad == idModalidad && perfec.ciclo <= esp.numCiclos){
 						$local.$especializaciones.append($("<option />").val(perfec.idEspecializacion).text(perfec.nombreEspecializacion));
 					}
 				});
@@ -405,9 +441,10 @@ $(document).ready(function() {
 			if($local.$arregloPerfeccionamiento.length != 0){
 				
 				$.each($local.$arregloPerfeccionamiento, function(i, perfec) {	
-					
+					console.log(perfec);
 					var banPerfect = false;
 					$.each($local.pagos, function(i, pago) {
+						console.log(pago);
 						if(pago.nroCuotasPendientes != 0){
 							if(perfec.idEspecializacion == pago.idEspecializacion ){
 								banPerfect = true;
@@ -432,7 +469,6 @@ $(document).ready(function() {
 				$.each($local.pagos, function(i, pago) {	
 					if(pago.nroCuotasPendientes != 0){
 						if(idEspecializacion == pago.idEspecializacion){
-							console.log(pago);
 							$local.$tiposPago.val(pago.idTipoPago).trigger("change.select2");
 							$local.$numCiclo.val(pago.numeroCiclo);
 							$local.$cuotaPendiente.val(pago.nroCuotasPendientes);
@@ -443,6 +479,7 @@ $(document).ready(function() {
 						}
 					}
 				});
+				console.log("CVarlo : " +banderas);
 				if(!banderas){
 					$.each($local.pagos, function(i, pago) {	
 						if(pago.nroCuotasPendientes != 0){
@@ -463,39 +500,60 @@ $(document).ready(function() {
 			}
 			
 			if($local.$arregloDiplomatura.length != 0 && idModalidad == "M102"){
-				
-				var contador2 = 0;
-				$.each($local.$arregloDiplomatura, function(i, diplomatura) {
-					if(idEspecializacion == diplomatura.idEspecializacion){
-						contador2++;
-					}
+				var diplomatura = $local.$arregloDiplomatura.find(function(diplomatura) {
+					  return diplomatura.idEspecializacion == idEspecializacion && diplomatura.estadoCiclo == 0;
 				});
 				
-				//contador2++;
-				console.log("contador : "+contador2);
-				$.each($local.$arregloEspecializacion, function(i, esp) {
-					console.log(esp);
-				});
-				var esp = $local.$arregloEspecializacion.find(function(especializacion) {
-					  return especializacion.idEspecializacion == idEspecializacion;
-				});
-				console.log("Numero ciclos : "+esp.numCiclos);
-				if(contador2<=esp.numCiclos){
-					if(contador2 == 0){
-						contador2++;
-					}
-					$local.$numCiclo.val(contador2);
-					obtenerCostoCicloEspecializacion(idEspecializacion, contador2);
+				if(diplomatura != null){
+					$.each($local.pagos, function(i, pago) {
+						if(idEspecializacion == pago.idEspecializacion){
+							$local.$tiposPago.val(pago.idTipoPago).trigger("change.select2");					
+							$local.$montoAPagar.val(pago.montoAPagar);
+							$local.$numCiclo.val(pago.numeroCiclo);
+							$local.$cuotaPendiente.val(pago.nroCuotasPendientes);
+							$local.$numeroCuotas.val(4-pago.nroCuotasPendientes+1);
+						}
+					});
 				}
 				else{
-					$local.$numCiclo.val("");
-					$funcionUtil.notificarException($variableUtil.ciclosCompletos, "fa-exclamation-circle", "Información", "info");
+					var contador2 = 0;
+					console.log("Diplomatura");
+					$.each($local.$arregloDiplomatura, function(i, diplomatura) {
+						console.log(diplomatura);
+						if(idEspecializacion == diplomatura.idEspecializacion && diplomatura.estadoCiclo == 1){
+							contador2++;
+						}
+					});
+					
+					
+					contador2++;
+					console.log("contado : " + contador2);
+					var esp = $local.$arregloEspecializacion.find(function(especializacion) {
+						  return especializacion.idEspecializacion == idEspecializacion;
+					});
+					console.log("especializacion ");
+					console.log(esp);
+					if(contador2<=esp.numCiclos){					
+						if(contador2 == 0){
+							contador2++;
+						}
+						$local.$tiposPago.val('PC').trigger("change.select2");
+						$local.$numCiclo.val(contador2);
+						obtenerCostoCicloEspecializacion(idEspecializacion, contador2, 1);
+						$local.$cuotaPendiente.val("4");
+						$local.$numeroCuotas.val("4");
+					}
+					else{
+						$local.$numCiclo.val("");
+						$local.$cuotaPendiente.val("");
+						$local.$numeroCuotas.val("");
+						$local.$montoAPagar.val("");
+						$funcionUtil.notificarException($variableUtil.ciclosCompletos, "fa-exclamation-circle", "Información", "info");
+					}
 				}
-				
 			}
 		}
 		else{
-			console.log("Entro en especializacion P");
 			$.ajax({
 				type : "GET",
 				url : $variableUtil.root + "mantenimiento/especializacion/costo/" + idEspecializacion + "/" + 0,
@@ -519,10 +577,14 @@ $(document).ready(function() {
 					$local.$numCiclo.val("1");
 					
 					if(idModalidad == "M102"){
+						console.log("Especialidad " + idEspecializacion);
 						$.each($local.$arregloEspecializacion, function(i, especialidad) {
+							console.log(especialidad);
 							if(idEspecializacion == especialidad.idEspecializacion){
 								var contador2 = 0;
+								console.log("Diplomatura");
 								$.each($local.$arregloDiplomatura, function(i, diplomatura) {
+									console.log(diplomatura);
 									if(idEspecializacion == diplomatura.idEspecializacion){
 										contador2++;
 									}
@@ -536,6 +598,8 @@ $(document).ready(function() {
 									  return especializacion.idEspecializacion == idEspecializacion;
 								});
 								
+								console.log("contador " +contador2);
+								console.log(esp);
 								if(contador2<=esp.numCiclos){
 									$local.$numCiclo.val(contador2);
 									$local.$cuotaPendiente.val("");
@@ -811,6 +875,8 @@ $(document).ready(function() {
 			type : "GET",
 			url : $variableUtil.root + "mantenimiento/especializacion/modalidad/" + idModalidad + "/" + numeroCiclo,
 			beforeSend : function(xhr) {
+				xhr.setRequestHeader('Content-Type', 'application/json');
+				xhr.setRequestHeader("X-CSRF-TOKEN", $variableUtil.csrf);
 				$local.$especializaciones.find("option:not(:eq(0))").remove();
 				$local.$modalidades.find("option:not(:eq(0))").remove();
 				$local.$especializaciones.parent().append("<span class='help-block cargando'><i class='fa fa-spinner fa-pulse fa-fw'></i> Cargando Especializaciones</span>")
@@ -822,13 +888,8 @@ $(document).ready(function() {
 				}
 			},
 			success : function(especializaciones) {
-				$local.$arregloEspecializacion = especializaciones;
-				
 				$local.$modalidades.append($("<option />").val("M102").text("DIPLOMATURA"));
-				/*$.each(especializaciones, function(i, especializacion) {
-					console.log(especializacion);
-					$local.$especializaciones.append($("<option />").val(especializacion.idEspecializacion).text(especializacion.nombreEspecializacion));
-				});*/
+				$local.$arregloEspecializacion = especializaciones;
 			},
 			complete : function() {
 				$local.$especializaciones.parent().find(".cargando").remove();
@@ -836,11 +897,13 @@ $(document).ready(function() {
 		});
 	}
 	
-	function mostrarDiplomaturas2(idModalidad, numeroCiclo){
+	function mostrarDiplomaturas2(idModalidad, numeroCiclo, idEspecialidad){
 		$.ajax({
 			type : "GET",
 			url : $variableUtil.root + "mantenimiento/especializacion/modalidad/" + idModalidad + "/" + numeroCiclo,
 			beforeSend : function(xhr) {
+				xhr.setRequestHeader('Content-Type', 'application/json');
+				xhr.setRequestHeader("X-CSRF-TOKEN", $variableUtil.csrf);
 				$local.$especializaciones.find("option:not(:eq(0))").remove();
 				$local.$modalidades.find("option:not(:eq(0))").remove();
 				$local.$especializaciones.parent().append("<span class='help-block cargando'><i class='fa fa-spinner fa-pulse fa-fw'></i> Cargando Especializaciones</span>")
@@ -852,10 +915,15 @@ $(document).ready(function() {
 				}
 			},
 			success : function(especializaciones) {
+				$local.$modalidades.append($("<option />").val("M102").text("DIPLOMATURA"));
 				$local.$arregloEspecializacion = especializaciones;
 				$.each(especializaciones, function(i, especializacion) {
 					$local.$especializaciones.append($("<option />").val(especializacion.idEspecializacion).text(especializacion.nombreEspecializacion));
 				});
+				$local.$modalidades.val("M102").trigger("change.select2");	
+				if(idEspecialidad!=""){
+					$local.$especializaciones.val(idEspecialidad).trigger("change.select2");
+				}
 			},
 			complete : function() {
 				$local.$especializaciones.parent().find(".cargando").remove();
@@ -867,12 +935,13 @@ $(document).ready(function() {
 	 * Esta función se encargará de traer el costo de la matrícula 
 	 * dependiendo de la especialización y del ciclo
 	 */
-	function obtenerCostoCicloEspecializacion(idEspecializacion, numeroCiclo){
+	function obtenerCostoCicloEspecializacion(idEspecializacion, numeroCiclo, tipoPago){
 		$.ajax({
 			type : "GET",
 			url : $variableUtil.root + "mantenimiento/especializacion/costo/" + idEspecializacion + "/" + numeroCiclo,
 			beforeSend : function(xhr) {
-				
+				xhr.setRequestHeader('Content-Type', 'application/json');
+				xhr.setRequestHeader("X-CSRF-TOKEN", $variableUtil.csrf);
 			},
 			statusCode : {
 				400 : function(response) {
@@ -884,6 +953,12 @@ $(document).ready(function() {
 				var contador = 1;
 				var esp = especializaciones[0];
 				$local.$montoPagar = esp.costoCiclo; 
+				if(tipoPago == 1){
+					$local.$montoAPagar.val(esp.costoCiclo);
+				}
+				else{
+					$local.$montoAPagar.val(esp.costoCiclo/4);
+				}
 			},
 			complete : function() {
 				
@@ -900,7 +975,8 @@ $(document).ready(function() {
 			type : "GET",
 			url : $variableUtil.root + "registro/perfeccionamiento/buscar/" + tipoDoc + "/" + numDoc,
 			beforeSend : function(xhr) {
-				
+				xhr.setRequestHeader('Content-Type', 'application/json');
+				xhr.setRequestHeader("X-CSRF-TOKEN", $variableUtil.csrf);
 			},
 			statusCode : {
 				400 : function(response) {
@@ -909,7 +985,11 @@ $(document).ready(function() {
 				}
 			},
 			success : function(perfeccionamientos) {
+				$.each(perfeccionamientos, function(i, especializacion) {
+					console.log(especializacion);
+				});
 				$local.$arregloPerfeccionamiento = perfeccionamientos;
+				console.log("Cantidad : " + $local.$arregloPerfeccionamiento.length);
 			},
 			complete : function() {
 			}

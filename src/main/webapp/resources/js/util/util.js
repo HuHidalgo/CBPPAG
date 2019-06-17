@@ -59,7 +59,10 @@ $(document).ready(function() {
 		cicloEnProceso : "No puede matricularse en el siguiente ciclo, sin acabar el actual.",
 		deudaPagada: "El alumno no registra deuda"	,
 		matriculaPrimero : "Primero debe matricularse antes de poder realizar los pagos",
-		NoMatricula: "Aún no puede matricularse para el siguiente ciclo. Tiene que terminar de pagar las cuotas del ciclo anterior. "
+		NoMatricula: "Aún no puede matricularse para el siguiente ciclo. Tiene que terminar de pagar las cuotas del ciclo anterior. ",
+		CiclosIncompletos: "Primero debe terminar todos los ciclos, para poder matricularse en otro estudio",
+		NoMatriculaDoble: "Solo se permite una maestria y/o doctorado por persona.",
+		CursoCompleto : "Usted ya cumplió con este estudio. "
 	};
 
 	$funcionUtil = {

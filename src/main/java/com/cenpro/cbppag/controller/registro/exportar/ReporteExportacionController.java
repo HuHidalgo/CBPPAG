@@ -27,31 +27,30 @@ public @Controller class ReporteExportacionController
     public ModelAndView descargarReporteDeuda(ModelMap model, ModelAndView modelAndView,
     		ReporteDeuda reporte)
     {
+    	if(reporte.getNumeroCiclo() == 0) {
+    		reporte.setCiclo("Todos");
+    	}
+    	else {
+    		reporte.setCiclo(String.valueOf(reporte.getNumeroCiclo()));
+    	}
+    	
         List<ReporteDeuda> reporteGeneral = reporteDeudaService.buscarDeudas(reporte);
+        
+        if(reporte.getCodigoAlumno() == "") {
+        	reporte.setCodigoAlumno("Todos");
+        }
+        
         Map<String, Object> params = new HashMap<>();
         params.put("param1", reporteGeneral);
         params.put("param2", reporte);
-        params.put("param3", reporteGeneral);
 
-        // HOJA DE REPORTE
-        model.addAttribute("rb_titulo", ReporteUtilYarg.buildReportBand("Titulo"));
+        //Hoja de reporte
+        model.addAttribute("rb_titulo", ReporteUtilYarg.buildReportBand("titulo"));
         model.addAttribute("rb_criterioBusqueda", ReporteUtilYarg.buildReportBand(
-                "CriteriosBusqueda", "CriterioBusqueda", "parameter=param2 $", "json"));
-        model.addAttribute("rb_total", ReporteUtilYarg.buildReportBand("Total"));
-        model.addAttribute("rb_encabezado", ReporteUtilYarg.buildReportBand("Encabezado"));
+                "criteriosBusqueda", "criteriosBusqueda", "parameter=param2 $", "json"));
+        model.addAttribute("rb_encabezado", ReporteUtilYarg.buildReportBand("encabezadoResultado"));
         model.addAttribute("rb_datos",
-                ReporteUtilYarg.buildReportBand("Datos", "Datos", "parameter=param1 $", "json"));
-
-        // HOJA GENERAL
-        model.addAttribute("rb_tituloGeneral", ReporteUtilYarg.buildReportBand("TituloGeneral"));
-        model.addAttribute("rb_criterioBusquedaGeneral",
-                ReporteUtilYarg.buildReportBand("CriteriosBusquedaGeneral",
-                        "CriterioBusquedaGeneral", "parameter=param2 $", "json"));
-        model.addAttribute("rb_totalGeneral", ReporteUtilYarg.buildReportBand("TotalGeneral"));
-        model.addAttribute("rb_encabezadoGeneral",
-                ReporteUtilYarg.buildReportBand("EncabezadoGeneral"));
-        model.addAttribute("rb_datosGeneral", ReporteUtilYarg.buildReportBand("DatosGeneral",
-                "DatosGeneral", "parameter=param3 $", "json"));
+                ReporteUtilYarg.buildReportBand("datosReporte", "datosReporte", "parameter=param1 $", "json"));
         
         model.addAttribute(ReporteUtilYarg.PARAM_TEMPLATE, "reporteDeuda");
         model.addAttribute(ReporteUtilYarg.PARAM_NOMBRE_REPORTE, "Reporte de Deudas");
@@ -64,36 +63,36 @@ public @Controller class ReporteExportacionController
     public ModelAndView descargarReportePago(ModelMap model, ModelAndView modelAndView,
     		ReportePago reporte)
     {
+        if(reporte.getNumeroCiclo() == 0) {
+    		reporte.setCiclo("Todos");
+    	}
+    	else {
+    		reporte.setCiclo(String.valueOf(reporte.getNumeroCiclo()));
+    	}
+    	
         List<ReportePago> reporteGeneral = ReportePagoService.buscarPagos(reporte);
+        
+        if(reporte.getCodigoAlumno() == "") {
+        	reporte.setCodigoAlumno("Todos");
+        }
+        
         Map<String, Object> params = new HashMap<>();
         params.put("param1", reporteGeneral);
         params.put("param2", reporte);
-        params.put("param3", reporteGeneral);
 
-        // HOJA DETALLE
-        model.addAttribute("rb_titulo", ReporteUtilYarg.buildReportBand("Titulo"));
+        //Hoja de reporte
+        model.addAttribute("rb_titulo", ReporteUtilYarg.buildReportBand("titulo"));
         model.addAttribute("rb_criterioBusqueda", ReporteUtilYarg.buildReportBand(
-                "CriteriosBusqueda", "CriterioBusqueda", "parameter=param2 $", "json"));
-        model.addAttribute("rb_total", ReporteUtilYarg.buildReportBand("Total"));
-        model.addAttribute("rb_encabezado", ReporteUtilYarg.buildReportBand("Encabezado"));
+                "criteriosBusqueda", "criteriosBusqueda", "parameter=param2 $", "json"));
+        model.addAttribute("rb_encabezado", ReporteUtilYarg.buildReportBand("encabezadoResultado"));
         model.addAttribute("rb_datos",
-                ReporteUtilYarg.buildReportBand("Datos", "Datos", "parameter=param1 $", "json"));
-
-        // HOJA GENERAL
-        model.addAttribute("rb_tituloGeneral", ReporteUtilYarg.buildReportBand("TituloGeneral"));
-        model.addAttribute("rb_criterioBusquedaGeneral",
-                ReporteUtilYarg.buildReportBand("CriteriosBusquedaGeneral",
-                        "CriterioBusquedaGeneral", "parameter=param2 $", "json"));
-        model.addAttribute("rb_totalGeneral", ReporteUtilYarg.buildReportBand("TotalGeneral"));
-        model.addAttribute("rb_encabezadoGeneral",
-                ReporteUtilYarg.buildReportBand("EncabezadoGeneral"));
-        model.addAttribute("rb_datosGeneral", ReporteUtilYarg.buildReportBand("DatosGeneral",
-                "DatosGeneral", "parameter=param3 $", "json"));
-
+                ReporteUtilYarg.buildReportBand("datosReporte", "datosReporte", "parameter=param1 $", "json"));
+        
         model.addAttribute(ReporteUtilYarg.PARAM_TEMPLATE, "reportePago");
-        model.addAttribute(ReporteUtilYarg.PARAM_NOMBRE_REPORTE, "Reporte de Ingresos por Concepto");
+        model.addAttribute(ReporteUtilYarg.PARAM_NOMBRE_REPORTE, "Reporte de Pagos");
         model.addAttribute(ReporteUtilYarg.PARAM_REPORTE_PARAMETERS, params);
         modelAndView = new ModelAndView("yargView", model);
+        
         return modelAndView;
     }
 }

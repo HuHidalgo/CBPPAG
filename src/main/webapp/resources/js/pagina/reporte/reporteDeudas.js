@@ -1,8 +1,8 @@
 $(document).ready(function() {
 
 	var $local = {
-		tablaReportePagoGeneral : "",
-		$tablaReportePagoGeneral : $("#tablaReportePagos"),
+		tablaReporteDeudaGeneral : "",
+		$tablaReporteDeudaGeneral : $("#tablaReporteDeudas"),
 		$limpiar : $("#limpiar"),
 		$buscar : $("#buscar"),
 		$exportar : $("#exportar"),
@@ -12,32 +12,24 @@ $(document).ready(function() {
 		$numeroCiclo : $("#numeroCiclo")
 	}
 
-	$formReportePago = $("#formReportePagos");
+	$formReporteDeudas = $("#formReporteDeudas");
 	
 	$funcionUtil.crearSelect2($local.$modalidades, "--Selecciona Modalidad--");
 	$funcionUtil.crearSelect2($local.$especializaciones, "--Selecciona Especialización--");
 
-	$local.tablaReportePagoGeneral = $local.$tablaReportePagoGeneral.DataTable({
+	$local.tablaReporteDeudaGeneral = $local.$tablaReporteDeudaGeneral.DataTable({
 		"language" : {
 			"emptyTable" : "No hay resultados para la búsqueda."
 		},
 		"initComplete" : function() {
-			$local.$tablaReportePagoGeneral.wrap("<div class='table-responsive'></div>");
-			$tablaFuncion.aniadirFiltroDeBusquedaEnEncabezado(this, $local.$tablaReportePagoGeneral);
+			$local.$tablaReporteDeudaGeneral.wrap("<div class='table-responsive'></div>");
+			$tablaFuncion.aniadirFiltroDeBusquedaEnEncabezado(this, $local.$tablaReporteDeudaGeneral);
 		},
+		"ordering" : false,
 		"columnDefs" : [ {
-			"targets" : [ 0, 1, 2, 3, 4, 5, 6, 7],
+			"targets" : [ 0, 1, 2, 3, 4, 5, 6],
 			"className" : "all filtrable",
 			"defaultContent" : "-"
-		}, {
-			"targets" : 7,
-			"className" : "all dt-center",
-			"render" : function(data, type, row, meta) {
-				if (row.conceptoPago == "PDM" || row.conceptoPago == "PD")
-					return "<label class='label label-info label-size-12'>PERFECCIONAMIENTO</label>";
-				else
-					return "<label class='label label-info label-size-12'>MATRICULA</label>";
-			}
 		}],
 		"columns" : [ 
 			{
@@ -58,33 +50,37 @@ $(document).ready(function() {
 			"data" : "numeroCiclo",
 			"title" : "Nro. Ciclo"
 		}, {
-			"data" : "cuotasPagadas",
-			"title" : "Cuotas Pagadas"
+			"data" : "numeroCuota",
+			"title" : "Nro. Cuota"
 		}, {
-			"data" : "montoPagado",
-			"title" : "Monto Pagado"
-		}, {
-			"data" : null,
-			"title" : "Tipo Pago"
+			"data" : "montoDeuda",
+			"title" : "Monto Deuda"
 		}]
 	});
 	
-	$local.$tablaReportePagoGeneral.find("thead").on('keyup', 'input.filtrable', function() {
-		$local.tablaReportePagoGeneral.column($(this).parent().index() + ':visible').search(this.value).draw();
+	$local.$tablaReporteDeudaGeneral.find("thead").on('keyup', 'input.filtrable', function() {
+		$local.tablaReporteDeudaGeneral.column($(this).parent().index() + ':visible').search(this.value).draw();
 	});
 
-	$local.$tablaReportePagoGeneral.find("thead").on('change', 'select', function() {
+	$local.$tablaReporteDeudaGeneral.find("thead").on('change', 'select', function() {
 		var val = $.fn.dataTable.util.escapeRegex($(this).val());
-		$local.tablaReportePagoGeneral.column($(this).parent().index() + ':visible').search(val ? '^' + val + '$' : '', true, false).draw();
+		$local.tablaReporteDeudaGeneral.column($(this).parent().index() + ':visible').search(val ? '^' + val + '$' : '', true, false).draw();
 	});
 	
 	
 	$local.$modalidades.on("change", function(event, opcionSeleccionada) {
 		var idModalidad = $(this).val();
-		console.log("modalidad");
+		var nroCiclo = $local.$numeroCiclo.val();	
+		if (nroCiclo == "")
+			nroCiclo = 0;
+		
+		if (idModalidad == null || idModalidad == undefined) {
+			$local.$especializaciones.find("option:not(:eq(0))").remove();
+			return;
+		}
 		$.ajax({
 			type : "GET",
-			url : $variableUtil.root + "mantenimiento/especializacion/modalidad/" + idModalidad + "/" + 0,
+			url : $variableUtil.root + "mantenimiento/especializacion/modalidad/" + idModalidad + "/" + nroCiclo,
 			beforeSend : function(xhr) {
 				$local.$especializaciones.find("option:not(:eq(0))").remove();
 				$local.$especializaciones.parent().append("<span class='help-block cargando'><i class='fa fa-spinner fa-pulse fa-fw'></i> Cargando Especializaciones</span>")
@@ -111,34 +107,34 @@ $(document).ready(function() {
 	});
 		
 	$local.$buscar.on("click", function() {
-		var reporte = $formReportePago.serializeJSON();
+		var reporte = $formReporteDeudas.serializeJSON();
 		reporte.idModalidad = $local.$modalidades.val();
 		reporte.idEspecializacion = $local.$especializaciones.val();
 		if(reporte.numeroCiclo == ""){
 			reporte.numeroCiclo = "0";
 		}
-		/*if ($funcionUtil.camposVacios($formReportePago)) {
+		if ($funcionUtil.camposVacios($formReporteDeudas)) {
 			$funcionUtil.notificarException($variableUtil.camposVacios, "fa-exclamation-circle", "Información", "info");
 			return;
 		}
-		if (!$formReportePago.valid()) {
+		if (!$formReporteDeudas.valid()) {
 			return;
-		}*/
+		}
 
 		$.ajax({
 			type : "GET",
-			url : $variableUtil.root + "registro/reporte?accion=buscarPago",
+			url : $variableUtil.root + "registro/reporte?accion=buscarDeuda",
 			data : reporte,
 			beforeSend : function() {
-				$local.tablaReportePagoGeneral.clear().draw();
+				$local.tablaReporteDeudaGeneral.clear().draw();
 				$local.$buscar.attr("disabled", true).find("i").removeClass("fa-search").addClass("fa-spinner fa-pulse fa-fw");
 			},
-			success : function(pagos) {
-				if (pagos.length == 0) {
+			success : function(deudas) {
+				if (deudas.length == 0) {
 					$funcionUtil.notificarException($variableUtil.busquedaSinResultados, "fa-exclamation-circle", "Información", "info");
 					return;
 				}
-				$local.tablaReportePagoGeneral.rows.add(pagos).draw();
+				$local.tablaReporteDeudaGeneral.rows.add(deudas).draw();
 								
 			},
 			complete : function() {
@@ -202,21 +198,35 @@ $(document).ready(function() {
 	});
 
 	$local.$exportar.on("click", function() {
-		var reporte = $formReportePago.serializeJSON();
+		var reporte = $formReporteDeudas.serializeJSON();
 		reporte.idModalidad = $local.$modalidades.val();
+		reporte.nombreModalidad = $("#modalidades option:selected").text().substring(7);
 		reporte.idEspecializacion = $local.$especializaciones.val();
+		reporte.nombreEspecializacion = $("#especializaciones option:selected").text().substring(7);
+		
+		if($("#modalidades option:selected").index()==0){
+			reporte.nombreModalidad = "Todas";
+		}
+		
+		if($("#especializaciones option:selected").index()==0){
+			reporte.nombreEspecializacion = "Todas";
+		}
+		
 		if(reporte.numeroCiclo == ""){
 			reporte.numeroCiclo = "0";
 		}
-		/*if ($funcionUtil.camposVacios($formReportePago)) {
+		
+		if ($funcionUtil.camposVacios($formReporteDeudas)) {
 			$funcionUtil.notificarException($variableUtil.camposVacios, "fa-exclamation-circle", "Información", "info");
 			return;
 		}
-		if (!$formReportePago.valid()) {
+		if (!$formReporteDeudas.valid()) {
 			return;
-		}*/
-		var paramCriterioBusqueda = $.param(reporte);
-		window.location.href = $variableUtil.root + "registro/reporte?accion=exportar2&" + paramCriterioBusqueda;
+		}
+		
+		var paramReporte = $.param(reporte);
+		
+		window.location.href = $variableUtil.root + "registro/reporte?accion=exportar&" + paramReporte;
 	});
 
 });
